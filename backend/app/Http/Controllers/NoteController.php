@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class NoteController extends Controller
 {
+    // TODO: still need to update This to handle Document use (Morhpto)
     /**
      * Display a listing of the resource.
      */

@@ -24,4 +24,8 @@ class MyCompany extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function deals() {
+        return $this->hasMany(Deal::class);
+    }
 }

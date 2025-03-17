@@ -24,4 +24,8 @@ class ClientCompany extends Model
     public function contacts() {
         return $this->hasMany(Contact::class);
     }
+
+    public function deals() {
+        return $this->hasMany(Deal::class);
+    }
 }

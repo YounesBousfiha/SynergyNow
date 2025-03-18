@@ -2,17 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\AuthHelpers;
 use App\Models\service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $companyId = AuthHelpers::getMyCompany($request->bearerToken());
+        try {
+            $services = service::where('my_companie_id', $companyId->id)->get();
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while trying to get the services',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => $services
+        ]);
     }
 
     /**

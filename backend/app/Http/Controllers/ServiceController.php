@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\AuthHelpers;
 use App\Models\service;
+use Exception;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,7 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
+        // TODO: Validate the request
         $companyId = AuthHelpers::getMyCompany($request->bearerToken());
         // $data = $request->validated();
         try {
@@ -76,9 +78,30 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, service $service)
+    public function update(Request $request, string $serviceId)
     {
-        //
+        // TODO: Validate the request
+        $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+        try {
+            //$data = $request->validated();
+            $service = service::where('my_companie_id', $companyId)->where('id', $serviceId)->first();
+
+            if(!$service) {
+                return response()->json([
+                    'message' => 'Service not found'
+                ], 404);
+            }
+            $service->update($request->all());
+        } catch(Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while trying to update the service',
+                'error' => $e->getMessage()
+            ]);
+        }
+
+        return response()->json([
+            'message' => $service
+        ]);
     }
 
     /**

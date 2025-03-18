@@ -73,7 +73,7 @@ Route::middleware(auth::class)->group(function () {
     Route::post('/deal', [DealController::class, 'store']);
     Route::put('/deal/{id}', [DealController::class, 'update']);
     Route::patch('/deal/{id}', [DealController::class, 'updateStatus']);
-    Route::patch('/deal/{id}/assign/{userId}', [DealController::class, 'assign']);
+    Route::patch('/deal/{id}/assign', [DealController::class, 'assign']);
     Route::patch('/deal/{id}/unassign', [DealController::class, 'unassign']);
     Route::delete('/deal/{id}', [DealController::class, 'destroy']);
 });

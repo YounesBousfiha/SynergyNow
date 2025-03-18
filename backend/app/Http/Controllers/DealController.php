@@ -119,7 +119,22 @@ class DealController extends Controller
             'message' => $deal
         ]);
     }
-    public function assign() {}
+    public function assign(Request $request, string $dealId) {
+        $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+        try {
+            $deal = Deal::where('my_companie_id', $companyId)->where('id', $dealId)->first();
+            if(!$deal) {
+                return response()->json(['message' => 'Deal not found'], 404);
+            }
+            $deal->update(['agent_id' => $request->agent_id]);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+
+        return response()->json([
+            'message' => $deal
+        ]);
+    }
 
     public function unassign() {}
 }

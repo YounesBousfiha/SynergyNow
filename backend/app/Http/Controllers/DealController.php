@@ -47,17 +47,23 @@ class DealController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Deal $deal)
+    public function show(Request $request, string $dealId)
     {
         //
     }
+        $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+        try {
+            $deal = Deal::where('my_companie_id', $companyId)->where('id', $dealId)->first();
+            if(!$deal) {
+                return response()->json(['message' => 'Deal not found'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Deal $deal)
-    {
-        //
+        return response()->json([
+            'message' => $deal
+        ]);
     }
 
     /**

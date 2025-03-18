@@ -88,9 +88,19 @@ class DealController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Deal $deal)
+    public function destroy(Request $request , string $dealId)
     {
-        //
+        $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+        try {
+            $deal = Deal::where('my_companie_id', $companyId)->where('id', $dealId)->first();
+            $deal->delete();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+
+        return response()->json([
+            'message' => 'Deal deleted'
+        ]);
     }
 
     public function updateStatus() {}

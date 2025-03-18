@@ -6,6 +6,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\MyCompanyController;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\auth;
 use Illuminate\Support\Facades\Route;
@@ -59,5 +60,11 @@ Route::middleware(auth::class)->group(function () {
     Route::post('/contact/{contactId}/notes', [NoteController::class, 'store']);
     Route::put('/contact/{contactId}/notes/{noteId}', [NoteController::class, 'update']);
     Route::delete('/contact/{contactId}/notes/{noteId}', [NoteController::class, 'destroy']);
+
+    Route::get('/services', [ServiceController::class, 'index']);
+    Route::get('/service/{id}', [ServiceController::class, 'show']);
+    Route::post('/service', [ServiceController::class, 'store']);
+    Route::put('/service/{id}', [ServiceController::class, 'update']);
+    Route::delete('/service/{id}', [ServiceController::class, 'destroy']);
 
 });

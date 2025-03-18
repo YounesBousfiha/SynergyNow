@@ -107,8 +107,26 @@ class ServiceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(service $service)
+    public function destroy(Request $request, string $serviceId)
     {
-        //
+        $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+        try {
+            $service = service::where('my_companie_id', $companyId)->where('id', $serviceId)->first();
+            if (!$service) {
+                return response()->json([
+                    'message' => 'Service not found'
+                ], 404);
+            }
+
+            $service->delete();
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while trying to deleting the service',
+                'error' => $e->getMessage()
+            ]);
+        }
+        return response()->json([
+            'message' => 'Service deleted successfully'
+        ]);
     }
 }

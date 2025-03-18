@@ -30,33 +30,32 @@ class ServiceController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $companyId = AuthHelpers::getMyCompany($request->bearerToken());
+        // $data = $request->validated();
+        try {
+            $data = $request->all();
+            $data['my_companie_id'] = $companyId->id;
+            $service = service::create($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while trying to create the service',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => $service
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
     public function show(service $service)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(service $service)
     {
         //
     }

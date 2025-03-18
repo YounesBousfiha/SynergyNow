@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientCompanyController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DealController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\MyCompanyController;
 use App\Http\Controllers\NoteController;
@@ -67,4 +68,12 @@ Route::middleware(auth::class)->group(function () {
     Route::put('/service/{id}', [ServiceController::class, 'update']);
     Route::delete('/service/{id}', [ServiceController::class, 'destroy']);
 
+    Route::get('/deals', [DealController::class, 'index']);
+    Route::get('/deal/{id}', [DealController::class, 'show']);
+    Route::post('/deal', [DealController::class, 'store']);
+    Route::put('/deal/{id}', [DealController::class, 'update']);
+    Route::patch('/deal/{id}', [DealController::class, 'updateStatus']);
+    Route::patch('/deal/{id}/assign/{userId}', [DealController::class, 'assign']);
+    Route::patch('/deal/{id}/unassign', [DealController::class, 'unassign']);
+    Route::delete('/deal/{id}', [DealController::class, 'destroy']);
 });

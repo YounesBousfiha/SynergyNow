@@ -25,13 +25,23 @@ class DealController extends Controller
             'message' => $deals
         ]);
     }
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+        // TODO: validation Request
+        try {
+            $data = $request->all();
+            $data['my_companie_id'] = $companyId;
+            $deal = Deal::create($data);
+        } catch(Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+        return response()->json([
+            'message' => $deal
+        ]);
     }
 
     /**

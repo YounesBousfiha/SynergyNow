@@ -92,4 +92,9 @@ class DealController extends Controller
     {
         //
     }
+
+    public function updateStatus() {}
+    public function assign() {}
+
+    public function unassign() {}
 }

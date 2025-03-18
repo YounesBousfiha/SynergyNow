@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\AuthHelpers;
 use App\Models\Deal;
+use Exception;
 use Illuminate\Http\Request;
 
 class DealController extends Controller
@@ -10,17 +12,18 @@ class DealController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+        try {
+            $deals = Deal::where('my_companie_id', $companyId)->get();
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return response()->json([
+            'message' => $deals
+        ]);
     }
 
     /**

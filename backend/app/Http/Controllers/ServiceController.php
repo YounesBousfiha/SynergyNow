@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\AuthHelpers;
+use App\Http\Requests\StoreServiceValidation;
+use App\Http\Requests\UpdateServiceValidation;
 use App\Models\service;
 use Exception;
 use http\Env\Response;
@@ -58,7 +60,7 @@ class ServiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, string $serviceId)
+    public function show(StoreServiceValidation $request, string $serviceId)
     {
         $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
         try {
@@ -78,7 +80,7 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $serviceId)
+    public function update(UpdateServiceValidation $request, string $serviceId)
     {
         // TODO: Validate the request
         $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;

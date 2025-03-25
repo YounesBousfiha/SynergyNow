@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ClientCompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DealController;
@@ -76,4 +77,10 @@ Route::middleware(auth::class)->group(function () {
     Route::patch('/deal/{id}/assign', [DealController::class, 'assign']);
     Route::patch('/deal/{id}/unassign', [DealController::class, 'unassign']);
     Route::delete('/deal/{id}', [DealController::class, 'destroy']);
+
+
+    Route::get('/chats', [ChatController::class, 'index']);
+    Route::get('/chat/{id}', [ChatController::class, 'show']);
+    Route::post('/chat', [ChatController::class, 'store']);
+    Route::delete('/chat/{id}', [ChatController::class, 'destroy']);
 });

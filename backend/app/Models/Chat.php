@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Chat extends Model
 {
-    protected $fillable = ['chat_name'];
+
+    use SoftDeletes;
+    protected $fillable = ['name', 'user_id'];
 
 
     public  function users() {

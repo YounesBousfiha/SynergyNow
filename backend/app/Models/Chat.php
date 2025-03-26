@@ -10,8 +10,7 @@ class Chat extends Model
 {
 
     use SoftDeletes;
-    protected $fillable = ['name', 'user_id'];
-
+    protected $fillable = ['name', 'creator_id', 'collaborator_id'];
 
     public  function users() {
         return $this->belongsTo(User::class);

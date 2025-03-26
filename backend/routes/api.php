@@ -6,9 +6,11 @@ use App\Http\Controllers\ClientCompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\InviteController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\MyCompanyController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\auth;
 use Illuminate\Support\Facades\Route;
@@ -83,4 +85,28 @@ Route::middleware(auth::class)->group(function () {
     Route::get('/chat/{id}', [ChatController::class, 'show']);
     Route::post('/chat', [ChatController::class, 'store']);
     Route::delete('/chat/{id}', [ChatController::class, 'destroy']);
+
+    Route::post('/messages/{chatid}', [MessageController::class, 'sendMessage']);
+
+    Route::get('/test-gmail', function () {
+        $client = new Google_Client();
+        $client->setAuthConfig(storage_path('app/google/client_secret.json'));
+        $client->setRedirectUri(route('google.callback'));
+        $client->addScope(Google_Service_Gmail::GMAIL_READONLY);
+        $client->setAccessType('offline');
+        $client->setPrompt('consent');
+
+        if (!request()->has('code')) {
+            return redirect($client->createAuthUrl()); // Redirect user to Google login
+        }
+
+        $token = $client->fetchAccessTokenWithAuthCode(request('code'));
+        $client->setAccessToken($token);
+
+        // Fetch Gmail messages
+        $service = new Google_Service_Gmail($client);
+        $messages = $service->users_messages->listUsersMessages('me');
+
+        return response()->json($messages);
+    })->name('google.callback');
 });

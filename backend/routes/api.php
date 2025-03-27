@@ -81,6 +81,16 @@ Route::middleware(auth::class)->group(function () {
     Route::delete('/deal/{id}', [DealController::class, 'destroy']);
 
 
+    Route::get('tasks', [TaskController::class, 'index']);
+    Route::get('mytasks', [TaskController::class, 'myTasks']);
+    Route::get('task/{id}', [TaskController::class, 'show']);
+    Route::post('task', [TaskController::class, 'store']);
+    Route::put('task/{id}', [TaskController::class, 'update']);
+    Route::delete('task/{id}', [TaskController::class, 'destroy']);
+    Route::patch('task/{id}/assign', [TaskController::class, 'assigneeTo']);
+    Route::patch('task/{id}/unassign', [TaskController::class, 'unassign']);
+
+
     Route::get('/chats', [ChatController::class, 'index']);
     Route::get('/chat/{id}', [ChatController::class, 'show']);
     Route::post('/chat', [ChatController::class, 'store']);

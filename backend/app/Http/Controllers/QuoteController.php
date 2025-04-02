@@ -31,17 +31,17 @@ class QuoteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Quote $quote)
+    public function show(string $quoteId)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Quote $quote)
-    {
-        //
+        try {
+            $quote = Quote::find($quoteId);
+            if (!$quote) {
+                return response()->json(['message' => 'Quote not found!'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+        return response()->json($quote);
     }
 
     /**

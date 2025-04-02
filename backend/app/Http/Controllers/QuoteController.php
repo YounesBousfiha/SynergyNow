@@ -20,7 +20,12 @@ class QuoteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $quote = Quote::create($request->all());
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+        return response()->json($quote, 201);
     }
 
     /**

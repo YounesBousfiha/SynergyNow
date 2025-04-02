@@ -47,9 +47,24 @@ class QuoteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Quote $quote)
+    public function update(Request $request, string $quoteId)
     {
-        //
+        try {
+            $quote = Quote::find($quoteId);
+            if (!$quote) {
+                return response()->json(['message' => 'Quote not found!'], 404);
+            }
+
+            if($quote->is_paid || $quote->status == 'sent') {
+                return response()->json(['message' => 'Quote is already sent or paid'], 400);
+            }
+
+            $quote->update(['title' => $request->input('title')]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+
+        return response()->json($quote);
     }
 
     /**

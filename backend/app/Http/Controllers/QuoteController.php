@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\QuoteMail;
 use App\Models\Quote;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
 use Mockery\Exception;
 use Stripe\Stripe;
 use Stripe\Webhook;
@@ -112,20 +114,33 @@ class QuoteController extends Controller
             ]);*/
     }
 
-   /* public function sendQuote(Request $request, string $quoteId) {
-        try {
-            Stripe::setApiKey(env('STRIPE_SECRET'));
 
-            $quote = Quote::find($quoteId);
-            if (!$quote) {
+   public function sendQuote(Request $request, string $quoteId) {
+        try {
+            //Stripe::setApiKey(env('STRIPE_SECRET'));
+
+            $quote = Quote::with(['deal', 'service', 'clientCompany'])->find($quoteId);            if (!$quote) {
                 return response()->json(['message' => 'Quote not found!'], 404);
             }
 
-            $session = Stripe\Checkout\
+            if($quote->is_paid || $quote->status == 'sent') {
+                return response()->json(['message' => 'Quote is already sent or paid'], 400);
+            }
+
+            $pdf = PDF::loadView('pdf.quote', ['quote' => $quote]);
+
+            Mail::to($quote->clientCompany->email)->send(
+                new QuoteMail($quote, $pdf)
+            );
+
+            $quote->update(['status' => 'sent']);
+            // Emailing proceess
+            return response()->json(['message' => 'Quote sent successfully!'], 200);
+            //$session = Stripe\Checkout\
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
-    }*/
+    }
 
     /*function webhook(Request $request) {
         Stripe::setApiKey(env('STRIPE_SECRET'));

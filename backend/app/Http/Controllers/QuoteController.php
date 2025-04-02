@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Quote;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Mockery\Exception;
 use Stripe\Stripe;
 use Stripe\Webhook;
@@ -90,6 +91,25 @@ class QuoteController extends Controller
         }
 
         return response()->json("Quote deleted");
+    }
+
+    public function exportPdf(Request $request, string $quoteId) {
+        try {
+            $quote = Quote::find($quoteId);
+            if(!$quote) {
+                return response()->json(['message' => 'Quote not found!'], 404);
+            }
+            $pdf = PDF::loadView('pdf.quote', ['quote' => $quote]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+
+        return $pdf->download('document.pdf');
+        /*return response($pdf->output(), 200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="quote.pdf"' . $quote->id . '.pdf',
+            ]);*/
     }
 
    /* public function sendQuote(Request $request, string $quoteId) {

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Quote;
 use Illuminate\Http\Request;
+use Mockery\Exception;
+use Stripe\Stripe;
+use Stripe\Webhook;
 
 class QuoteController extends Controller
 {

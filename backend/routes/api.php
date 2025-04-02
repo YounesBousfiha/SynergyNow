@@ -105,6 +105,8 @@ Route::middleware(auth::class)->group(function () {
     Route::put('/quote/{id}', [QuoteController::class, 'update']);
     Route::delete('/quote/{id}', [QuoteController::class, 'destroy']);
     Route::post('/quote/{id}/send', [QuoteController::class, 'sendQuote']);
+    Route::get('/quote/{id}/pdf', [QuoteController::class, 'exportPdf']);
+
 
 
     Route::get('/test-gmail', function () {

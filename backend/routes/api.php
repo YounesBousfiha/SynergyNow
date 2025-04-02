@@ -9,16 +9,17 @@ use App\Http\Controllers\InviteController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\MyCompanyController;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Stripe\Stripe;
+use Stripe\Webhook;
 
-Route::get('/login', function () {
-    return response()->json(['message' => 'API is working!']);
-});
-
+//Route::post('/stripe/webhook', [QuoteController::class, 'webhook']);
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -97,6 +98,14 @@ Route::middleware(auth::class)->group(function () {
     Route::delete('/chat/{id}', [ChatController::class, 'destroy']);
 
     Route::post('/messages/{chatid}', [MessageController::class, 'sendMessage']);
+
+    Route::get('/quotes', [QuoteController::class, 'index']);
+    Route::get('/quote/{id}', [QuoteController::class, 'show']);
+    Route::post('/quote', [QuoteController::class, 'store']);
+    Route::put('/quote/{id}', [QuoteController::class, 'update']);
+    Route::delete('/quote/{id}', [QuoteController::class, 'destroy']);
+    Route::post('/quote/{id}/send', [QuoteController::class, 'sendQuote']);
+
 
     Route::get('/test-gmail', function () {
         $client = new Google_Client();

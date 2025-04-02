@@ -23,8 +23,8 @@
         <div class="mt-6 grid grid-cols-2 gap-4">
             <div>
                 <h2 class="font-semibold text-gray-700">Client Information</h2>
-                <p class="text-gray-600">Client Name</p>
-                <p class="text-gray-600">Client Email</p>
+                <p class="text-gray-600">{{$quote->clientCompany->name}}</p>
+                <p class="text-gray-600">{{$quote->clientCompany->email}}</p>
             </div>
             <div class="text-right">
                 <p class="text-gray-600">Date: </p>

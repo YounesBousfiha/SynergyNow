@@ -106,28 +106,86 @@ Route::middleware(auth::class)->group(function () {
     Route::delete('/quote/{id}', [QuoteController::class, 'destroy']);
     Route::post('/quote/{id}/send', [QuoteController::class, 'sendQuote']);
     Route::get('/quote/{id}/pdf', [QuoteController::class, 'exportPdf']);
+});
 
+Route::get('/test-gmail', function () {
+    $client = new Google_Client();
+    $client->setAuthConfig(storage_path('app/google/client_secret.json'));
+    $client->setRedirectUri(route('google.callback'));
+    $client->addScope(Google_Service_Gmail::GMAIL_READONLY);
+    $client->setAccessType('offline');
+    $client->setPrompt('consent');
 
+    if (!request()->has('code')) {
+        return redirect($client->createAuthUrl());
+    }
 
-    Route::get('/test-gmail', function () {
-        $client = new Google_Client();
-        $client->setAuthConfig(storage_path('app/google/client_secret.json'));
-        $client->setRedirectUri(route('google.callback'));
-        $client->addScope(Google_Service_Gmail::GMAIL_READONLY);
-        $client->setAccessType('offline');
-        $client->setPrompt('consent');
+    $token = $client->fetchAccessTokenWithAuthCode(request('code'));
+    $client->setAccessToken($token);
 
-        if (!request()->has('code')) {
-            return redirect($client->createAuthUrl()); // Redirect user to Google login
+    $service = new Google_Service_Gmail($client);
+
+    // Get list of messages
+    $optParams = [
+        'maxResults' => 10, // Limit to 10 messages for testing
+        'q' => 'in:inbox' // Only get inbox messages
+    ];
+
+    $messages = $service->users_messages->listUsersMessages('me', $optParams);
+    $emailList = [];
+
+    foreach ($messages->getMessages() as $message) {
+        // Get the full message details
+        $msg = $service->users_messages->get('me', $message->getId(), ['format' => 'full']);
+
+        // Extract headers
+        $headers = $msg->getPayload()->getHeaders();
+        $subject = '';
+        $from = '';
+        $date = '';
+
+        foreach ($headers as $header) {
+            if ($header->getName() == 'Subject') {
+                $subject = $header->getValue();
+            }
+            if ($header->getName() == 'From') {
+                $from = $header->getValue();
+            }
+            if ($header->getName() == 'Date') {
+                $date = $header->getValue();
+            }
         }
 
-        $token = $client->fetchAccessTokenWithAuthCode(request('code'));
-        $client->setAccessToken($token);
+        // Get message body
+        $parts = $msg->getPayload()->getParts();
+        $body = '';
 
-        // Fetch Gmail messages
-        $service = new Google_Service_Gmail($client);
-        $messages = $service->users_messages->listUsersMessages('me');
+        if ($parts) {
+            foreach ($parts as $part) {
+                if ($part->getMimeType() === 'text/plain') {
+                    $body = base64_decode(str_replace(['-', '_'], ['+', '/'], $part->getBody()->getData()));
+                    break;
+                }
+            }
+        } else {
+            // Handle messages without parts
+            $body = base64_decode(str_replace(['-', '_'], ['+', '/'], $msg->getPayload()->getBody()->getData()));
+        }
 
-        return response()->json($messages);
-    })->name('google.callback');
-});
+        $emailList[] = [
+            'id' => $message->getId(),
+            'threadId' => $message->getThreadId(),
+            'subject' => $subject,
+            'from' => $from,
+            'date' => $date,
+            'body' => $body,
+            'snippet' => $msg->getSnippet()
+        ];
+    }
+
+    return response()->json([
+        'messages' => $emailList,
+        'nextPageToken' => $messages->getNextPageToken(),
+        'resultSizeEstimate' => $messages->getResultSizeEstimate()
+    ]);
+})->name('google.callback');

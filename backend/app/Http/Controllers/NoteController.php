@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class NoteController extends Controller
 {
-    // TODO: still need to update This to handle Document use (Morhpto)
     /**
      * Display a listing of the resource.
      */
@@ -46,6 +45,12 @@ class NoteController extends Controller
             $data['user_id'] = AuthHelpers::getId($request->bearerToken());
             //dd($data);
             $note = Note::create($data);
+
+            if($request->hasFile('attachments')) {
+                $note->addAttachment($request->file('attachments'));
+
+                $note->load('attachments');
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -53,7 +58,7 @@ class NoteController extends Controller
         }
         return response()->json([
             'message' => $note
-        ]);
+        ], 201);
     }
 
     /**

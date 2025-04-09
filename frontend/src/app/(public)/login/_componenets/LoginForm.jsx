@@ -1,4 +1,37 @@
+"use client"
+import { Label } from "../../../../components/ui/label";
+import { Input } from "../../../../components/ui/input";
+import { Button } from "../../../../components/ui/button";
+import { useState } from "react";
 export default function LoginForm() {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setErrors] = useState("");
+
+
+    const validateEmail = (value) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(!value) {
+            return "Email is required";
+        }
+
+        if(!emailRegex.test(value)) {
+            return "Please enter a valid Email"
+        }
+        return "";
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData);
+
+        console.log(data);
+    }
+
+
     return (
         <>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -8,9 +41,15 @@ export default function LoginForm() {
                         id="email"
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                            setEmail(e.target.value)
+                            setErrors(validateEmail(e.target.value))
+                        }}
                         required
                     />
+                    {error && (
+                        <p className="text-red-500 text-sm mt-1">{error}</p>
+                    )}
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>

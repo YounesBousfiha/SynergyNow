@@ -51,7 +51,7 @@ export default function Navbar() {
                                   bg-[#f3f3f6] md:bg-transparent
                                   hidden peer-checked:block md:block
                                   transition-all duration-300
-                                  md:flex md:items-center md:justify-around md:flex-1 md:ml-8">
+                                  md:flex md:items-center md:justify-between md:flex-1 md:ml-8">
                         <nav className="flex flex-col md:flex-row items-start md:items-center md:justify-center gap-4 md:gap-8 p-4 md:p-0">
                             <Link href="/" className="text-black hover:text-[#06ae6f] w-full md:w-auto">
                             Home

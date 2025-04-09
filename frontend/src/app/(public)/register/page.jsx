@@ -56,7 +56,7 @@ export default function RegisterPage() {
                             </div>
 
                             {/* Right Column - Illustration */}
-                            <div className="bg-[#296c5c] text-white p-8 flex flex-col justify-between min-h-[500px]">
+                            <div className="bg-[#296c5c] text-white mr-3 p-8 flex flex-col justify-between min-h-[500px]">
                                 <div className="flex-1 flex items-center justify-center">
                                     <Image
                                         src="https://res.cloudinary.com/dashccxm0/image/upload/v1744206373/10733831_4505770-removebg-preview_1_2x_zhkkfo.png"

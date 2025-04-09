@@ -4,7 +4,7 @@ export default function Navbar() {
     return (
         <header className="bg-[#f3f3f6] py-4 relative">
             <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between">
+                <div className="flex justify-center items-center">
                     {/* Logo */}
                     <div className="flex items-center gap-2">
                         <div className="bg-[#06ae6f] rounded-full p-2">
@@ -52,9 +52,9 @@ export default function Navbar() {
                                   hidden peer-checked:block md:block
                                   transition-all duration-300
                                   md:flex md:items-center md:justify-between md:flex-1 md:ml-8">
-                        <nav className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8 p-4 md:p-0">
+                        <nav className="flex flex-col md:flex-row items-start md:items-center md:justify-center gap-4 md:gap-8 p-4 md:p-0">
                             <Link href="/" className="text-black hover:text-[#06ae6f] w-full md:w-auto">
-                                Home
+                            Home
                             </Link>
                             <Link href="/about" className="text-black hover:text-[#06ae6f] w-full md:w-auto">
                                 About Us
@@ -70,10 +70,10 @@ export default function Navbar() {
                         {/* Auth Buttons */}
                         <div className="flex flex-col md:flex-row items-center gap-4 p-4 md:p-0
                                       border-t md:border-t-0 border-gray-200">
-                            <Link href="/signin" className="text-black hover:text-[#06ae6f] w-full md:w-auto text-center">
+                            <Link href="/login" className="text-black hover:text-[#06ae6f] w-full md:w-auto text-center">
                                 SignIn
                             </Link>
-                            <Link href="/signup"
+                            <Link href="/register"
                                   className="bg-black text-white px-6 py-2 rounded-full hover:bg-opacity-80
                                            w-full md:w-auto text-center">
                                 SignUp

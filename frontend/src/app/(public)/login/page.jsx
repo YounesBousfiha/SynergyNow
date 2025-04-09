@@ -1,5 +1,9 @@
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "../../../components/ui/button";
 import { Card, CardContent } from "../../../components/ui/card";
 import LoginForm from "./_componenets/LoginForm";
+
 export default function LoginPage() {
     return (
         <main className="flex-grow bg-[#f3f3f6] py-16">
@@ -9,10 +13,10 @@ export default function LoginPage() {
                         <div className="grid md:grid-cols-2">
                             {/* Left Column - Illustration */}
                             <div
-                                className="bg-[#296c5c] text-white p-8 flex flex-col justify-between min-h-[500px]">
-                                <div className="flex-1 flex items-center justify-center">
+                                className="bg-[#296c5c] text-white ml-3 p-8 flex flex-col justify-between min-h-[500px]">
+                                <div className="flex items-center justify-center">
                                     <Image
-                                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/SynenergyNow-nnyXJCBMri1P5gl1mzRj0ek8kAyH78.png"
+                                        src="https://res.cloudinary.com/dashccxm0/image/upload/v1744206373/10733831_4505770-removebg-preview_1_2x_zhkkfo.png"
                                         alt="Person working at desk with laptop"
                                         width={400}
                                         height={400}
@@ -65,10 +69,11 @@ export default function LoginPage() {
                                 <h1 className="text-3xl font-bold text-center mb-4">Get Started</h1>
                                 <p className="text-center mb-8">
                                     new user? Create Account Here{" "}
-                                    <Link href="/signup" className="text-[#06ae6f] hover:underline font-medium">
+                                    <Link href="/register" className="text-[#06ae6f] hover:underline font-medium">
                                         Sign Up
                                     </Link>
                                 </p>
+                                <LoginForm />
 
                                 <div className="mt-6">
                                     <Button variant="outline"

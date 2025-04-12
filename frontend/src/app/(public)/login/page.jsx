@@ -13,7 +13,7 @@ export default function LoginPage() {
                         <div className="grid md:grid-cols-2">
                             {/* Left Column - Illustration */}
                             <div
-                                className="bg-[#296c5c] text-white ml-3 p-8 flex flex-col justify-between min-h-[500px]">
+                                className="bg-[#296c5c] text-white rounded-2xl ml-3 p-8 flex flex-col justify-between min-h-[500px]">
                                 <div className="flex items-center justify-center">
                                     <Image
                                         src="https://res.cloudinary.com/dashccxm0/image/upload/v1744206373/10733831_4505770-removebg-preview_1_2x_zhkkfo.png"

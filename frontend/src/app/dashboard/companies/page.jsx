@@ -17,7 +17,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avat
 import { Button } from "../../../components/ui/button"
 import { Card, CardContent } from "../../../components/ui/card"
 import { Input } from "../../../components/ui/input"
-import { AvatarGroup } from "../../../components/ui/avatar"
 
 export default function CompaniesPage() {
     return (

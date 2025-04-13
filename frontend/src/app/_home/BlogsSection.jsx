@@ -21,7 +21,7 @@ export default function BlogSection() {
 
     return (
         <>
-            <div className="bg-[#F3F3F6] flex flex-col items-center justify-center p-4 space-y-5">
+            <div className="bg-[#F3F3F6] flex flex-col items-center justify-center p-4 space-y-5 py-12">
                 <span className="text-2xl font-extrabold border-l-4 border-[#06AE6F] text-[#06AE6F] px-3">Blogs</span>
                 <span className="text-xl font-bold tracking-widest">Our latest articles</span>
                 <span className="text-center text-lg pt-6 text-gray-400">Explore our latest articles, trends, tips to optimize your CRM bussiness</span>

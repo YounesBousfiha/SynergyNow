@@ -12,11 +12,11 @@ import {
 
 export default function SideBar() {
     const links = [
-        { name: 'Dashboard', icon: <LayoutDashboard size={20} />, href: '/' },
+        { name: 'Dashboard', icon: <LayoutDashboard size={20} />, href: '/dashboard' },
         { name: 'Scrumsboards', icon: <Kanban size={20} />,
             items: [
-                { name: 'Task Manager', icon: <ListTodo  size={20}/>, href: '/dashboard/scrumboards/tasks' },
-                { name: 'Pipeline', icon: <Workflow size={20}/>, href: '/dashboard/scrumboards/pipelines'}
+                { name: 'Task Manager', icon: <ListTodo  size={20}/>, href: '/dashboard/scrumboard/tasks' },
+                { name: 'Pipeline', icon: <Workflow size={20}/>, href: '/dashboard/scrumboard/deals'}
             ]
         },
         { name: 'Contacts', icon: <Users size={20} />, href: '/dashboard/contacts' },
@@ -27,8 +27,8 @@ export default function SideBar() {
             name: 'Administration',
             icon: <Crown size={20}/>,
             items: [
-                { name: 'Settings', icon: <Settings size={20} />  ,href: '/dashboard/admin/settings' },
-                { name: 'Audit Logs', icon:<Logs  size={20}/>  ,href: '/dashboard/admin/logs' },
+                { name: 'Settings', icon: <Settings size={20} />  ,href: '/dashboard/administration/settings' },
+                { name: 'Audit Logs', icon:<Logs  size={20}/>  ,href: '/dashboard/administration/logs' },
 
             ]
         }

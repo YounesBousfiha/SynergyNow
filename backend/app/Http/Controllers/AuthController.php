@@ -6,6 +6,7 @@ use App\Http\Requests\ChangeRequestPassword;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\StoreRequestForgetPassword;
 use App\Http\Requests\StoreUserRequest;
+use App\Mail\ResetPasswordMail;
 use App\Models\BlackList;
 use App\Models\Invite;
 use App\Models\ResetToken;
@@ -18,6 +19,7 @@ use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Auth;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Mockery\Exception;
@@ -138,17 +140,15 @@ class AuthController extends Controller
     }
 
     public function forgotPassword(StoreRequestForgetPassword $request) {
-
         try {
             $user = User::where('email', $request->email)->first();
-
             if(!$user) {
                 return response()->json([
                     'message' => 'If the this Email registered in our database we will send  an email'
                 ]);
             }
 
-            $token = $resetToken = Str::random(60);
+            $token = Str::random(60);
             ResetToken::create([
                 'email' => $user->email,
                 'token' => $token,
@@ -156,6 +156,9 @@ class AuthController extends Controller
             ]);
 
             $url = "https://127.0.0.1:8000/api/resetpassword/?reset_token=$token";
+
+            Mail::to($request->email)->send(new ResetPasswordMail($url));
+
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Unexpected Error'
@@ -163,7 +166,7 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'url' => $url
+            'message' => 'if your email is registered in our database we will send  an email'
         ]);
     }
 

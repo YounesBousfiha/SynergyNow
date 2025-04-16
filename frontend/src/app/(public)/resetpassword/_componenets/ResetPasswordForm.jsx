@@ -6,6 +6,7 @@ import { Button } from '../../../../components/ui/button';
 import { Input } from '../../../../components/ui/input';
 import { toast } from 'sonner';
 import { useSearchParams, useRouter } from 'next/navigation';
+import {Suspense} from "react";
 
 export default function ResetPasswordForm() {
 
@@ -41,6 +42,7 @@ export default function ResetPasswordForm() {
 
     return (
         <>
+            <Suspense  fallback={<div>Loading...</div>}>
             <form onSubmit={handleSubmit}>
                 <div className="space-y-3">
                     <Label htmlFor="password">Password: </Label>
@@ -62,6 +64,7 @@ export default function ResetPasswordForm() {
                     </div>
                 </div>
             </form>
+            </Suspense>
         </>
     );
 }

@@ -1,4 +1,5 @@
 "use client"
+import Link from "next/link";
 import { Label } from "../../../../components/ui/label";
 import { Input } from "../../../../components/ui/input";
 import { Button } from "../../../../components/ui/button";
@@ -9,7 +10,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import {validateForm} from "../../../../utils/FormValidation";
 import { LoginSchema } from "../../../../schema/LoginSchema";
-
+import { validateEmail } from "../../../../utils/Validators";
 export default function LoginForm() {
 
     const [email, setEmail] = useState("");
@@ -18,32 +19,20 @@ export default function LoginForm() {
     const { login } = useAuth();
     const router = useRouter();
 
-    const validateEmail = (value) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if(!value) {
-            return "Email is required";
-        }
-
-        if(!emailRegex.test(value)) {
-            return "Please enter a valid Email"
-        }
-        return "";
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData);
         toast.loading('Loading....');
-
+        console.log(data);
         const { success, validData } = validateForm(data, LoginSchema);
         if(success) {
             try {
                 const res = await authService.login(validData);
                 if(res.token) {
                     toast.success('Logged In Succefully');
-                    login(res.user, res.token);
+                    login(res.user);
                     router.push('/dashboard');
                 }
             } catch(error) {
@@ -85,6 +74,9 @@ export default function LoginForm() {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
+                </div>
+                <div className="text-end hover:text-[#296c5c]">
+                    <Link  href={'/forgetpassword'}> Forget Password ?</Link>
                 </div>
                 <Button type="submit" className="w-full bg-[#296c5c] hover:bg-[#296c5c]/90">
                     SignIn

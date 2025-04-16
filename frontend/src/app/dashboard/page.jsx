@@ -8,27 +8,62 @@ import {
     ListTodo,
     Plus,
 } from "lucide-react"
-
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
 import { Button } from "../../components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from "../../components/ui/dropdown-menu"
+import { toast } from 'sonner';
+import LogOutForm from "./_components/LogoutForm";
 
 export default function DashboardPage() {
+
+
     return (
             <div className="flex-1">
                 {/* Top Bar */}
                 <header className="bg-white h-16 border-b border-gray-200 flex items-center justify-end px-6">
-                    <Avatar className="h-10 w-10">
-                        <AvatarImage src="/placeholder.svg?height=40&width=40" alt="User" />
-                        <AvatarFallback>AR</AvatarFallback>
-                    </Avatar>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Avatar className="h-10 w-10">
+                                <AvatarImage src="/placeholder.svg?height=40&width=40" alt="User" />
+                                <AvatarFallback>AR</AvatarFallback>
+                            </Avatar>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator/>
+                            <DropdownMenuItem>
+                                Settings
+                                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator/>
+                            <form action="/api/auth/logout" method="POST">
+                                <DropdownMenuItem asChild>
+                                    <LogOutForm />
+                                </DropdownMenuItem>
+                            </form>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </header>
 
                 {/* Content */}
                 <main className="p-6">
                     {/* KPI Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        <Card className="bg-white">
+                    <Card className="bg-white">
                             <CardContent className="p-6">
                                 <div className="flex items-center gap-3 mb-4 text-gray-500">
                                     <Building2 size={20} />
@@ -256,3 +291,7 @@ function ActivityItem({
         </div>
     )
 }
+
+
+
+

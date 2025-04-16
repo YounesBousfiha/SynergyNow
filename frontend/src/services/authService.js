@@ -50,12 +50,23 @@ export const authService = {
     forgetPassword: async (data) => {
         try {
             const res = await axios.post('/forgotpassword', data)
-            console.log(res.data);
+            return res;
         } catch (error) {
-            console.error("Reset Password:", error)
-            throw new Error('Error while Reseting Password')
+            console.error("Forget Password:", error)
+            throw new Error('Error while Ask for Reset Link ')
         }
     },
 
-    resetPassword: async () => {}
+    resetPassword: async (data, resetToken) => {
+        try {
+            const res = await axios.post(`/resetpassword/?reset_token=${resetToken}`, data);
+            if(res.status !==  200) {
+                return "token may be Already Used or Unexpected Error  happen";
+            }
+            return res;
+        } catch (error) {
+            //console.error("Reset Password: ", error);
+            throw new Error('Error while Reseting Password');
+        }
+    }
 }

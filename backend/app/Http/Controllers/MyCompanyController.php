@@ -33,14 +33,19 @@ class MyCompanyController extends Controller
     public function store(SetupRequestValidation $request)
     {
         try {
+            $userId = AuthHelpers::getId($request->bearerToken());
             $data = $request->validated();
-            $data['owner_id'] = AuthHelpers::getId($request->bearerToken());
+            $data['owner_id'] = $userId;
+            $user = User::findorfail($userId);
 
             if($request->has('image')) {
                 $imagePath = $request->file('image')->store('company_profile', 'public');
                 $data['image'] = $imagePath;
             }
             $company = MyCompany::create($data);
+            $user->employes_at = $company->id;
+
+            $user->save();
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Unexpected Error'

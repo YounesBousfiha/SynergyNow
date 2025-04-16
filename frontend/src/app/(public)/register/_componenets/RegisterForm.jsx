@@ -9,6 +9,7 @@ import { validateForm } from "../../../../utils/FormValidation";
 import {toast} from "sonner";
 import {authService} from "../../../../services/authService";
 import { useRouter } from "next/navigation";
+import { isValidName, validateEmail } from "../../../../utils/Validators"
 
 export default function RegisterForm() {
     const [email, setEmail] = useState("");
@@ -21,27 +22,6 @@ export default function RegisterForm() {
     });
 
     const router = useRouter();
-
-    const isValidName = (value) => {
-        if (/\d/.test(value)) return "Numbers are not allowed";
-        if(!value) return "Field is Required";
-        if(value.length < 4) return "the Content must be at least 4 characters";
-        return "";
-    }
-
-    const validateEmail = (value) => {
-
-        const EmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if(!value) {
-            return "Email Field is Required";
-        }
-
-        if(!EmailRegex.test(value)) {
-            return "Please Enter a Valid Email"
-        }
-
-        return "";
-    }
 
 
     const handleSubmit = async (e) => {

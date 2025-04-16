@@ -7,7 +7,7 @@ export const useAuth = create(
             isAuthenticated: false,
             user: null,
 
-            login: (UserData, token) => set({
+            login: (UserData) => set({
                 isAuthenticated: true,
                 user: UserData,
             }),

@@ -3,12 +3,20 @@ import { Label } from "../../../../components/ui/label";
 import { Input } from "../../../../components/ui/input";
 import { Button } from "../../../../components/ui/button";
 import { useState } from "react";
+import { authService } from '../../../../services/authService';
+import { useAuth} from "../../../../store/useAuth";
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import {validateForm} from "../../../../utils/FormValidation";
+import { LoginSchema } from "../../../../schema/LoginSchema";
+
 export default function LoginForm() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setErrors] = useState("");
-
+    const { login } = useAuth();
+    const router = useRouter();
 
     const validateEmail = (value) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -22,13 +30,28 @@ export default function LoginForm() {
         return "";
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData);
+        toast.loading('Loading....');
 
-        console.log(data);
+        const { success, validData } = validateForm(data, LoginSchema);
+        if(success) {
+            try {
+                const res = await authService.login(validData);
+                if(res.token) {
+                    toast.success('Logged In Succefully');
+                    login(res.user, res.token);
+                    router.push('/dashboard');
+                }
+            } catch(error) {
+                toast.error('Failed to Login');
+                router.push('/login')
+            }
+            toast.dismiss();
+        }
     }
 
 
@@ -40,6 +63,7 @@ export default function LoginForm() {
                     <Input
                         id="email"
                         type="email"
+                        name="email"
                         value={email}
                         onChange={(e) => {
                             setEmail(e.target.value)
@@ -55,6 +79,7 @@ export default function LoginForm() {
                     <Label htmlFor="password">Password</Label>
                     <Input
                         id="password"
+                        name="password"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}

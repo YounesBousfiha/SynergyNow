@@ -23,9 +23,11 @@ export default function ForgetPasswordForm() {
 
         toast.loading("Loading....");
 
-        console.log(data);
         try {
-            const res = await authService.forgetPassword(data)
+            const res = await authService.forgetPassword(data);
+            setTimeout(() => {
+                toast.success(res.data.message);
+            }, 2000);
         } catch (error) {
             console.error("Error request reset link : ", error);
             toast.error("Error while ask for Reset Password Link");

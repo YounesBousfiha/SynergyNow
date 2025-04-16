@@ -152,10 +152,10 @@ class AuthController extends Controller
             ResetToken::create([
                 'email' => $user->email,
                 'token' => $token,
-                'user_id' => $user->id
+                'user_id' => $user->id,
             ]);
 
-            $url = "https://127.0.0.1:8000/api/resetpassword/?reset_token=$token";
+            $url = "http://localhost:3000/resetpassword/?reset_token=$token";
 
             Mail::to($request->email)->send(new ResetPasswordMail($url));
 
@@ -182,7 +182,7 @@ class AuthController extends Controller
         try {
             $reset_token = ResetToken::where('token', $token)->first();
 
-            if(!$reset_token || $reset_token->is_used = false) {
+            if(!$reset_token || $reset_token->is_used === true) {
                 return response()->json([
                     'error' => 'reset token already used'
                 ], 400);

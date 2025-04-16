@@ -33,7 +33,11 @@ export default function LoginForm() {
                 if(res.token) {
                     toast.success('Logged In Succefully');
                     login(res.user);
-                    router.push('/dashboard');
+                    if(res.user.employes_at) {
+                        router.push('/dashboard');
+                    } else {
+                        router.push('/info-setup');
+                    }
                 }
             } catch(error) {
                 toast.error('Failed to Login');

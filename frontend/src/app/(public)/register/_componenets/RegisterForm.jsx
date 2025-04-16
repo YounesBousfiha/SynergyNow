@@ -4,17 +4,23 @@ import {Label} from "../../../../components/ui/label";
 import {Input} from "../../../../components/ui/input";
 import {Button} from "../../../../components/ui/button";
 import { useState } from "react";
+import { RegisterSchema } from "../../../../schema/RegisterSchema";
+import { validateForm } from "../../../../utils/FormValidation";
+import {toast} from "sonner";
+import {authService} from "../../../../services/authService";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
     const [email, setEmail] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
+    const [firstname, setFirstName] = useState("");
+    const [lastname, setLastName] = useState("");
     const [error, setError] = useState({
-        firstName: "",
-        lastName: "",
+        firstname: "",
+        lastname: "",
         email: ""
     });
 
+    const router = useRouter();
 
     const isValidName = (value) => {
         if (/\d/.test(value)) return "Numbers are not allowed";
@@ -38,44 +44,57 @@ export default function RegisterForm() {
     }
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData);
 
         console.log(data);
+        const { success, validData } = validateForm(data, RegisterSchema);
+        console.log(success);
+        if(success) {
+            try {
+                const res = await authService.register(validData)
+                router.push('/login');
+                console.log(validData);
+            } catch (error) {
+                toast.error("Error while Registring");
+                router.push('/register')
+            }
+            toast.dismiss();
+        }
     }
     return (
         <>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label htmlFor="firstName">First name</Label>
-                        <Input id="firstName" name="firstName" onChange={(e) => {
+                        <Label htmlFor="firstname">First name</Label>
+                        <Input id="firstname" name="firstname" onChange={(e) => {
                             setFirstName(e.target.value);
                             setError(prevState => ({
                                 ...prevState,
-                                firstName: isValidName(e.target.value)
+                                firstname: isValidName(e.target.value)
                             }))
                         }}
                                required/>
-                        {error.firstName && (
-                            <p className="text-red-500 text-sm mt-1">{error.firstName}</p>
+                        {error.firstname && (
+                            <p className="text-red-500 text-sm mt-1">{error.firstname}</p>
                         )}
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="lastName">Last name</Label>
-                        <Input id="lastName" name="lastName" onChange={(e) => {
+                        <Label htmlFor="lastname">Last name</Label>
+                        <Input id="lastname" name="lastname" onChange={(e) => {
                             setLastName(e.target.value);
                             setError(prevState => ({
                                 ...prevState,
-                                lastName: isValidName(value)
+                                lastname: isValidName(e.target.value)
                             }));
                         }}
                                required/>
-                        {error.lastName && (
-                            <p className="text-red-500 text-sm mt-1">{error.lastName}</p>
+                        {error.lastname && (
+                            <p className="text-red-500 text-sm mt-1">{error.lastname}</p>
                         )}
                     </div>
                 </div>

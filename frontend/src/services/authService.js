@@ -47,5 +47,15 @@ export const authService = {
             throw new Error('Error while logout');
         }
     },
-    resetPassword: () => {}
+    forgetPassword: async (data) => {
+        try {
+            const res = await axios.post('/forgotpassword', data)
+            console.log(res.data);
+        } catch (error) {
+            console.error("Reset Password:", error)
+            throw new Error('Error while Reseting Password')
+        }
+    },
+
+    resetPassword: async () => {}
 }

@@ -15,6 +15,23 @@ export const  myCompanyService = {
             throw new Error(error);
         }
     },
-    getCompanyInfo: () => {},
+    getCompanyInfo: async (token = null) => {
+
+        let AuthToken;
+        if(token) {
+            AuthToken = token
+        } else {
+            AuthToken = Cookies.get('jwt');
+        }
+        try {
+            return await axios.get('/mycompany', {
+                headers: {
+                    'Authorization' : `Bearer ${AuthToken}`
+                }
+            });
+        } catch (error) {
+            throw new Error(error);
+        }
+    },
     updateCompany: () => {}
 }

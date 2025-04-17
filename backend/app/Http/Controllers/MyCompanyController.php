@@ -21,7 +21,9 @@ class MyCompanyController extends Controller
     public function index(Request $request)
     {
         $owner_id = AuthHelpers::getId($request->bearerToken());
-        $company = MyCompany::where('owner_id', $owner_id)->get();
+        $userId = AuthHelpers::getId($request->bearerToken());
+        $user = User::find($userId);
+        $company = MyCompany::where('id', $user->employes_at)->get();
         return response()->json([
             'message' => $company
         ]);

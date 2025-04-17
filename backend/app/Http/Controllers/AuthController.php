@@ -85,7 +85,7 @@ class AuthController extends Controller
             $data['role_id'] = $invitation['role_id'];
             $data['employes_at'] = $invitation['my_companie_id'];
 
-            if($data['password'] !== $data['password_confirmation']) {
+            if($data['password'] !== $data['confirmPassword']) {
                 return response()->json([
                     'error' => 'password mismatched'
                 ], 400);

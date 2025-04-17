@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Mail\InvitationMail;
+use App\Models\User;
 
 class InviteController extends Controller
 {
@@ -22,7 +23,22 @@ class InviteController extends Controller
         $userId = AuthHelpers::getId($request->bearerToken());
         try {
             $myCompany = MyCompany::where('owner_id', $userId)->first();
-            $invitations = Invite::where('my_companie_id', $myCompany['id'])->get();
+            $invitations = Invite::where('my_companie_id', $myCompany['id'])
+            ->get()
+            ->map(function ($invitation) {
+                if ($invitation->is_used) {
+
+                    $user = User::where('email', $invitation->email)->first();
+
+                    $invitation->firstname = $user ? $user->firstname : null;
+                    $invitation->lastname = $user ? $user->lastname : null;
+                } else {
+                    $invitation->firstname = null;
+                    $invitation->lastname = null;
+                }
+
+                return $invitation;
+            });
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()

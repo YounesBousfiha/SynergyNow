@@ -33,5 +33,16 @@ export const  myCompanyService = {
             throw new Error(error);
         }
     },
-    updateCompany: () => {}
+    updateCompany: (data) => {
+        try {
+            return axios.post('/mycompany', data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    'Authorization' : `Bearer ${Cookies.get('jwt')}`
+                }
+            })
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
 }

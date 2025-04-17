@@ -21,7 +21,15 @@ import {
     PenSquare,
     Trash2, Upload, X,
 } from "lucide-react"
-
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from '../../../../components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar"
 import { Button } from "../../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
@@ -31,8 +39,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components
 import { Badge } from "../../../../components/ui/badge"
 import {useEffect, useState} from 'react';
 import Image from "next/image";
-import { myCompanyService } from './../../../../services/myCompanyServices';
+import { myCompanyService } from '../../../../services/myCompanyServices';
 import {toast} from "sonner";
+import InvitationDialog from "./_componenets/InvitationDialog";
 
 export default function Settings() {
 
@@ -115,7 +124,6 @@ export default function Settings() {
         }
 
         try {
-            console.log([...formData]);
             const response = await myCompanyService.updateCompany(formData);
             console.log(response);
             toast.success('Company Profile Updated');
@@ -299,10 +307,7 @@ export default function Settings() {
                                         <Users className="mr-2 h-5 w-5 text-[#06ae6f]"/>
                                         User Management
                                     </CardTitle>
-                                    <Button className="bg-[#296c5c] hover:bg-[#296c5c]/90 flex items-center gap-2">
-                                        <Plus size={16}/>
-                                        Add User
-                                    </Button>
+                                    <InvitationDialog />
                                 </div>
                                 <CardDescription>Manage user accounts and permissions</CardDescription>
                             </CardHeader>

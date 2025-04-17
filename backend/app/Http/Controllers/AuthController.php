@@ -43,6 +43,8 @@ class AuthController extends Controller
 
             $jwt = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
 
+            $user->last_login_at = now();
+            $user->save();
             return response()->json([
                 'user' => $user,
                 'token' => $jwt

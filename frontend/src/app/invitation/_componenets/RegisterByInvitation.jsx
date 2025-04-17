@@ -12,7 +12,6 @@ import {toast} from "sonner";
 import { InvitationService} from "../../../services/InvitationService";
 
 export default function RegisterForm({ token}) {
-    const [email, setEmail] = useState("");
     const [firstname, setFirstName] = useState("");
     const [lastname, setLastName] = useState("");
     const [error, setError] = useState({

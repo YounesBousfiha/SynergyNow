@@ -68,5 +68,17 @@ export const authService = {
             //console.error("Reset Password: ", error);
             throw new Error('Error while Reseting Password');
         }
+    },
+    getUserRole: async () => {
+        try {
+            const response = await axios.post('/profile', {
+                headers: {
+                    'Authorization' : `Bearer ${Cookies.get('jwt')}`
+                }
+            });
+            return response.user.role_id;
+        } catch (error) {
+            throw new Error('Error while fetching user role');
+        }
     }
 }

@@ -15,5 +15,12 @@ export const InvitationService = {
     },
     getAllInvitation: () => {},
     deleteInvitation: (InvitationId) => {},
-    SignUpWithInvitation: (UserData) => {}
+
+    SignUpWithInvitation: async (UserData, token) => {
+        try {
+            return await axios.post(`/invitation/${token}`, UserData);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
 }

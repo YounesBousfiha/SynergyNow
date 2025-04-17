@@ -19,7 +19,7 @@ import {
     Search,
     Eye,
     PenSquare,
-    Trash2,
+    Trash2, Upload, X,
 } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar"
@@ -27,12 +27,104 @@ import { Button } from "../../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { Input } from "../../../../components/ui/input"
 import { Label } from "../../../../components/ui/label"
-import { Switch } from "../../../../components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components/ui/tabs"
 import { Badge } from "../../../../components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select"
+import {useEffect, useState} from 'react';
+import Image from "next/image";
+import { myCompanyService } from './../../../../services/myCompanyServices';
+import {toast} from "sonner";
 
 export default function Settings() {
+
+    const [companyName, setCompanyName] = useState("");
+    const [companyDescription, setCompanyDescription] = useState("");
+    const [companyImage, setCompanyImage] = useState("");
+    const [isDragging, setIsDragging] = useState(false);
+
+
+    useEffect(() => {
+        async function fetchCompanyDetails() {
+            try {
+                const response = await myCompanyService.getCompanyInfo();
+                setCompanyName(response.data.message[0].name);
+                setCompanyDescription(response.data.message[0].description);
+                //setCompanyImage(response.data.message[0].image);
+            } catch (error) {
+                console.error('Error fetching company details:', error);
+            }
+        }
+
+        fetchCompanyDetails();
+    }, []);
+
+    const handleDragOver = (e) => {
+        e.preventDefault()
+        setIsDragging(true)
+    }
+
+    const handleDragLeave = () => {
+        setIsDragging(false)
+    }
+
+    const handleDrop = (e) => {
+        e.preventDefault()
+        setIsDragging(false)
+
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            handleFileChange(e.dataTransfer.files[0])
+        }
+    }
+
+    const handleFileChange = (file) => {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+            if (e.target?.result) {
+                setCompanyImage(e.target.result)
+            }
+        }
+        reader.readAsDataURL(file)
+    }
+
+    const handleFileInputChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            handleFileChange(e.target.files[0])
+        }
+    }
+
+    const removeImage = () => {
+        setCompanyImage(null)
+    }
+
+    const handleSubmit  = async (e) => {
+
+        const formData = new FormData();
+
+        const imageFormat = companyImage.split(";")[0].split('/')[1];
+
+        formData.append('name', companyName);
+        formData.append('description', companyName);
+
+        if(companyImage) {
+            const base64response = await fetch(companyImage);
+            const blob = await base64response.blob();
+
+            const file = new File([blob], 'company-logo.png', {
+                type: `image/${imageFormat}`
+            })
+            formData.append('image', file);
+        }
+
+        try {
+            console.log(imageFormat);
+            const response = await myCompanyService.updateCompany(formData);
+            console.log(response);
+            toast.success('Company Profile Updated');
+        } catch (error) {
+            console.error(error);
+            toast.error(error);
+        }
+    }
+
 
     return (
         <div className="flex-1">
@@ -66,9 +158,44 @@ export default function Settings() {
                             User Manager
                         </TabsTrigger>
                     </TabsList>
-
                     <TabsContent value="settings" className="space-y-6">
-                        {/* General Settings */}
+
+                        <Card>
+                            <CardHeader>
+                                <Building2 size={24} />
+                                <CardTitle>Company Information</CardTitle>
+                                <CardDescription>Company Information Preview</CardDescription>
+                            </CardHeader>
+
+                        <CardContent className="space-y-6">
+                            <div className="flex space-x-20">
+                                <div
+                                    className="bg-gray-100 rounded-md h-16 w-16 flex items-center justify-center overflow-hidden">
+                                    {companyImage ? (
+                                        <div className="relative h-full w-full">
+                                            <Image
+                                                src={companyImage || "/placeholder.svg"}
+                                                alt="Company logo"
+                                                fill
+                                                className="object-contain"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <Building2 className="h-8 w-8 text-gray-400"/>
+                                    )}
+                                </div>
+                                <div>
+                                    <div>
+                                        <p>{companyName || "Preview Company name"}</p>
+                                    </div>
+                                    <div>
+                                        <p>{companyDescription || "Preview Company Description"}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                        </Card>
+
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center">
@@ -81,136 +208,83 @@ export default function Settings() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <Label htmlFor="companyName">Company Name</Label>
-                                        <Input id="companyName" defaultValue="SynergyNow"/>
+                                        <Input
+                                            id="companyName"
+                                            value={companyName}
+                                            onChange={(e) => {
+                                                setCompanyName(e.target.value);
+                                            }}
+                                        />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="timezone">Default Timezone</Label>
-                                        <Select defaultValue="utc">
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select timezone"/>
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="utc">UTC (Coordinated Universal Time)</SelectItem>
-                                                <SelectItem value="est">EST (Eastern Standard Time)</SelectItem>
-                                                <SelectItem value="cst">CST (Central Standard Time)</SelectItem>
-                                                <SelectItem value="pst">PST (Pacific Standard Time)</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                        <Label htmlFor="companyDescription">Company Description</Label>
+                                        <Input
+                                            id="companyDescription"
+                                            value={companyDescription}
+                                            onChange={(e) => {
+                                                setCompanyDescription(e.target.value);
+                                            }}
+                                        />
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="language">Default Language</Label>
-                                        <Select defaultValue="en">
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select language"/>
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="en">English</SelectItem>
-                                                <SelectItem value="fr">French</SelectItem>
-                                                <SelectItem value="es">Spanish</SelectItem>
-                                                <SelectItem value="de">German</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                    <div className="space-y-2 col-span-2">
+                                        <Label>Company Logo</Label>
+                                        {!companyImage ? (
+                                            <div
+                                                className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center bg-gray-50 ${
+                                                    isDragging ? "border-[#06ae6f] bg-[#06ae6f]/5" : "border-gray-300"
+                                                }`}
+                                                onDragOver={handleDragOver}
+                                                onDragLeave={handleDragLeave}
+                                                onDrop={handleDrop}
+                                            >
+                                                <div className="mb-4 bg-[#06ae6f]/10 p-3 rounded-full">
+                                                    <Upload className="h-6 w-6 text-[#06ae6f]"/>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-sm font-medium">
+                                                        Drag and drop your logo here, or{" "}
+                                                        <label className="text-[#06ae6f] cursor-pointer">
+                                                            browse
+                                                            <input type="file" className="hidden" accept="image/*"
+                                                                   onChange={handleFileInputChange}/>
+                                                        </label>
+                                                    </p>
+                                                    <p className="text-xs text-gray-500 mt-1">Supports JPG, PNG or SVG
+                                                        (max.
+                                                        5MB)</p>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="relative border rounded-lg p-4 bg-white">
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="absolute top-2 right-2 h-8 w-8 bg-white/80 hover:bg-white/90 rounded-full"
+                                                    onClick={removeImage}
+                                                >
+                                                    <X size={16}/>
+                                                </Button>
+                                                <div className="flex justify-center">
+                                                    <div className="relative h-40 w-40">
+                                                        <Image
+                                                            src={companyImage || "/placeholder.svg"}
+                                                            alt="Company logo preview"
+                                                            fill
+                                                            className="object-contain"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="dateFormat">Date Format</Label>
-                                        <Select defaultValue="mdy">
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select date format"/>
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="mdy">MM/DD/YYYY</SelectItem>
-                                                <SelectItem value="dmy">DD/MM/YYYY</SelectItem>
-                                                <SelectItem value="ymd">YYYY/MM/DD</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Notification Settings */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center">
-                                    <Bell className="mr-2 h-5 w-5 text-[#06ae6f]"/>
-                                    Notification Settings
-                                </CardTitle>
-                                <CardDescription>Configure system notification preferences</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium">Email Notifications</h4>
-                                        <p className="text-sm text-gray-500">Receive notifications via email</p>
-                                    </div>
-                                    <Switch defaultChecked/>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium">In-App Notifications</h4>
-                                        <p className="text-sm text-gray-500">Receive notifications within the
-                                            application</p>
-                                    </div>
-                                    <Switch defaultChecked/>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium">Task Reminders</h4>
-                                        <p className="text-sm text-gray-500">Receive reminders for upcoming tasks</p>
-                                    </div>
-                                    <Switch defaultChecked/>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium">Deal Updates</h4>
-                                        <p className="text-sm text-gray-500">Receive updates when deals change
-                                            status</p>
-                                    </div>
-                                    <Switch defaultChecked/>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Security Settings */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center">
-                                    <Shield className="mr-2 h-5 w-5 text-[#06ae6f]"/>
-                                    Security Settings
-                                </CardTitle>
-                                <CardDescription>Configure security and privacy settings</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium">Two-Factor Authentication</h4>
-                                        <p className="text-sm text-gray-500">Require 2FA for all admin users</p>
-                                    </div>
-                                    <Switch defaultChecked/>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium">Password Expiry</h4>
-                                        <p className="text-sm text-gray-500">Force password reset every 90 days</p>
-                                    </div>
-                                    <Switch/>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium">Session Timeout</h4>
-                                        <p className="text-sm text-gray-500">Automatically log out inactive users</p>
-                                    </div>
-                                    <Switch defaultChecked/>
-                                </div>
-                                <div className="space-y-2 pt-2">
-                                    <Label htmlFor="timeout">Session Timeout (minutes)</Label>
-                                    <Input id="timeout" type="number" defaultValue="30" className="max-w-[200px]"/>
+                                    <div className="space-y-2"></div>
                                 </div>
                             </CardContent>
                         </Card>
 
                         <div className="flex justify-end">
-                            <Button className="bg-[#296c5c] hover:bg-[#296c5c]/90 flex items-center gap-2">
+                            <Button onClick={handleSubmit} className="bg-[#296c5c] hover:bg-[#296c5c]/90 flex items-center gap-2">
                                 <Save size={16}/>
                                 Save Settings
                             </Button>

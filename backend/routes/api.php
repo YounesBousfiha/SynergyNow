@@ -25,6 +25,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgotpassword', [AuthController::class, 'forgotPassword']);
 Route::post('/resetpassword', [AuthController::class, 'resetPassword']);
+Route::post('/invitation/{id}', [AuthController::class, 'registerWithInvitation']);
 
 Route::middleware(auth::class)->group(function () {
     Route::get('/profile', [UserController::class, 'profile']);
@@ -41,7 +42,6 @@ Route::middleware(auth::class)->group(function () {
     Route::get('/invite', [InviteController::class, 'index']);
     Route::post('/invite', [InviteController::class, 'store']);
     Route::delete('/invite/revoke/{id}', [InviteController::class, 'destroy']);
-    Route::post('/invitation/{id}', [AuthController::class, 'registerWithInvitation']);
 
     Route::get('/users', [MyCompanyController::class, 'users']);
     Route::get('/user/{id}', [MyCompanyController::class, 'getUser']);

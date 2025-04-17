@@ -8,7 +8,9 @@ use App\Models\Invite;
 use App\Models\MyCompany;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Mail\InvitationMail;
 
 class InviteController extends Controller
 {
@@ -53,13 +55,15 @@ class InviteController extends Controller
                 'error' => $e->getMessage()
             ], 400);
         }
+            $token = base64_encode("{$company->name}:{$inviteToken}");
 
+            $url = "http://localhost:3000/invitation/?invitation_token=$token";
 
-        $url = "http//127.0.0.1:8000/api/invitation/$inviteToken";
+            Mail::to($request->input('email'))->send(new InvitationMail($company, $url));
 
-        return response()->json([
-            'message' => $url
-        ]);
+            return response()->json([
+                'message' => "Invitation is send to {$request->input('email')}"
+            ]);
     }
 
     /**

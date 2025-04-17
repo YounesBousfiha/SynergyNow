@@ -42,6 +42,7 @@ import Image from "next/image";
 import { myCompanyService } from '../../../../services/myCompanyServices';
 import {toast} from "sonner";
 import InvitationDialog from "./_componenets/InvitationDialog";
+import {InvitationService} from "../../../../services/InvitationService";
 
 export default function Settings() {
 
@@ -49,15 +50,17 @@ export default function Settings() {
     const [companyDescription, setCompanyDescription] = useState("");
     const [companyImage, setCompanyImage] = useState("");
     const [isDragging, setIsDragging] = useState(false);
+    const [users, setUsers] = useState([]);
 
 
     useEffect(() => {
         async function fetchCompanyDetails() {
             try {
-                const response = await myCompanyService.getCompanyInfo();
-                setCompanyName(response.data.message[0].name);
-                setCompanyDescription(response.data.message[0].description);
-                //setCompanyImage(response.data.message[0].image);
+                const [companyInfo, UsersManage] = await Promise.all([myCompanyService.getCompanyInfo(), InvitationService.getAllInvitation()]);
+                setCompanyName(companyInfo.data.message[0].name);
+                setCompanyDescription(companyInfo.data.message[0].description);
+                setUsers(UsersManage.data.message);
+                console.log(UsersManage.data.message);
             } catch (error) {
                 console.error('Error fetching company details:', error);
             }
@@ -334,41 +337,18 @@ export default function Settings() {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <UserRow
-                                            name="Jane Cooper"
-                                            email="jane@example.com"
-                                            role="Admin"
-                                            status="Active"
-                                            lastLogin="Today, 10:30 AM"
-                                        />
-                                        <UserRow
-                                            name="Robert Fox"
-                                            email="robert@example.com"
-                                            role="Manager"
-                                            status="Active"
-                                            lastLogin="Yesterday, 3:15 PM"
-                                        />
-                                        <UserRow
-                                            name="Esther Howard"
-                                            email="esther@example.com"
-                                            role="User"
-                                            status="Inactive"
-                                            lastLogin="Mar 20, 2023"
-                                        />
-                                        <UserRow
-                                            name="Cameron Williamson"
-                                            email="cameron@example.com"
-                                            role="User"
-                                            status="Active"
-                                            lastLogin="Today, 9:45 AM"
-                                        />
-                                        <UserRow
-                                            name="Brooklyn Simmons"
-                                            email="brooklyn@example.com"
-                                            role="Manager"
-                                            status="Active"
-                                            lastLogin="Mar 25, 2023"
-                                        />
+                                        {users.map((user) => {
+                                            return <UserRow
+                                                key={user.id}
+                                                name={user.firstname + ' ' + user.lastname || "Account still not Active"}
+                                                email={user.email}
+                                                role={user.role_id === "1" ? 'Superadmin' :
+                                                    user.role_id === "2" ? 'Admin' :
+                                                        user.role_id === "3" ? 'Agent' : 'User'}
+                                                status={user.is_used ? 'Active' : 'Inactive'}
+                                                lastLogin="Today, 10:30 AM"
+                                            />
+                                        })}
                                         </tbody>
                                     </table>
                                 </div>
@@ -424,11 +404,11 @@ function UserRow({
 
     const getRoleBadge = (role) => {
         switch (role) {
-            case "Admin":
+            case "Superadmin":
                 return <Badge className="bg-purple-100 text-purple-800 font-medium">{role}</Badge>
-            case "Manager":
+            case "Admin":
                 return <Badge className="bg-blue-100 text-blue-800 font-medium">{role}</Badge>
-            case "User":
+            case "Agent":
                 return <Badge className="bg-[#a8e6cf] text-[#296c5c] font-medium">{role}</Badge>
             default:
                 return <Badge>{role}</Badge>

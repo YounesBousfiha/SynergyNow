@@ -64,8 +64,10 @@ class MyCompanyController extends Controller
     {
         $userId = AuthHelpers::getId($request->bearerToken());
         try {
+
             $company = MyCompany::where('owner_id', $userId)->first();
             $data = $request->validated();
+
             if($request->input('name')) {
                 $company->name = $data['name'];
             }

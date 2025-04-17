@@ -13,8 +13,29 @@ export const InvitationService = {
             throw new Error(error);
         }
     },
-    getAllInvitation: () => {},
-    deleteInvitation: (InvitationId) => {},
+    getAllInvitation: async () => {
+        try {
+            return await axios.get('/invite', {
+                headers: {
+                    'Authorization': `Bearer ${Cookies.get('jwt')}`
+                }
+            })
+        } catch (error) {
+            throw new Error(error);
+        }
+    },
+    deleteInvitation: async (InvitationId) => {
+        try {
+            return axios.delete(`/invite/revoke/${InvitationId}`, {
+                headers: {
+                    'Authorization': `Bearer ${Cookies.get('jwt')}`
+
+                }
+            })
+        } catch (error) {
+            throw new Error(error)
+        }
+    },
 
     SignUpWithInvitation: async (UserData, token) => {
         try {

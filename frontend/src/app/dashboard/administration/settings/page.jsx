@@ -102,7 +102,7 @@ export default function Settings() {
         const imageFormat = companyImage.split(";")[0].split('/')[1];
 
         formData.append('name', companyName);
-        formData.append('description', companyName);
+        formData.append('description', companyDescription);
 
         if(companyImage) {
             const base64response = await fetch(companyImage);
@@ -115,7 +115,7 @@ export default function Settings() {
         }
 
         try {
-            console.log(imageFormat);
+            console.log([...formData]);
             const response = await myCompanyService.updateCompany(formData);
             console.log(response);
             toast.success('Company Profile Updated');

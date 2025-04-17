@@ -16,10 +16,10 @@ export default async function middleware(request: NextRequest) {
     if(request.nextUrl.pathname.startsWith('/dashboard')) {
         try {
              const res = await myCompanyService.getCompanyInfo(token.value);
-             console.log(res);
-             console.log(res.data.message.length);
+
+             console.log(res.data);
+             //console.log(res.data.message.length);
              if (res.data.message.length === 0) {
-                 console.log("hey");
                  return NextResponse.redirect(new URL('/info-setup', request.url));
              }
          } catch (error) {

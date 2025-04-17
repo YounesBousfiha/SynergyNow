@@ -25,9 +25,7 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu"
-import { toast } from 'sonner';
 import LogOutForm from "./_components/LogoutForm";
-
 export default function DashboardPage() {
 
 

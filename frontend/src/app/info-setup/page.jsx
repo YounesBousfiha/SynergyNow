@@ -84,21 +84,13 @@ export default function InfoSetupPage() {
         }
         try {
             const response = await myCompanyService.setup(formData);
-            if(response.status === 200) {
-                toast.success('Company Profile Setup SuccessFully');
-                router.push('/dashboard');
-            }
+            toast.success('Company Profile Setup SuccessFully');
+            router.push('/dashboard');
         } catch(error) {
             console.error(error);
             toast.error(error);
         }
     }
-
-    // TODO: Create My Company Service API Calls
-    // TODO: make a call to the MyCompanyInfo Route
-    // TODO: add condition to check if the Message in empty or not
-    // TODO: if already SetUp , continue to dashboard
-    // TODO: if not Show the Setup Form
     return (
         <>
             <main className="p-8">

@@ -30,12 +30,23 @@ export default function LoginForm() {
         if(success) {
             try {
                 const res = await authService.login(validData);
+                const employes_at = res.user.employes_at;
                 if(res.token) {
                     toast.success('Logged In Succefully');
                     login(res.user);
-                    if(res.user.employes_at) {
+
+                    console.log('Before condition:', {
+                        employes_at,
+                        type: typeof employes_at,
+                        truthyTest: !!employes_at,
+                        directComparison: employes_at === 10
+                    });
+                    if(employes_at) {
+                        console.log('Condition passed');
                         router.push('/dashboard');
                     } else {
+                        console.log(employes_at);
+                        console.log('Condition failed');
                         router.push('/info-setup');
                     }
                 }

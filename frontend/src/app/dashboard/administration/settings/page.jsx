@@ -2,34 +2,15 @@
 
 import Link from "next/link"
 import {
-    LayoutDashboard,
-    Kanban,
     Users,
     Building2,
-    FileText,
-    MessageSquare,
-    Crown,
     SettingsIcon,
     UserCog,
-    Bell,
     Globe,
-    Shield,
     Save,
-    Plus,
     Search,
-    Eye,
-    PenSquare,
-    Trash2, Upload, X,
+    Trash2, Upload, X, MailOpen
 } from "lucide-react"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
-} from '../../../../components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar"
 import { Button } from "../../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
@@ -43,24 +24,33 @@ import { myCompanyService } from '../../../../services/myCompanyServices';
 import {toast} from "sonner";
 import InvitationDialog from "./_componenets/InvitationDialog";
 import {InvitationService} from "../../../../services/InvitationService";
+import { userService } from '../../../../services/UserService';
+import InvitesUserRown from "./_componenets/InvitesUserRown";
+import UserRow from "./_componenets/UserRow";
 
+import { useInvitesStore } from "../../../../store/useInvites";
+import { useUsersStore } from "../../../../store/useUsers";
 export default function Settings() {
+
+    const { invites, setInvites } = useInvitesStore();
+    const { users, setUsers} = useUsersStore();
 
     const [companyName, setCompanyName] = useState("");
     const [companyDescription, setCompanyDescription] = useState("");
     const [companyImage, setCompanyImage] = useState("");
     const [isDragging, setIsDragging] = useState(false);
-    const [users, setUsers] = useState([]);
+
 
 
     useEffect(() => {
         async function fetchCompanyDetails() {
             try {
-                const [companyInfo, UsersManage] = await Promise.all([myCompanyService.getCompanyInfo(), InvitationService.getAllInvitation()]);
+                const [companyInfo, invitations, usersData ] = await Promise.all([myCompanyService.getCompanyInfo(), InvitationService.getAllInvitation(), userService.getAllUsers()]);
                 setCompanyName(companyInfo.data.message[0].name);
                 setCompanyDescription(companyInfo.data.message[0].description);
-                setUsers(UsersManage.data.message);
-                console.log(UsersManage.data.message);
+                setInvites(invitations.data.message);
+                setUsers(usersData.data.message);
+                console.log(usersData.data.message);
             } catch (error) {
                 console.error('Error fetching company details:', error);
             }
@@ -162,8 +152,14 @@ export default function Settings() {
                             System Settings
                         </TabsTrigger>
                         <TabsTrigger
-                            value="usersManager"
+                            value="InvitesManager"
                             className="data-[state=active]:bg-[#06ae6f] data-[state=active]:text-white"
+                        >
+                            <MailOpen className="mr-2 h-4 w-4"/>
+                            Invites Manager
+                        </TabsTrigger>
+                        <TabsTrigger value="usermanager"
+                                     className="data-[state=active]:bg-[#06ae6f] data-[state=active]:text-white"
                         >
                             <UserCog className="mr-2 h-4 w-4"/>
                             User Manager
@@ -302,7 +298,56 @@ export default function Settings() {
                         </div>
                     </TabsContent>
 
-                    <TabsContent value="usersManager">
+                    <TabsContent value="InvitesManager">
+                        <Card>
+                            <CardHeader>
+                                <div className="flex justify-between items-center">
+                                    <CardTitle className="flex items-center">
+                                        <Users className="mr-2 h-5 w-5 text-[#06ae6f]"/>
+                                        Invitations Management
+                                    </CardTitle>
+                                </div>
+                                <CardDescription>Manage Invitations</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="mb-4 flex justify-end">
+                                    <div className="relative w-[300px]">
+                                        <Search
+                                            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                                            size={18}/>
+                                        <Input className="pl-10" placeholder="Search users..."/>
+                                    </div>
+                                </div>
+
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                        <tr className="border-b text-gray-500 text-sm">
+                                            <th className="text-left py-4 px-6 font-medium">Email</th>
+                                            <th className="text-left py-4 px-6 font-medium">Role</th>
+                                            <th className="text-left py-4 px-6 font-medium">Status</th>
+                                            <th className="text-left py-4 px-6 font-medium">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {invites.map((invite) => {
+                                            return <InvitesUserRown
+                                                key={invite.id}
+                                                id={invite.id}
+                                                email={invite.email}
+                                                role={invite.role_id === "1" ? 'Superadmin' :
+                                                    invite.role_id === "2" ? 'Admin' :
+                                                        invite.role_id === "3" ? 'Agent' : 'User'}
+                                                status={invite.is_used ? 'Active' : 'Inactive'}
+                                            />
+                                        })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                    <TabsContent value="usermanager">
                         <Card>
                             <CardHeader>
                                 <div className="flex justify-between items-center">
@@ -328,7 +373,7 @@ export default function Settings() {
                                     <table className="w-full">
                                         <thead>
                                         <tr className="border-b text-gray-500 text-sm">
-                                            <th className="text-left py-4 px-6 font-medium">User</th>
+                                            <th className="text-left py-4 px-6 font-medium">Full name</th>
                                             <th className="text-left py-4 px-6 font-medium">Email</th>
                                             <th className="text-left py-4 px-6 font-medium">Role</th>
                                             <th className="text-left py-4 px-6 font-medium">Status</th>
@@ -340,13 +385,14 @@ export default function Settings() {
                                         {users.map((user) => {
                                             return <UserRow
                                                 key={user.id}
+                                                id={user.id}
                                                 name={user.firstname + ' ' + user.lastname || "Account still not Active"}
                                                 email={user.email}
                                                 role={user.role_id === "1" ? 'Superadmin' :
                                                     user.role_id === "2" ? 'Admin' :
                                                         user.role_id === "3" ? 'Agent' : 'User'}
                                                 status={user.is_used ? 'Active' : 'Inactive'}
-                                                lastLogin="Today, 10:30 AM"
+                                                last_login_at={user.last_login_at}
                                             />
                                         })}
                                         </tbody>
@@ -380,61 +426,5 @@ function NavItem({
                 <span>{label}</span>
             </Link>
         </li>
-    )
-}
-
-// User Row Component
-function UserRow({
-                     name,
-                     email,
-                     role,
-                     status,
-                     lastLogin,
-}) {
-    const getStatusBadge = (status) => {
-        switch (status) {
-            case "Active":
-                return <Badge className="bg-green-100 text-green-800 font-medium">{status}</Badge>
-            case "Inactive":
-                return <Badge className="bg-gray-100 text-gray-800 font-medium">{status}</Badge>
-            default:
-                return <Badge>{status}</Badge>
-        }
-    }
-
-    const getRoleBadge = (role) => {
-        switch (role) {
-            case "Superadmin":
-                return <Badge className="bg-purple-100 text-purple-800 font-medium">{role}</Badge>
-            case "Admin":
-                return <Badge className="bg-blue-100 text-blue-800 font-medium">{role}</Badge>
-            case "Agent":
-                return <Badge className="bg-[#a8e6cf] text-[#296c5c] font-medium">{role}</Badge>
-            default:
-                return <Badge>{role}</Badge>
-        }
-    }
-
-    return (
-        <tr className="border-b hover:bg-gray-50">
-            <td className="py-4 px-6">{name}</td>
-            <td className="py-4 px-6">{email}</td>
-            <td className="py-4 px-6">{getRoleBadge(role)}</td>
-            <td className="py-4 px-6">{getStatusBadge(status)}</td>
-            <td className="py-4 px-6">{lastLogin}</td>
-            <td className="py-4 px-6">
-                <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500">
-                        <Eye size={18}/>
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500">
-                        <PenSquare size={18}/>
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500">
-                        <Trash2 size={18}/>
-                    </Button>
-                </div>
-            </td>
-        </tr>
     )
 }

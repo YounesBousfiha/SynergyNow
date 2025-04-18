@@ -62,7 +62,8 @@ class InviteController extends Controller
             Mail::to($request->input('email'))->send(new InvitationMail($company, $url));
 
             return response()->json([
-                'message' => "Invitation is send to {$request->input('email')}"
+                'message' => "Invitation is send to {$request->input('email')}",
+                'invitation' => $invitation
             ]);
     }
 

@@ -43,8 +43,10 @@ export default function InvitationDialog() {
         try {
             const response = await InvitationService.inviteUser(data);
             toast.success("Invitation send SuccessFully");
-            setInvites(response.data.invitation); // TODO: Check the response Data
-            console.log(response);
+            const InvitationData = Array.isArray(response.data.invitation)
+                ? response.data.invitation
+                : [response.data.invitation];
+            setInvites(InvitationData);
         } catch (error) {
             console.error(error);
             toast.error("Error while Invite new User")

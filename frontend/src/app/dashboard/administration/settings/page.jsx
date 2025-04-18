@@ -50,7 +50,7 @@ export default function Settings() {
                 setCompanyDescription(companyInfo.data.message[0].description);
                 setInvites(invitations.data.message);
                 setUsers(usersData.data.message);
-                console.log(usersData.data.message);
+                //console.log(usersData.data.message);
             } catch (error) {
                 console.error('Error fetching company details:', error);
             }

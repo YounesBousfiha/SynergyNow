@@ -50,7 +50,7 @@ export default function Settings() {
                 setCompanyDescription(companyInfo.data.message[0].description);
                 setInvites(invitations.data.message);
                 setUsers(usersData.data.message);
-                //console.log(usersData.data.message);
+                console.log(usersData.data.message);
             } catch (error) {
                 console.error('Error fetching company details:', error);
             }
@@ -376,8 +376,7 @@ export default function Settings() {
                                             <th className="text-left py-4 px-6 font-medium">Full name</th>
                                             <th className="text-left py-4 px-6 font-medium">Email</th>
                                             <th className="text-left py-4 px-6 font-medium">Role</th>
-                                            <th className="text-left py-4 px-6 font-medium">Status</th>
-                                            <th className="text-left py-4 px-6 font-medium">Last Login</th>
+                                            <th className="text-left py-4 px-6 font-medium">Last Time Login</th>
                                             <th className="text-left py-4 px-6 font-medium">Actions</th>
                                         </tr>
                                         </thead>
@@ -388,10 +387,9 @@ export default function Settings() {
                                                 id={user.id}
                                                 name={user.firstname + ' ' + user.lastname || "Account still not Active"}
                                                 email={user.email}
-                                                role={user.role_id === "1" ? 'Superadmin' :
-                                                    user.role_id === "2" ? 'Admin' :
-                                                        user.role_id === "3" ? 'Agent' : 'User'}
-                                                status={user.is_used ? 'Active' : 'Inactive'}
+                                                role={user.role_id === 1 ? 'Superadmin' :
+                                                    user.role_id === 2 ? 'Admin' :
+                                                        user.role_id === 3 ? 'Agent' : 'User'}
                                                 last_login_at={user.last_login_at}
                                             />
                                         })}

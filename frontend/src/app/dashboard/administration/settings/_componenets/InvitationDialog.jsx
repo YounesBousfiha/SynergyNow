@@ -21,10 +21,12 @@ import {Input} from "../../../../../components/ui/input";
 import {useState} from "react";
 import { InvitationService } from '../../../../../services/InvitationService';
 import {toast} from "sonner";
+import { useInvitesStore } from "../../../../../store/useInvites";
 
 export default function InvitationDialog() {
     const [isOpen, setIsOpen] = useState(false);
 
+    const { invites, setInvites } = useInvitesStore();
     const handleOpen = () => {
         setIsOpen(true);
     }
@@ -41,6 +43,7 @@ export default function InvitationDialog() {
         try {
             const response = await InvitationService.inviteUser(data);
             toast.success("Invitation send SuccessFully");
+            setInvites(response.data.invitation); // TODO: Check the response Data
             console.log(response);
         } catch (error) {
             console.error(error);

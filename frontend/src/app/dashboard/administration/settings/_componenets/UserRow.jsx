@@ -10,23 +10,11 @@ export default function UserRow({
                                             name,
                                             email,
                                             role,
-                                            status,
                                             last_login_at
                                         }) {
 
     const { removeUsers } = useUsersStore();
     const [isOpen, setIsOpen] = useState(false);
-
-    const getStatusBadge = (status) => {
-        switch (status) {
-            case "Active":
-                return <Badge className="bg-green-100 text-green-800 font-medium">{status}</Badge>
-            case "Inactive":
-                return <Badge className="bg-gray-100 text-gray-800 font-medium">{status}</Badge>
-            default:
-                return <Badge>{status}</Badge>
-        }
-    }
 
     const getRoleBadge = (role) => {
         switch (role) {
@@ -58,7 +46,6 @@ export default function UserRow({
             <td className="py-4 px-6">{name}</td>
             <td className="py-4 px-6">{email}</td>
             <td className="py-4 px-6">{getRoleBadge(role)}</td>
-            <td className="py-4 px-6">{getStatusBadge(status)}</td>
             <td className="py-4 px-6">{last_login_at}</td>
             <td className="py-4 px-6">
                 <div className="flex items-center gap-2">

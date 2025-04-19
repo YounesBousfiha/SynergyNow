@@ -24,9 +24,9 @@ export const userService = {
             throw new Error(error)
         }
     },
-    changeUserRole: async (userId) => {
+    changeUserRole: async (userId, data) => {
         try {
-            return await axios.patch(`/users/${userId}`, {
+            return await axios.patch(`/user/${userId}`, data,{
                 headers: {
                     'Authorization' : `Bearer ${Cookies.get('jwt')}`
                 }

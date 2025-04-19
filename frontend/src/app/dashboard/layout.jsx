@@ -5,7 +5,7 @@ export default function Layout({ children }) {
 
     return (
         <div className="flex min-h-screen bg-[#f3f3f6]">
-            <Toaster />
+            <Toaster richColors={true}/>
             <SideBar />
             {children}
         </div>

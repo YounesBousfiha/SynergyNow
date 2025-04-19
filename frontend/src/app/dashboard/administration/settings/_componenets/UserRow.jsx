@@ -25,7 +25,7 @@ export default function UserRow({
     const { user } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
 
-    const getRoleBadge = (role) => {
+    const getRoleBuseradge = (role) => {
         switch (role) {
             case "Superadmin":
                 return <Badge className="bg-purple-100 text-purple-800 font-medium">{role}</Badge>
@@ -56,7 +56,7 @@ export default function UserRow({
         <tr className="border-b hover:bg-gray-50">
             <td className="py-4 px-6">{name}</td>
             <td className="py-4 px-6">{email}</td>
-            <td className="py-4 px-6">{getRoleBadge(role)}</td>
+            {/*<td className="py-4 px-6">{getRoleBadge(role)}</td>*/}
             <td className="py-4 px-6">{last_login_at}</td>
             <td className="py-4 px-6">
                 <div className="flex items-center gap-2">
@@ -85,7 +85,23 @@ export default function UserRow({
 }
 
 function UserViewSheet({ user }) {
-    const handleSubmit = () => {}
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData);
+
+        try {
+            const response = await userService.changeUserRole(user.id, data);
+            if(response.status === 200) {
+                toast.success('User Role has Been Updated');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Error while Changing User Role : ", error);
+        }
+    }
 
     return (
         <Sheet>
@@ -142,34 +158,8 @@ function UserViewSheet({ user }) {
                         <CardContent>
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="firstname">Name</Label>
-                                    <Input
-                                        id="firstname"
-                                        defaultValue={SplitFullName(user.name).firstName}
-                                        type="text"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="lastname">Name</Label>
-                                    <Input
-                                        id="lastname"
-                                        defaultValue={SplitFullName(user.name).lastName}
-                                        type="text"
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        defaultValue={user.email}
-                                        type="email"
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
                                     <Label htmlFor="role">Role</Label>
-                                    <Select defaultValue={user.role}>
+                                    <Select defaultValue={user.role} name="role_id">
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select a role"/>
                                         </SelectTrigger>

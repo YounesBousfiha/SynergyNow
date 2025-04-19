@@ -5,7 +5,7 @@ import {Toaster} from "sonner";
 export default function Layout({ children }) {
     return (
         <>
-            <Toaster expand={true}  />
+            <Toaster expand={true}  richColors={true}/>
             <Header />
             { children }
             <Footer />

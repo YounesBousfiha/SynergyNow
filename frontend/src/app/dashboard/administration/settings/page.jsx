@@ -9,7 +9,7 @@ import {
     Globe,
     Save,
     Search,
-    Trash2, Upload, X, MailOpen
+    Trash2, Upload, X, MailOpen, MonitorCog
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar"
 import { Button } from "../../../../components/ui/button"
@@ -149,7 +149,7 @@ export default function Settings() {
                         <TabsTrigger value="settings"
                                      className="data-[state=active]:bg-[#06ae6f] data-[state=active]:text-white">
                             <SettingsIcon className="mr-2 h-4 w-4"/>
-                            System Settings
+                            Company Settings
                         </TabsTrigger>
                         <TabsTrigger
                             value="InvitesManager"
@@ -163,6 +163,12 @@ export default function Settings() {
                         >
                             <UserCog className="mr-2 h-4 w-4"/>
                             User Manager
+                        </TabsTrigger>
+                        <TabsTrigger value="mailconfig"
+                                     className="data-[state=active]:bg-[#06ae6f] data-[state=active]:text-white"
+                        >
+                            <MonitorCog className="mr-2 h-4 w-4"/>
+                            Email configuration
                         </TabsTrigger>
                     </TabsList>
                     <TabsContent value="settings" className="space-y-6">
@@ -385,6 +391,7 @@ export default function Settings() {
                                             return <UserRow
                                                 key={user.id}
                                                 id={user.id}
+                                                img={user.image}
                                                 name={user.firstname + ' ' + user.lastname || "Account still not Active"}
                                                 email={user.email}
                                                 role={user.role_id === 1 ? 'Superadmin' :
@@ -398,6 +405,9 @@ export default function Settings() {
                                 </div>
                             </CardContent>
                         </Card>
+                    </TabsContent>
+                    <TabsContent value="mailconfig">
+                        <h1>Mail Configuration</h1>
                     </TabsContent>
                 </Tabs>
             </main>

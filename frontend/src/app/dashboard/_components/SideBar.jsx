@@ -7,7 +7,7 @@ import {
     MessageSquare,
     Crown,
     ListTodo,
-    Workflow, Settings, Logs
+    Workflow, Settings, Logs, ClipboardPlus, MessageCircle, Mail
 } from "lucide-react"
 
 export default function SideBar() {
@@ -21,8 +21,11 @@ export default function SideBar() {
         },
         { name: 'Contacts', icon: <Users size={20} />, href: '/dashboard/contacts' },
         {name: 'Companies', icon: <Building2 size={20}/>, href: '/dashboard/companies'},
-        {name: 'Quotes', icon: <Building2 size={20} />, href: '/dashboard/quotes'},
-        {name: 'Messages', icon: <MessageSquare size={20}/>, href: '/dashboard/messages'},
+        {name: 'Quotes', icon: <ClipboardPlus size={20} />, href: '/dashboard/quotes'},
+        {name: 'Messages', icon: <MessageSquare size={20}/>,             items: [
+                { name: 'chat', icon: <MessageCircle  size={20}/>, href: '/dashboard/messages/chat' },
+                { name: 'Email', icon: <Mail size={20}/>, href: '/dashboard/messages/email'}
+            ]},
         {
             name: 'Administration',
             icon: <Crown size={20}/>,

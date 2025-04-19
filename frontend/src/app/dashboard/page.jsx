@@ -31,32 +31,6 @@ export default function DashboardPage() {
 
     return (
             <div className="flex-1">
-                {/* Top Bar */}
-                <header className="bg-white h-16 border-b border-gray-200 flex items-center justify-end px-6">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Avatar className="h-10 w-10">
-                                <AvatarImage src="/placeholder.svg?height=40&width=40" alt="User" />
-                                <AvatarFallback>AR</AvatarFallback>
-                            </Avatar>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                            <DropdownMenuSeparator/>
-                            <DropdownMenuItem>
-                                Settings
-                                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator/>
-                            <form action="/api/auth/logout" method="POST">
-                                <DropdownMenuItem asChild>
-                                    <LogOutForm />
-                                </DropdownMenuItem>
-                            </form>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </header>
-
                 {/* Content */}
                 <main className="p-6">
                     {/* KPI Cards */}

@@ -129,14 +129,6 @@ export default function Settings() {
 
     return (
         <div className="flex-1">
-            {/* Top Bar */}
-            <header className="bg-white h-16 border-b border-gray-200 flex items-center justify-end px-6">
-                <Avatar className="h-10 w-10">
-                    <AvatarImage src="/placeholder.svg?height=40&width=40" alt="User"/>
-                    <AvatarFallback>AR</AvatarFallback>
-                </Avatar>
-            </header>
-
             {/* Content */}
             <main className="p-6">
                 <div className="mb-6">

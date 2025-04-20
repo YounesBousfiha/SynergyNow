@@ -1,52 +1,35 @@
 "use client"
 import {useEffect, useState} from "react"
-import Link from "next/link"
 import {
-    Users,
     Search,
     Trash2,
     Paperclip,
     ImageIcon,
     Smile,
     Send,
-    Check,
-    CheckCheck,
 } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar"
 import { Button } from "../../../../components/ui/button"
 import { Input } from "../../../../components/ui/input"
-import { Badge } from "../../../../components/ui/badge"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "../../../../components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components/ui/tabs"
 import UserList from "../_componenets/UserList";
 import { userService} from "../../../../services/UserService";
 import { chatService} from "../../../../services/ChatService";
-import { useAuth} from "../../../../store/useAuth";
 import {toast} from "sonner";
 import {messageService} from "../../../../services/messageService";
 
 export default function ChatPage() {
-    const [activeContact, setActiveContact] = useState("1")
+    const [activeContact, setActiveContact] = useState("");
     const [messageInput, setMessageInput] = useState("")
     const [chats, setChats] = useState([]);
     const [contacts, setContacts] = useState([]);
     const [chatMessages, setChatMessages] = useState([]);
 
-    const { user } = useAuth();
     useEffect(() => {
         async function FetchUsers() {
-            const [contacts, conversations] = await Promise.all([await userService.getAllUsers(), chatService.getAll()])
-            setContacts(contacts.data.message[0]);
-
-            //console.log(conversations.data[0].messages[0].content);
+            const [contactsList, conversations] = await Promise.all([await userService.getAllUsers(), chatService.getAll()])
+            setContacts(contactsList.data.message);
             const FormattedConversations = conversations.data.map((node) => ({
                 chatId: node.id,
                 id: node.collaborator.id,
@@ -54,22 +37,20 @@ export default function ChatPage() {
                 firstname: node.collaborator.firstname,
                 lastname: node.collaborator.lastname,
                 avatar: node.collaborator.image,
-                lastMessage: node.messages[0].content,
+                lastMessage: node.messages?.[0]?.content || "New Convertsation",
                 time: "N/A"
             }));
 
-            console.log(FormattedConversations);
             setChats(FormattedConversations);
         }
         FetchUsers()
     }, []);
-    //console.log(contacts);
 
     const currentContact = chats.find((contact) => contact.id === activeContact)
-    //console.log(currentContact);
 
     const handleSelectedChat = async (contact) => {
         try {
+            console.log(contact.chatId);
             const messages = await chatService.showChat(contact.chatId);
             console.log(messages.data.messages);
             let userId = JSON.parse(localStorage.getItem('auth-storage')).state.user.id;
@@ -79,6 +60,7 @@ export default function ChatPage() {
                     isMe: message.sender_id === userId,
                 }
             });
+            //console.log(formattedMessages);
             setChatMessages(formattedMessages);
         } catch (error) {
             toast.error("Error fetching chat messages:",);
@@ -105,17 +87,15 @@ export default function ChatPage() {
 
         try {
             await messageService.sendMessage(data, currentContact.chatId);
-            console.log(data, currentContact.chatId);
         } catch (error) {
             toast.error("Error sending message:",);
         }
         setMessageInput("");
     }
 
-    console.log(chatMessages);
 
     return (
-        <div className="flex min-h-screen bg-[#f3f3f6]">
+        <div className="flex h-screen bg-[#f3f3f6]">
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
                 {/* Chat Interface */}

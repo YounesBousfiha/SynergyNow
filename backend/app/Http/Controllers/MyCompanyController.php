@@ -100,9 +100,12 @@ class MyCompanyController extends Controller
     public function users(Request $request) {
 
         try {
-            $owner_id = AuthHelpers::getId($request->bearerToken());
-            $company = MyCompany::where('owner_id', $owner_id)->first();
-            $users = User::where('employes_at', $company['id'])->get();
+            $user_id = AuthHelpers::getId($request->bearerToken());
+            $user = User::find($user_id);
+            $company = MyCompany::where('id', $user->employes_at)
+                ->orWhere('owner_id', $user_id)
+                ->first();
+            $users = User::where('employes_at', $company->id)->get();
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Unexpected Error'

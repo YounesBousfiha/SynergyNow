@@ -17,8 +17,6 @@ export default async function middleware(request: NextRequest) {
         try {
              const res = await myCompanyService.getCompanyInfo(token.value);
 
-             console.log(res.data);
-             //console.log(res.data.message.length);
              if (res.data.message.length === 0) {
                  return NextResponse.redirect(new URL('/info-setup', request.url));
              }

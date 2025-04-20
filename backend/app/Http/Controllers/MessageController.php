@@ -12,10 +12,8 @@ use Illuminate\Support\Facades\Event;
 class MessageController extends Controller
 {
     public  function sendMessage(Request $request, string $chatId) {
-        // TODO: Create a request Validation
-        // TODO: validate if the user has the ability to send message to this COnversation
-        // $ data = $request->validated()
-        $data = request()->all(); // content, user_id, receiver_id
+        //$data = $request->validate();
+        $data = request()->all();
         try {
             $chat = Chat::find($chatId);
             if(!$chat) {
@@ -23,9 +21,9 @@ class MessageController extends Controller
                     'message' => 'chat not found'
                 ], 404);
             }
-            $data['sender_id'] = AuthHelpers::getId($request->bearerToken());
+            $sender_id = AuthHelpers::getMyCompany($request->bearerToken())->id;
             $data['chat_id'] = $chatId;
-            $chat['collaborator_id'] = $request->input('receiver_id');
+            $data['sender_id'] = $sender_id;
             $message = Message::create($data);
             $chat->save();
         } catch (\Exception $e) {

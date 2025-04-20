@@ -69,9 +69,12 @@ class ChatController extends Controller
         $userId = AuthHelpers::getId($request->bearerToken());
         try {
             $chat = Chat::with(['messages', 'creator', 'collaborator'])
-                ->where('creator_id', $userId)
-                ->orWhere('collaborator_id', $userId)
-                ->where('id', $chatId)->first();
+                ->where('id', $chatId)
+                ->where(function ($query) use ($userId) {
+                    $query->where('creator_id', $userId)
+                        ->orWhere('collaborator_id', $userId);
+                })
+                ->first();
 
             if(!$chat) {
                 return response()->json([

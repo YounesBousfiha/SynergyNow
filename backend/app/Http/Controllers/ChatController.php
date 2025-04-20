@@ -17,14 +17,26 @@ class ChatController extends Controller
     public function index(Request $request)
     {
         $userId = AuthHelpers::getId($request->bearerToken());
+
         try {
-            $chats = Chat::where('creator_id', $userId)->get();
+            $chats = Chat::with([
+                'collaborator',
+                'messages' => function ($query) {
+                    $query->latest()->limit(1);
+                }
+            ])
+            ->where(function ($query) use ($userId) {
+                $query->where('creator_id', $userId)
+                      ->orWhere('collaborator_id', $userId);
+            })
+            ->get();
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error while loading chats',
                 'error' => $e->getMessage()
             ], 400);
         }
+
         return response()->json($chats);
     }
 
@@ -56,7 +68,11 @@ class ChatController extends Controller
     {
         $userId = AuthHelpers::getId($request->bearerToken());
         try {
-            $chat = Chat::where('creator_id', $userId)->orWhere('collaborator_id', $userId)->where('id', $chatId)->first();
+            $chat = Chat::with(['messages', 'creator', 'collaborator'])
+                ->where('creator_id', $userId)
+                ->orWhere('collaborator_id', $userId)
+                ->where('id', $chatId)->first();
+
             if(!$chat) {
                 return response()->json([
                     'message' => 'Chat not found'

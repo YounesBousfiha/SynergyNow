@@ -18,6 +18,7 @@ import { userService} from "../../../../services/UserService";
 import { chatService} from "../../../../services/ChatService";
 import {toast} from "sonner";
 import {messageService} from "../../../../services/messageService";
+import Pusher from 'pusher-js'
 
 export default function ChatPage() {
     const [activeContact, setActiveContact] = useState("");
@@ -25,6 +26,7 @@ export default function ChatPage() {
     const [chats, setChats] = useState([]);
     const [contacts, setContacts] = useState([]);
     const [chatMessages, setChatMessages] = useState([]);
+    const [pusher, setPusher] = useState(null);
 
     useEffect(() => {
         async function FetchUsers() {
@@ -46,7 +48,40 @@ export default function ChatPage() {
         FetchUsers()
     }, []);
 
+
+
     const currentContact = chats.find((contact) => contact.id === activeContact)
+
+    useEffect(() => {
+        const pusherInstance = new Pusher('e8490ac1efda2ccd410e', {
+            cluster: 'eu',
+        });
+        setPusher(pusherInstance);
+
+        return () => {
+            pusherInstance.disconnect();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!pusher || !currentContact?.chatId) return;
+
+        const channel = pusher.subscribe(`chat.${currentContact.chatId}`);
+        const userId = JSON.parse(localStorage.getItem('auth-storage'))?.state?.user?.id;
+
+        channel.bind('App\\Events\\MessageSent', (data) => {
+            setChatMessages((prevMessages) => [...prevMessages, {
+                ...data.message,
+                isMe: data.message.sender_id === userId
+            }]);
+        });
+
+        // Cleanup function
+        return () => {
+            channel.unbind('App\\Events\\MessageSent');
+            pusher.unsubscribe(`chat.${currentContact.chatId}`);
+        };
+    }, [currentContact?.chatId, pusher]);
 
     const handleSelectedChat = async (contact) => {
         try {

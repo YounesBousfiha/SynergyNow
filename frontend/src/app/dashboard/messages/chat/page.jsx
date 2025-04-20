@@ -31,66 +31,7 @@ import { userService} from "../../../../services/UserService";
 import { chatService} from "../../../../services/ChatService";
 import { useAuth} from "../../../../store/useAuth";
 import {toast} from "sonner";
-// Mock data for chat contacts
-const chatContacts = [
-    {
-        id: "1",
-        title: "Call the CEO of apple",
-        name: "Sarah Johnson",
-        avatar: "/placeholder.svg?height=40&width=40",
-        lastMessage: "Let me know when you're free to discuss the project",
-        time: "10:30 AM",
-        unread: 2,
-        online: true,
-    },
-]
-
-// Mock data for chat messages
-// const chatMessages = [
-//     {
-//         id: "1",
-//         sender: "Sarah Johnson",
-//         content: "Hi there! How's the SynergyNow implementation going?",
-//         time: "10:15 AM",
-//         isMe: false,
-//         status: "read",
-//     },
-//     {
-//         id: "2",
-//         sender: "Me",
-//         content:
-//             "It's going well! We've completed the user authentication system and are now working on the dashboard analytics.",
-//         time: "10:18 AM",
-//         isMe: true,
-//         status: "read",
-//     },
-//     {
-//         id: "3",
-//         sender: "Sarah Johnson",
-//         content:
-//             "That's great to hear! Do you have an estimated timeline for when the contact management module will be ready for testing?",
-//         time: "10:20 AM",
-//         isMe: false,
-//         status: "read",
-//     },
-//     {
-//         id: "4",
-//         sender: "Me",
-//         content: "We're aiming to have it ready by the end of next week. I'll keep you updated on our progress.",
-//         time: "10:22 AM",
-//         isMe: true,
-//         status: "read",
-//     },
-//     {
-//         id: "5",
-//         sender: "Sarah Johnson",
-//         content:
-//             "Perfect! Let me know when you're free to discuss the project in more detail. I have some ideas for additional features that might be valuable.",
-//         time: "10:30 AM",
-//         isMe: false,
-//         status: "delivered",
-//     },
-// ]
+import {messageService} from "../../../../services/messageService";
 
 export default function ChatPage() {
     const [activeContact, setActiveContact] = useState("1")
@@ -145,8 +86,6 @@ export default function ChatPage() {
         setActiveContact(contact.id);
     }
 
-    console.log(chatMessages);
-
     const formatTime = (dateString) => {
         const date = new Date(dateString);
         let hours = date.getHours();
@@ -155,6 +94,25 @@ export default function ChatPage() {
 
         return `${hours}:${minutes} ${ampm}`;
     };
+
+    const handleSendMessage = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('content', messageInput);
+
+        const data = Object.fromEntries(formData);
+
+        try {
+            await messageService.sendMessage(data, currentContact.chatId);
+            console.log(data, currentContact.chatId);
+        } catch (error) {
+            toast.error("Error sending message:",);
+        }
+        setMessageInput("");
+    }
+
+    console.log(chatMessages);
 
     return (
         <div className="flex min-h-screen bg-[#f3f3f6]">
@@ -197,7 +155,7 @@ export default function ChatPage() {
                                             <div className="relative">
                                                 <Avatar className="h-12 w-12">
                                                     <AvatarImage src={contact.avatar || "/placeholder.svg"} alt={contact.name} />
-                                                    {/*<AvatarFallback>{contact.name.charAt(0)}</AvatarFallback>*/}
+                                                    <AvatarFallback>{contact.firstname.charAt(0)}{contact.lastname.charAt(0)}</AvatarFallback>
                                                 </Avatar>
                                                 {contact.online && (
                                                     <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white"></span>
@@ -233,8 +191,7 @@ export default function ChatPage() {
                                         <Avatar className="h-10 w-10">
                                             <AvatarImage src={currentContact.avatar || "/placeholder.svg"}
                                                          alt={currentContact.name}/>
-                                            {/*<AvatarFallback>{currentContact.name.charAt(0)}</AvatarFallback>*/}
-                                        </Avatar>
+                                            <AvatarFallback>{currentContact.firstname.charAt(0)}{currentContact.lastname.charAt(0)}</AvatarFallback>                                        </Avatar>
                                     </div>
                                     <div>
                                         <div className="font-medium">{currentContact.title}</div>
@@ -285,17 +242,20 @@ export default function ChatPage() {
                                         <Smile size={18} />
                                     </Button>
                                 </div>
-                                <div className="flex-1">
-                                    <Input
-                                        placeholder="Type a message..."
-                                        className="rounded-full"
-                                        value={messageInput}
-                                        onChange={(e) => setMessageInput(e.target.value)}
-                                    />
-                                </div>
-                                <Button className="rounded-full bg-[#06ae6f] hover:bg-[#06ae6f]/90" size="icon">
-                                    <Send size={18} />
-                                </Button>
+                                <form onSubmit={handleSendMessage} className="w-full flex items-center gap-2 rounded-full">
+                                    <div className="flex-1">
+                                        <Input
+                                            placeholder="Type a message..."
+                                            className="rounded-full"
+                                            name="content"
+                                            value={messageInput}
+                                            onChange={(e) => setMessageInput(e.target.value)}
+                                        />
+                                    </div>
+                                    <Button type="submit" className="rounded-full bg-[#06ae6f] hover:bg-[#06ae6f]/90" size="icon">
+                                        <Send size={18}/>
+                                    </Button>
+                                </form>
                             </div>
                         </div>
                     </div>

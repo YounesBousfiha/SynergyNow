@@ -15,7 +15,15 @@ class Chat extends Model
     public  function users() {
         return $this->belongsTo(User::class);
     }
-    public function message() {
+
+    public function creator() {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
+
+    public function collaborator() {
+        return $this->belongsTo(User::class, 'collaborator_id');
+    }
+    public function messages() {
         return $this->hasMany(Message::class);
     }
 }

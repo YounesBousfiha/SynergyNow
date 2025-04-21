@@ -6,6 +6,7 @@ import {
 } from "../../../components/ui/dropdown-menu";
 import {Avatar, AvatarFallback, AvatarImage} from "../../../components/ui/avatar";
 import LogOutForm from "./LogoutForm";
+import Link from 'next/link';
 
 export default function DashBar() {
     return (
@@ -22,7 +23,7 @@ export default function DashBar() {
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator/>
                         <DropdownMenuItem>
-                            Settings
+                            <Link href="/dashboard/accountsettings">Settings</Link>
                             <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator/>

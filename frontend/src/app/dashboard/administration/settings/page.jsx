@@ -406,25 +406,3 @@ export default function Settings() {
         </div>
     );
 }
-
-// Navigation Item Component
-function NavItem({
-                     href,
-                     icon,
-                     label,
-                     active = false,
-}) {
-    return (
-        <li>
-            <Link
-                href={href}
-                className={`flex items-center gap-3 px-4 py-2 transition-colors ${
-                    active ? "bg-gray-100 font-medium" : "hover:bg-gray-100"
-                }`}
-            >
-                <span className="text-gray-500">{icon}</span>
-                <span>{label}</span>
-            </Link>
-        </li>
-    )
-}

@@ -30,6 +30,7 @@ class StoreClientRequestValidation extends FormRequest
             'phone' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'website' => ['sometimes', 'string', 'max:255'],
+            'founded' => ['sometimes', 'integer', 'min:1900', 'max:' . date('Y')],
             'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
         ];
     }

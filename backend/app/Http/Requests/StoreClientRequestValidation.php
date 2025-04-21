@@ -29,6 +29,7 @@ class StoreClientRequestValidation extends FormRequest
             'address' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
+            'website' => ['sometimes', 'string', 'max:255'],
             'image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
         ];
     }

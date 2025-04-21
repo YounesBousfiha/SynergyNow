@@ -15,7 +15,8 @@ class ClientCompany extends Model
         'email',
         'image',
         'my_companie_id',
-        'website'
+        'website',
+        'founded',
     ];
 
     public function company() {

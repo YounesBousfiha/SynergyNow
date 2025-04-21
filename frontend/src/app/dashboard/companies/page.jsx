@@ -30,6 +30,7 @@ import {useState} from "react";
 export default function CompaniesPage() {
     const {  clients } = useCompanyStore();
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
 
 
     const filteredClients = search.trim() === ""
@@ -39,6 +40,9 @@ export default function CompaniesPage() {
             client.industry?.toLowerCase().includes(search.toLowerCase()) ||
             client.email.toLowerCase().includes(search.toLowerCase())
         );
+
+    const totalPages = Math.ceil(filteredClients.length / 6);
+    const paginatedClients = filteredClients.slice((currentPage - 1) * 6, currentPage * 6);
 
     return (
             <div className="flex-1">
@@ -58,7 +62,7 @@ export default function CompaniesPage() {
 
                     {/* Companies Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredClients.map((client) => {
+                        {paginatedClients.map((client) => {
                             return <CompanyCard
                                 key={client.id}
                                 id={client.id}
@@ -75,6 +79,44 @@ export default function CompaniesPage() {
                             />
                         })}
                     </div>
+                    {search.trim() !== "" && filteredClients.length === 0 && (
+                        <div className="text-center py-10 text-gray-500">
+                            No companies found matching your search.
+                        </div>
+                    )}
+
+                    {totalPages > 1 && (
+                        <div className="flex justify-center gap-2 mt-6">
+                            <Button
+                                variant="outline"
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                            >
+                                Previous
+                            </Button>
+
+                            <div className="flex items-center gap-1">
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                    <Button
+                                        key={page}
+                                        variant={currentPage === page ? "default" : "outline"}
+                                        onClick={() => setCurrentPage(page)}
+                                        className="w-8"
+                                    >
+                                        {page}
+                                    </Button>
+                                ))}
+                            </div>
+
+                            <Button
+                                variant="outline"
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                            >
+                                Next
+                            </Button>
+                        </div>
+                    )}
                 </main>
             </div>
     )

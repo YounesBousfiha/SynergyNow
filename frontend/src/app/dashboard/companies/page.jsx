@@ -24,6 +24,7 @@ import {useCompanyStore} from "../../../store/useCompany";
 import {companyService} from "../../../services/companyService";
 import {toast} from "sonner";
 import {DeleteDialog} from "./_componenets/DeleteDialog";
+import ViewCompanyDetail from "./_componenets/ViewCompanyDetail";
 
 export default function CompaniesPage() {
     const {  clients } = useCompanyStore();
@@ -43,7 +44,20 @@ export default function CompaniesPage() {
                     {/* Companies Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {clients.map((client) => {
-                            return <CompanyCard key={client.id} id={client.id} logo={client.image || "https://placehold.co/600x400/png"} name={client.name} amount="0" logoType="ge" />
+                            return <CompanyCard
+                                key={client.id}
+                                id={client.id}
+                                logo={client.image || "https://placehold.co/600x400/png"}
+                                name={client.name} website={client.website}
+                                founded={client.founded}
+                                amount="0"
+                                logoType="ge"
+                                description={client.description}
+                                address={client.address}
+                                email={client.email}
+                                phone={client.phone}
+                                industry={client.industry}
+                            />
                         })}
                     </div>
                 </main>
@@ -57,7 +71,13 @@ function CompanyCard({
                          logo,
                          name,
                          amount,
+                         description,
+                         address,
+                         email,
+                         phone,
                          logoType,
+                         website,
+                         founded
 }) {
 
     const { removeClient } = useCompanyStore();
@@ -93,6 +113,11 @@ function CompanyCard({
         }
     }
 
+    const handleView = () => {
+        // Handle view action here
+        console.log("Hello");
+    }
+
     return (
         <Card className="bg-white overflow-hidden">
             <CardContent className="p-0">
@@ -108,9 +133,21 @@ function CompanyCard({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56">
                             <DropdownMenuSeparator/>
-                                <DropdownMenuItem>
-                                    <Eye size={18} />
-                                    View
+                                <DropdownMenuItem onClick={(event) => event.preventDefault()}>
+                                    <ViewCompanyDetail
+                                        id={id}
+                                        logo={logo}
+                                        name={name}
+                                        amount={amount}
+                                        description={description}
+                                        email={email}
+                                        address={address}
+                                        phone={phone}
+                                        website={website}
+                                        logoType={logoType}
+                                        founded={founded}
+                                        handleView={handleView}
+                                    />
                                 </DropdownMenuItem>
                             <DropdownMenuSeparator/>
                             <DropdownMenuItem onClick={event => event.preventDefault()}>

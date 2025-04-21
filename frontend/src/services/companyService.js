@@ -6,6 +6,7 @@ export const companyService = {
         try {
             return await axios.post('/client', data, {
                 headers: {
+                    "Content-Type": "multipart/form-data",
                     'Authorization': `Bearer ${Cookies.get('jwt')}`
                 }
             });

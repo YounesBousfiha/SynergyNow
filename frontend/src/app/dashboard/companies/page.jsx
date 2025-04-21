@@ -25,9 +25,20 @@ import {companyService} from "../../../services/companyService";
 import {toast} from "sonner";
 import {DeleteDialog} from "./_componenets/DeleteDialog";
 import ViewCompanyDetail from "./_componenets/ViewCompanyDetail";
+import {useState} from "react";
 
 export default function CompaniesPage() {
     const {  clients } = useCompanyStore();
+    const [search, setSearch] = useState("");
+
+
+    const filteredClients = search.trim() === ""
+        ? clients
+        : clients.filter(client =>
+            client.name.toLowerCase().includes(search.toLowerCase()) ||
+            client.industry?.toLowerCase().includes(search.toLowerCase()) ||
+            client.email.toLowerCase().includes(search.toLowerCase())
+        );
 
     return (
             <div className="flex-1">
@@ -37,13 +48,17 @@ export default function CompaniesPage() {
                         <AddCompanyBtn />
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                            <Input className="pl-10 w-[300px]" placeholder="Search..." />
+                            <Input className="pl-10 w-[300px]"
+                                   placeholder="Search..."
+                                   value={search}
+                                   onChange={(e) => setSearch(e.target.value)}
+                            />
                         </div>
                     </div>
 
                     {/* Companies Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {clients.map((client) => {
+                        {filteredClients.map((client) => {
                             return <CompanyCard
                                 key={client.id}
                                 id={client.id}

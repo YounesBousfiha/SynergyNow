@@ -1,41 +1,39 @@
-import Link from "next/link"
+"use client"
+
 import Image from "next/image"
 import {
-    LayoutDashboard,
-    Kanban,
-    Users,
-    Building2,
-    FileText,
-    MessageSquare,
-    Crown,
-    Plus,
     Search,
     MoreHorizontal,
+    UserPlus,
+    Eye,
+    Trash2
 } from "lucide-react"
+import AddCompanyBtn from "./_componenets/AddCompanyBtn";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
 import { Button } from "../../../components/ui/button"
 import { Card, CardContent } from "../../../components/ui/card"
 import { Input } from "../../../components/ui/input"
+import {
+    DropdownMenu,
+    DropdownMenuContent, DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "../../../components/ui/dropdown-menu";
+import {useCompanyStore} from "../../../store/useCompany";
+import {companyService} from "../../../services/companyService";
+import {toast} from "sonner";
+import {DeleteDialog} from "./_componenets/DeleteDialog";
 
 export default function CompaniesPage() {
+    const {  clients } = useCompanyStore();
+
     return (
             <div className="flex-1">
-                {/* Top Bar */}
-                <header className="bg-white h-16 border-b border-gray-200 flex items-center justify-end px-6">
-                    <Avatar className="h-10 w-10">
-                        <AvatarImage src="/placeholder.svg?height=40&width=40" alt="User" />
-                        <AvatarFallback>AR</AvatarFallback>
-                    </Avatar>
-                </header>
-
                 {/* Content */}
                 <main className="p-6">
                     <div className="flex justify-between items-center mb-6">
-                        <Button className="bg-[#296c5c] hover:bg-[#296c5c]/90 flex items-center gap-2">
-                            <Plus size={18} />
-                            Add new Company
-                        </Button>
+                        <AddCompanyBtn />
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
                             <Input className="pl-10 w-[300px]" placeholder="Search..." />
@@ -44,80 +42,25 @@ export default function CompaniesPage() {
 
                     {/* Companies Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <CompanyCard logo="/placeholder.svg?height=50&width=50" name="The Company" amount="127,345" logoType="ge" />
-                        <CompanyCard logo="/placeholder.svg?height=50&width=50" name="Intel" amount="127,345" logoType="intel" />
-                        <CompanyCard
-                            logo="/placeholder.svg?height=50&width=50"
-                            name="The Company"
-                            amount="127,345"
-                            logoType="apple"
-                        />
-                        <CompanyCard
-                            logo="/placeholder.svg?height=50&width=50"
-                            name="The Company"
-                            amount="127,345"
-                            logoType="ibm"
-                        />
-                        <CompanyCard
-                            logo="/placeholder.svg?height=50&width=50"
-                            name="The Company"
-                            amount="127,345"
-                            logoType="target"
-                        />
-                        <CompanyCard
-                            logo="/placeholder.svg?height=50&width=50"
-                            name="The Company"
-                            amount="127,345"
-                            logoType="google"
-                        />
-                        <CompanyCard
-                            logo="/placeholder.svg?height=50&width=50"
-                            name="The Company"
-                            amount="127,345"
-                            logoType="intel"
-                        />
-                        <CompanyCard
-                            logo="/placeholder.svg?height=50&width=50"
-                            name="The Company"
-                            amount="127,345"
-                            logoType="google"
-                        />
-                        <CompanyCard logo="/placeholder.svg?height=50&width=50" name="The Company" amount="127,345" logoType="ge" />
+                        {clients.map((client) => {
+                            return <CompanyCard key={client.id} id={client.id} logo={client.image || "https://placehold.co/600x400/png"} name={client.name} amount="0" logoType="ge" />
+                        })}
                     </div>
                 </main>
             </div>
     )
 }
 
-// Navigation Item Component
-function NavItem({
-                     href,
-                     icon,
-                     label,
-                     active = false,
-}) {
-    return (
-        <li>
-            <Link
-                href={href}
-                className={`flex items-center gap-3 px-4 py-2 transition-colors ${
-                    active ? "bg-gray-100 font-medium" : "hover:bg-gray-100"
-                }`}
-            >
-                <span className="text-gray-500">{icon}</span>
-                <span>{label}</span>
-            </Link>
-        </li>
-    )
-}
-
 // Company Card Component
 function CompanyCard({
+                         id,
                          logo,
                          name,
                          amount,
                          logoType,
 }) {
+
+    const { removeClient } = useCompanyStore();
     // Function to get logo background color based on logo type
     const getLogoBg = (type) => {
         switch (type) {
@@ -138,6 +81,18 @@ function CompanyCard({
         }
     }
 
+    const handleDelete = async (id) => {
+        try {
+            const response  = await companyService.delete(id);
+            if(response.status === 200) {
+                removeClient(id);
+                toast.success("Client Deleted");
+            }
+        } catch (e) {
+            toast.error("Error while deleting company");
+        }
+    }
+
     return (
         <Card className="bg-white overflow-hidden">
             <CardContent className="p-0">
@@ -145,9 +100,29 @@ function CompanyCard({
                     <div className={`${getLogoBg(logoType)} w-12 h-12 rounded-full flex items-center justify-center`}>
                         <Image src={logo || "/placeholder.svg"} alt={name} width={40} height={40} />
                     </div>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreHorizontal size={18} />
-                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <MoreHorizontal size={18} />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                            <DropdownMenuSeparator/>
+                            <DropdownMenuItem>
+                                <UserPlus size={18} />
+                                Add Contact
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator/>
+                                <DropdownMenuItem>
+                                    <Eye size={18} />
+                                    View
+                                </DropdownMenuItem>
+                            <DropdownMenuSeparator/>
+                            <DropdownMenuItem onClick={event => event.preventDefault()}>
+                                <DeleteDialog handleDelete={handleDelete} id={id}  />
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
                 <div className="px-4 pb-2 text-center">
                     <h3 className="font-medium text-lg">{name}</h3>
@@ -159,23 +134,23 @@ function CompanyCard({
                         <div className="p-3">
                             <p className="text-xs text-gray-500 mb-2 text-center">Related Contacts</p>
                             <div className="flex justify-center">
-                                <div>
-                                    <Avatar className="h-8 w-8 border-2 border-white">
+                                <div className="flex gap-2">
+                                    <Avatar className="h-8 w-8 border-2 border-white" key="contact-1">
                                         <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Contact" />
                                         <AvatarFallback>C1</AvatarFallback>
                                     </Avatar>
-                                    <Avatar className="h-8 w-8 border-2 border-white">
+                                    <Avatar className="h-8 w-8 border-2 border-white" key="contact-2">
                                         <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Contact" />
                                         <AvatarFallback>C2</AvatarFallback>
                                     </Avatar>
-                                    <Avatar className="h-8 w-8 border-2 border-white">
+                                    <Avatar className="h-8 w-8 border-2 border-white" key="contact-3">
                                         <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Contact" />
                                         <AvatarFallback>C3</AvatarFallback>
                                     </Avatar>
                                 </div>
                             </div>
                         </div>
-                        <div className="p-3">
+                        {/*<div className="p-3">
                             <p className="text-xs text-gray-500 mb-2 text-center">Agent Resp</p>
                             <div className="flex justify-center">
                                 <Avatar className="h-8 w-8">
@@ -183,7 +158,7 @@ function CompanyCard({
                                     <AvatarFallback>AR</AvatarFallback>
                                 </Avatar>
                             </div>
-                        </div>
+                        </div>*/}
                     </div>
                 </div>
             </CardContent>

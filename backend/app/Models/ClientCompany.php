@@ -14,7 +14,8 @@ class ClientCompany extends Model
         'phone',
         'email',
         'image',
-        'my_companie_id'
+        'my_companie_id',
+        'website'
     ];
 
     public function company() {

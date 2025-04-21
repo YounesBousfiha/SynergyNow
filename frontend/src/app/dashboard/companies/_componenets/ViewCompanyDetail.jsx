@@ -22,23 +22,14 @@ export default function ViewCompanyDetail({
                                             phone,
                                             website,
                                             founded,
+                                            contacts = []
                                           }) {
-    console.log("ID : ", id);
-    console.log("Name : ", name);
-    console.log("Amount : ", amount);
-    console.log("Logo Type : ", logoType);
-    console.log("Industry : ", industry);
-    console.log("Description : ", description);
-    console.log("Address : ", address);
-    console.log("Email : ", email);
-    console.log("Phone : ", phone);
-    console.log("Website : ", website);
-    console.log("Founded : ", founded);
 
-    const [isOpen , setIsOpen] = useState(false)
+    const [isOpen , setIsOpen] = useState(false);
+    const [addContactOpen , setAddContactOpen] = useState(false);
     return (
         <>
-            <div className="flex items-center" onClick={() => setIsOpen(true)}>
+            <div className="flex items-center gap-2" onClick={() => setIsOpen(true)}>
                 <Eye size={18} />
                 View
             </div>
@@ -63,10 +54,12 @@ export default function ViewCompanyDetail({
                         </div>
                     </DialogHeader>
 
-                    <div className="space-y-4 my-2">
+
+                        <div className="space-y-4 my-2">
                         <p className="text-sm text-gray-600">{description}</p>
 
-                        <div className="grid grid-cols-2 gap-4">
+                            {!addContactOpen && (
+                                <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-4">
                                 <div className="flex items-start gap-2">
                                     <MapPin size={18} className="text-gray-500 mt-0.5" />
@@ -96,51 +89,139 @@ export default function ViewCompanyDetail({
                                     <span className="text-sm font-medium">${amount}</span>
                                 </div>
                             </div>
-                        </div>
+                        </div>)}
 
                         <Separator />
 
-                        <div>
-                            <h3 className="text-sm font-medium mb-2">Related Contacts</h3>
-                            <div className="space-y-2">
-                                {/*params.contacts.map((contact) => (
-                                    <div key={contact.id} className="flex items-center justify-between bg-gray-50 p-2 rounded-md">
-                                        <div className="flex items-center gap-2">
-                                            <Avatar className="h-8 w-8">
-                                                <AvatarImage src={contact.avatar || "/placeholder.svg"} alt={contact.name} />
-                                                <AvatarFallback>{contact.name.charAt(0)}</AvatarFallback>
-                                            </Avatar>
-                                            <div>
-                                                <div className="text-sm font-medium">{contact.name}</div>
-                                                <div className="text-xs text-gray-500">{contact.role}</div>
+                        {!addContactOpen && (
+                            <div>
+                                <h3 className="text-sm font-medium mb-2">Related Contacts</h3>
+                                <div className="space-y-2">
+                                    {contacts.map((contact) => (
+                                        <div key={contact?.id} className="flex items-center justify-between bg-gray-50 p-2 rounded-md">
+                                            <div className="flex items-center gap-2">
+                                                <Avatar className="h-8 w-8">
+                                                    <AvatarImage src={contact?.avatar || "/placeholder.svg"} alt={contact?.name} />
+                                                    <AvatarFallback>{contact?.name.charAt(0)}</AvatarFallback>
+                                                </Avatar>
+                                                <div>
+                                                    <div className="text-sm font-medium">{contact.name}</div>
+                                                    <div className="text-xs text-gray-500">{contact.role}</div>
+                                                </div>
                                             </div>
+                                            <Button variant="ghost" size="sm" className="h-8">
+                                                <Mail size={16} className="mr-1" />
+                                                Contact
+                                            </Button>
                                         </div>
-                                        <Button variant="ghost" size="sm" className="h-8">
-                                            <Mail size={16} className="mr-1" />
-                                            Contact
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {addContactOpen && (
+                            <div className="space-y-4">
+                                <h3 className="text-sm font-medium mb-2">Add New Contact</h3>
+                                <form className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium" htmlFor="firstName">First
+                                                Name</label>
+                                            <input
+                                                id="firstName"
+                                                className="w-full rounded-md border border-gray-300 p-2 text-sm"
+                                                placeholder="Enter first name"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium" htmlFor="lastName">Last Name</label>
+                                            <input
+                                                id="lastName"
+                                                className="w-full rounded-md border border-gray-300 p-2 text-sm"
+                                                placeholder="Enter last name"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium" htmlFor="email">Email</label>
+                                        <input
+                                            id="email"
+                                            type="email"
+                                            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+                                            placeholder="email@example.com"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium" htmlFor="phone">Phone</label>
+                                        <input
+                                            id="phone"
+                                            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+                                            placeholder="Enter phone number"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium" htmlFor="jobTitle">Job Title</label>
+                                        <input
+                                            id="jobTitle"
+                                            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+                                            placeholder="Enter job title"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium" htmlFor="address">Address</label>
+                                        <textarea
+                                            id="address"
+                                            className="w-full rounded-md border border-gray-300 p-2 text-sm min-h-[80px]"
+                                            placeholder="Enter address"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium" htmlFor="status">Status</label>
+                                        <select
+                                            id="status"
+                                            className="w-full rounded-md border border-gray-300 p-2 text-sm"
+                                        >
+                                            <option value="">Select status</option>
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="flex justify-end gap-2">
+                                        <Button type="button" variant="outline"
+                                                onClick={() => setAddContactOpen(false)}>
+                                            Cancel
+                                        </Button>
+                                        <Button type="submit" className="bg-[#06ae6f] hover:bg-[#06ae6f]/90">
+                                            Save Contact
                                         </Button>
                                     </div>
-                                ))*/}
+                                </form>
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     <DialogFooter className="flex justify-between items-center">
                         <div className="flex gap-2">
                             <Button variant="outline" className="gap-2" asChild>
                                 <Link href={`/dashboard/contacts?company=${id}`}>
-                                    <ExternalLink size={16} />
+                                    <ExternalLink size={16}/>
                                     View Contacts
                                 </Link>
                             </Button>
-                            <Button className="bg-[#06ae6f] hover:bg-[#06ae6f]/90 gap-2">
-                                <UserPlus size={16} />
+                            {!addContactOpen && (<Button onClick={() => setAddContactOpen(true)} className="bg-[#06ae6f] hover:bg-[#06ae6f]/90 gap-2">
+                                <UserPlus size={16}/>
                                 Add Contact
-                            </Button>
+                            </Button>)}
                         </div>
                         <DialogClose asChild>
                             <Button variant="ghost" size="sm">
-                                <X size={16} className="mr-1" />
+                                <X size={16} className="mr-1"/>
                                 Close
                             </Button>
                         </DialogClose>

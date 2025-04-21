@@ -108,11 +108,6 @@ function CompanyCard({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56">
                             <DropdownMenuSeparator/>
-                            <DropdownMenuItem>
-                                <UserPlus size={18} />
-                                Add Contact
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator/>
                                 <DropdownMenuItem>
                                     <Eye size={18} />
                                     View

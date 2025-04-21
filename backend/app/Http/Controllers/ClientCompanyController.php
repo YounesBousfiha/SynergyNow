@@ -6,6 +6,7 @@ use App\Http\Helpers\AuthHelpers;
 use App\Http\Requests\StoreClientRequestValidation;
 use App\Http\Requests\UpdateClientRequestValidation;
 use App\Models\ClientCompany;
+use Cloudinary\Cloudinary;
 use Illuminate\Http\Request;
 
 class ClientCompanyController extends Controller
@@ -13,6 +14,12 @@ class ClientCompanyController extends Controller
     /**
      * Display a listing of the resource.
      */
+    protected $cloudinary;
+    public function __construct(Cloudinary $cloudinary)
+    {
+        $this->cloudinary = $cloudinary;
+    }
+
     public function index(Request $request)
     {
         $myCompany = AuthHelpers::getMyCompany($request->bearerToken());
@@ -56,6 +63,20 @@ class ClientCompanyController extends Controller
         $data = $request->validated();
         try {
             $data['my_companie_id'] = AuthHelpers::getMyCompany($request->bearerToken())->id;
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+
+                $uploadResult = $this->cloudinary->uploadApi()->upload(
+                    $image->getRealPath(),
+                    [
+                        'folder' => 'SynegryNow',
+                        'public_id' => time() . '_' . pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME),
+                    ]
+                );
+
+                $data['image'] = $uploadResult['secure_url'];
+            }
             $clientCompany = ClientCompany::create($data);
         } catch(\Exception $e) {
             return response()->json([

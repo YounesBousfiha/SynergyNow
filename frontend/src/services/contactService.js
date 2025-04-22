@@ -1,0 +1,61 @@
+import axios from '../lib/axios';
+import Cookies from "js-cookie";
+
+
+export const contactService = {
+    create: async (data) => {
+        try {
+            return await axios.post('/contact', data, {
+                headers: {
+                    'Authorization' : `Bearer ${Cookies.get('jwt')}`
+                }
+            });
+        } catch (e) {
+            throw new Error(e);
+        }
+    },
+    all: async ()  => {
+        try {
+            return axios.get('/contacts', {
+                headers : {
+                    'Authorization' : `Bearer ${Cookies.get('jwt')}`
+                }
+            })
+        } catch (e) {
+            throw new Error(e);
+        }
+    },
+    show: async (id) => {
+        try {
+            return axios.get(`/contact/${id}`, {
+                headers : {
+                    'Authorization' : `Bearer ${Cookies.get('jwt')}`
+                }
+            })
+        } catch (e) {
+            throw new Error(e);
+        }
+    },
+    delete: async (id) => {
+        try {
+            return axios.delete(`/contact/${id}`, {
+                headers : {
+                    'Authorization' : `Bearer ${Cookies.get('jwt')}`
+                }
+            })
+        } catch (e) {
+            throw new Error(e);
+        }
+    },
+    update: async (id, data) => {
+        try {
+            return axios.put(`/contact/${id}`, data, {
+                headers : {
+                    'Authorization' : `Bearer ${Cookies.get('jwt')}`
+                }
+            })
+        } catch (e) {
+            throw new Error(e)
+        }
+    }
+}

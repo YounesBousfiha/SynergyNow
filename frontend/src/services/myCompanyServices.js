@@ -26,7 +26,7 @@ export const  myCompanyService = {
         try {
             return await axios.get('/mycompany', {
                 headers: {
-                    'Authorization' : `Bearer ${AuthToken}`
+                    'Authorization' : `Bearer ${Cookies.get('jwt')}`
                 }
             });
         } catch (error) {

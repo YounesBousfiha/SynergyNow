@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link"
 import { LayoutDashboard, Kanban, Users, Building2, FileText, MessageSquare, Crown, Search } from "lucide-react"
 
@@ -5,8 +6,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avat
 import { Input } from "../../../components/ui/input"
 import { Badge } from "../../../components/ui/badge"
 import { Button } from "../../../components/ui/button"
+import { useSearchParams } from "next/navigation";
 
 export default function CustomersPage() {
+
+    const params = useSearchParams();
+    const company = params.get('company');
+
+    console.log("Company ID: ", company);
     return (
             <div className="flex-1">
                 {/* Top Bar */}

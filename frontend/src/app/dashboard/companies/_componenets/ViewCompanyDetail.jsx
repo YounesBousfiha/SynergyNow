@@ -8,6 +8,12 @@ import {Button} from "../../../../components/ui/button";
 import {Eye, Mail, Phone, Globe, MapPin, ExternalLink, UserPlus, X} from "lucide-react";
 import Link from 'next/link';
 import Image from "next/image";
+import { Label } from "../../../../components/ui/label";
+import {Input} from "../../../../components/ui/input";
+import { Textarea} from "../../../../components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select"
+import {toast} from "sonner";
+import {contactService} from "../../../../services/contactService";
 
 export default function ViewCompanyDetail({
                                             id,
@@ -26,7 +32,7 @@ export default function ViewCompanyDetail({
                                           }) {
 
     const [isOpen , setIsOpen] = useState(false);
-    const [addContactOpen , setAddContactOpen] = useState(false);
+
     return (
         <>
             <div className="flex items-center gap-2" onClick={() => setIsOpen(true)}>
@@ -57,8 +63,6 @@ export default function ViewCompanyDetail({
 
                         <div className="space-y-4 my-2">
                         <p className="text-sm text-gray-600">{description}</p>
-
-                            {!addContactOpen && (
                                 <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-4">
                                 <div className="flex items-start gap-2">
@@ -89,11 +93,10 @@ export default function ViewCompanyDetail({
                                     <span className="text-sm font-medium">${amount}</span>
                                 </div>
                             </div>
-                        </div>)}
+                        </div>
 
                         <Separator />
 
-                        {!addContactOpen && (
                             <div>
                                 <h3 className="text-sm font-medium mb-2">Related Contacts</h3>
                                 <div className="space-y-2">
@@ -117,26 +120,27 @@ export default function ViewCompanyDetail({
                                     ))}
                                 </div>
                             </div>
-                        )}
 
-                        {addContactOpen && (
+                        {/*addContactOpen && (
                             <div className="space-y-4">
                                 <h3 className="text-sm font-medium mb-2">Add New Contact</h3>
-                                <form className="space-y-4">
+                                <form className="space-y-2" onSubmit={handleSubmit}>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium" htmlFor="firstName">First
-                                                Name</label>
-                                            <input
+                                            <Label className="text-sm font-medium" htmlFor="firstName">First
+                                                Name</Label>
+                                            <Input
                                                 id="firstName"
+                                                name="firstName"
                                                 className="w-full rounded-md border border-gray-300 p-2 text-sm"
                                                 placeholder="Enter first name"
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium" htmlFor="lastName">Last Name</label>
-                                            <input
+                                            <Label className="text-sm font-medium" htmlFor="lastName">Last Name</Label>
+                                            <Input
                                                 id="lastName"
+                                                name="lastName"
                                                 className="w-full rounded-md border border-gray-300 p-2 text-sm"
                                                 placeholder="Enter last name"
                                             />
@@ -144,52 +148,57 @@ export default function ViewCompanyDetail({
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium" htmlFor="email">Email</label>
-                                        <input
+                                        <Label className="text-sm font-medium" htmlFor="email">Email</Label>
+                                        <Input
                                             id="email"
                                             type="email"
+                                            name="email"
                                             className="w-full rounded-md border border-gray-300 p-2 text-sm"
                                             placeholder="email@example.com"
                                         />
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium" htmlFor="phone">Phone</label>
-                                        <input
+                                        <Label className="text-sm font-medium" htmlFor="phone">Phone</Label>
+                                        <Input
                                             id="phone"
+                                            name="phone"
                                             className="w-full rounded-md border border-gray-300 p-2 text-sm"
                                             placeholder="Enter phone number"
                                         />
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium" htmlFor="jobTitle">Job Title</label>
-                                        <input
+                                        <Label className="text-sm font-medium" htmlFor="jobTitle">Job Title</Label>
+                                        <Input
                                             id="jobTitle"
+                                            name="jobTitle"
                                             className="w-full rounded-md border border-gray-300 p-2 text-sm"
                                             placeholder="Enter job title"
                                         />
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium" htmlFor="address">Address</label>
-                                        <textarea
+                                        <Label className="text-sm font-medium" htmlFor="address">Address</Label>
+                                        <Textarea
                                             id="address"
+                                            name="address"
                                             className="w-full rounded-md border border-gray-300 p-2 text-sm min-h-[80px]"
                                             placeholder="Enter address"
                                         />
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium" htmlFor="status">Status</label>
-                                        <select
-                                            id="status"
-                                            className="w-full rounded-md border border-gray-300 p-2 text-sm"
-                                        >
-                                            <option value="">Select status</option>
-                                            <option value="active">Active</option>
-                                            <option value="inactive">Inactive</option>
-                                        </select>
+                                        <Label className="text-sm font-medium" htmlFor="status">Status</Label>
+                                        <Select name="status">
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="active">Active</SelectItem>
+                                                <SelectItem value="inactive">Inactive</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                     </div>
 
                                     <div className="flex justify-end gap-2">
@@ -203,7 +212,7 @@ export default function ViewCompanyDetail({
                                     </div>
                                 </form>
                             </div>
-                        )}
+                        )*/}
                     </div>
 
                     <DialogFooter className="flex justify-between items-center">
@@ -214,10 +223,6 @@ export default function ViewCompanyDetail({
                                     View Contacts
                                 </Link>
                             </Button>
-                            {!addContactOpen && (<Button onClick={() => setAddContactOpen(true)} className="bg-[#06ae6f] hover:bg-[#06ae6f]/90 gap-2">
-                                <UserPlus size={16}/>
-                                Add Contact
-                            </Button>)}
                         </div>
                         <DialogClose asChild>
                             <Button variant="ghost" size="sm">

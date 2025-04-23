@@ -105,7 +105,7 @@ class ClientCompanyController extends Controller
             $clientCompany->update($request->validated());
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Unexpected Error'
+                'error' => $e->getMessage()
             ], 400);
         }
 

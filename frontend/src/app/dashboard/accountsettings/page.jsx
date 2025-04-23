@@ -1,9 +1,32 @@
+"use client"
 import {Avatar, AvatarFallback, AvatarImage} from "@radix-ui/react-avatar";
 import {Button} from "../../../components/ui/button";
 import {Input} from "../../../components/ui/input";
 import { Mail } from 'lucide-react';
-
+import { useAuth } from "../../../store/useAuth";
+import { useState, useEffect } from "react";
 export default function AccountSetting() {
+
+    const { user } = useAuth();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (user) {
+            setIsLoading(false);
+        }
+    }, [user]);
+
+    console.log(user);
+
+    if (isLoading) {
+        return (
+            <div className="p-8 flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#296c5c]"></div>
+            </div>
+        );
+    }
+
+    // TODO: while updating the profile, we need to update the user state in the store as well
     return (
         <>
             <main className="p-8">
@@ -14,12 +37,12 @@ export default function AccountSetting() {
                     <div className="flex items-center justify-between mb-10">
                         <div className="flex items-center gap-4">
                             <Avatar className="h-20 w-20">
-                                <AvatarImage src="/placeholder.svg?height=80&width=80" alt="Alexa Rawles"/>
-                                <AvatarFallback>AR</AvatarFallback>
+                                <AvatarImage src={user?.image || "https://res.cloudinary.com/dashccxm0/image/upload/v1744244164/Ellipse_4_azkyht.png"} alt={`${user?.firstname} ${user?.lastname}`}/>
+                                <AvatarFallback>{user?.firstname[0]}{user?.lastname[0]}</AvatarFallback>
                             </Avatar>
                             <div>
-                                <h2 className="text-xl font-semibold">Alexa Rawles</h2>
-                                <p className="text-gray-500">alexarawles@gmail.com</p>
+                                <h2 className="text-xl font-semibold">{`${user?.firstname} ${user?.lastname}`}</h2>
+                                <p className="text-gray-500">{user?.email}</p>
                             </div>
                         </div>
                         <Button className="bg-[#296c5c] hover:bg-[#296c5c]/90">Edit</Button>
@@ -29,40 +52,23 @@ export default function AccountSetting() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <label htmlFor="fullName" className="block font-medium">
-                                Full Name
+                                Firstname
                             </label>
                             <Input id="fullName" placeholder="Your First Name" className="bg-[#f9f9f9] border-0"/>
                         </div>
                         <div className="space-y-2">
-                            <label htmlFor="nickName" className="block font-medium">
-                                Nick Name
+                            <label htmlFor="lastname" className="block font-medium">
+                                Lastname
                             </label>
-                            <Input id="nickName" placeholder="Your First Name" className="bg-[#f9f9f9] border-0"/>
+                            <Input id="lastname" placeholder="Your Last Name" className="bg-[#f9f9f9] border-0"/>
                         </div>
                         <div className="space-y-2">
-                            <label htmlFor="gender" className="block font-medium">
-                                Gender
+                            <label htmlFor="email" className="block font-medium">
+                                Email
                             </label>
-                            <Input id="gender" placeholder="Your First Name" className="bg-[#f9f9f9] border-0"/>
+                            <Input id="email" placeholder="Your Email" className="bg-[#f9f9f9] border-0"/>
                         </div>
-                        <div className="space-y-2">
-                            <label htmlFor="country" className="block font-medium">
-                                Country
-                            </label>
-                            <Input id="country" placeholder="Your First Name" className="bg-[#f9f9f9] border-0"/>
-                        </div>
-                        <div className="space-y-2">
-                            <label htmlFor="language" className="block font-medium">
-                                Language
-                            </label>
-                            <Input id="language" placeholder="Your First Name" className="bg-[#f9f9f9] border-0"/>
-                        </div>
-                        <div className="space-y-2">
-                            <label htmlFor="timezone" className="block font-medium">
-                                Time Zone
-                            </label>
-                            <Input id="timezone" placeholder="Your First Name" className="bg-[#f9f9f9] border-0"/>
-                        </div>
+
                     </div>
 
                     {/* Email Section */}
@@ -73,8 +79,7 @@ export default function AccountSetting() {
                                 <Mail className="h-5 w-5 text-blue-500"/>
                             </div>
                             <div>
-                                <p className="font-medium">alexarawles@gmail.com</p>
-                                <p className="text-sm text-gray-500">1 month ago</p>
+                                <p className="font-medium">{user?.email}</p>
                             </div>
                         </div>
                     </div>

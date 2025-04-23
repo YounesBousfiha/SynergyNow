@@ -14,6 +14,9 @@ import { useState } from 'react';
 import {contactService} from "../../../../services/contactService";
 import {toast} from "sonner";
 import {useContactStore} from "../../../../store/useContact";
+import {validateForm} from "../../../../utils/FormValidation";
+import { AddContactSchema} from "../../../../schema/AddContactSchema";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../../../../components/ui/select";
 
 export default function AddContactBtn({companyId}) {
 
@@ -24,6 +27,7 @@ export default function AddContactBtn({companyId}) {
     const [jobtitle, SetJobtitle] = useState("");
     const [address, SetAddress] = useState("");
     const [imagePreview, SetImagePreview] = useState(null);
+    const [status, SetStatus] = useState("active");
 
     const { addContact } = useContactStore();
 
@@ -57,22 +61,30 @@ export default function AddContactBtn({companyId}) {
         }
         const data = Object.fromEntries(formData.entries());
         console.log(data);
-        // TODO: Implemenet a validation for the form
-        try {
-            const response = await contactService.create(data, companyId)
-            if(response.status === 200) {
-                toast.success("Contact Added Successfully");
-                addContact(response.data.contact);
-                SetFirstname("");
-                SetLastname("");
-                SetEmail("");
-                SetPhone("");
-                SetJobtitle("");
-                SetAddress("");
+
+        const {success, validData} = validateForm(data, AddContactSchema);
+        console.log(success);
+        if(success) {
+            try {
+                const response = await contactService.create(validData, companyId)
+                console.log(response);
+                if(response.status === 200) {
+                    toast.success("Contact Added Successfully");
+                    addContact(response.data.contact);
+                    SetFirstname("");
+                    SetLastname("");
+                    SetEmail("");
+                    SetPhone("");
+                    SetJobtitle("");
+                    SetAddress("");
+                }
+            } catch (e) {
+                toast.error("Error while Adding Contact");
             }
-        } catch (e) {
-            toast.error("Error while Adding Contact");
+        } else {
+            toast.error("Error Form Invalidation");
         }
+
     }
     return (
         <Sheet>
@@ -150,6 +162,24 @@ export default function AddContactBtn({companyId}) {
                                 value={address}
                                 onChange={(e) => SetAddress(e.target.value)}
                             />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="status" className="text-right">Status</Label>
+                            <div className="col-span-3">
+                                <Select
+                                    name="status"
+                                    value={status}
+                                    onValueChange={SetStatus}
+                                >
+                                    <SelectTrigger id="status">
+                                        <SelectValue placeholder="Select a status"/>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="inactive">Inactive</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                     </div>
                     <div className="flex justify-center">

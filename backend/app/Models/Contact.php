@@ -13,7 +13,8 @@ class Contact extends Model
         'email',
         'address',
         'phone',
-        'client_companie_id'
+        'client_companie_id',
+        'image'
     ];
 
     public function clientCompany() {

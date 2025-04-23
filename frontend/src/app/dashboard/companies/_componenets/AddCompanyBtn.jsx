@@ -40,7 +40,7 @@ export default function AddCompanyBtn() {
                 console.log(response.data.clientCompanies);
                 setClients(response.data.clientCompanies);
             } catch (e) {
-                toast.error(e.message())
+                toast.error("Error while fetching companys")
             }
         }
 

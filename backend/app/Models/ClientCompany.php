@@ -20,11 +20,11 @@ class ClientCompany extends Model
     ];
 
     public function company() {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(MyCompany::class);
     }
 
     public function contacts() {
-        return $this->hasMany(Contact::class);
+        return $this->hasMany(Contact::class, 'client_companie_id');
     }
 
     public function deals() {

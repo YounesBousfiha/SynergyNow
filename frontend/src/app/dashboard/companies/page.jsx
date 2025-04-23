@@ -4,9 +4,6 @@ import Image from "next/image"
 import {
     Search,
     MoreHorizontal,
-    UserPlus,
-    Eye,
-    Trash2
 } from "lucide-react"
 import AddCompanyBtn from "./_componenets/AddCompanyBtn";
 
@@ -76,6 +73,7 @@ export default function CompaniesPage() {
                                 email={client.email}
                                 phone={client.phone}
                                 industry={client.industry}
+                                contacts={client.contacts}
                             />
                         })}
                     </div>
@@ -134,7 +132,8 @@ function CompanyCard({
                          phone,
                          logoType,
                          website,
-                         founded
+                         founded,
+                        contacts
 }) {
 
     const { removeClient } = useCompanyStore();
@@ -157,6 +156,11 @@ function CompanyCard({
                 return "bg-gray-50"
         }
     }
+
+    const getRandomContacts = (contacts, count) => {
+        const shuffled = [...contacts].sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, count);
+    };
 
     const handleDelete = async (id) => {
         try {
@@ -224,18 +228,12 @@ function CompanyCard({
                             <p className="text-xs text-gray-500 mb-2 text-center">Related Contacts</p>
                             <div className="flex justify-center">
                                 <div className="flex gap-2">
-                                    <Avatar className="h-8 w-8 border-2 border-white" key="contact-1">
-                                        <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Contact" />
-                                        <AvatarFallback>C1</AvatarFallback>
-                                    </Avatar>
-                                    <Avatar className="h-8 w-8 border-2 border-white" key="contact-2">
-                                        <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Contact" />
-                                        <AvatarFallback>C2</AvatarFallback>
-                                    </Avatar>
-                                    <Avatar className="h-8 w-8 border-2 border-white" key="contact-3">
-                                        <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Contact" />
-                                        <AvatarFallback>C3</AvatarFallback>
-                                    </Avatar>
+                                    {getRandomContacts(contacts, 3).map((contact, index) => (
+                                        <Avatar className="h-8 w-8 border-2 border-white" key={`contact-${index}`}>
+                                            <AvatarImage src={contacts.image} alt={`${contact.firstname}${contact.lastname}`} />
+                                            <AvatarFallback>{contact.firstname[0]}{contact.lastname[0]}</AvatarFallback>
+                                        </Avatar>
+                                    ))}
                                 </div>
                             </div>
                         </div>

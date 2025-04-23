@@ -1,20 +1,32 @@
 "use client"
 
-import { Search, Plus} from "lucide-react"
+import { Search, ChevronLeft, ChevronRight} from "lucide-react"
 import { Input } from "../../../components/ui/input"
-import { Button } from "../../../components/ui/button"
 import { useSearchParams } from "next/navigation";
 import {useEffect, useState} from "react";
 import {contactService} from "../../../services/contactService";
 import ContactRow from "./_componenets/ContactRow";
 import AddContactBtn from "./_componenets/AddContactBtn";
 import {useContactStore} from "../../../store/useContact";
+import {Button} from "../../../components/ui/button";
 export default function CustomersPage() {
 
     const { contacts, setContacts} = useContactStore();
     const [search, setSearch] = useState("");
     const params = useSearchParams();
     const companyId = params.get('company');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = contacts.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(contacts.length / itemsPerPage);
+
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
 
 
     useEffect(() => {
@@ -37,6 +49,11 @@ export default function CustomersPage() {
         contact.lastname.toLowerCase().includes(search.toLowerCase()) ||
         contact.email.toLowerCase().includes(search.toLowerCase())
     )
+
+    const paginatedContacts = filteredContacts.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
     return (
             <div className="flex-1">
 
@@ -47,7 +64,7 @@ export default function CustomersPage() {
                         <h1 className="text-2xl font-bold">All Customers</h1>
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                            <Input className="pl-10 w-[300px]" placeholder="Search" />
+                            <Input className="pl-10 w-[300px]" placeholder="Search" onChange={(e) => setSearch(e.target.value)} />
                         </div>
                     </div>
 
@@ -68,7 +85,7 @@ export default function CustomersPage() {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {filteredContacts.map((contact) => (
+                                {paginatedContacts.map((contact) => (
                                     <ContactRow
                                         key={contact.id}
                                         firstname={contact.firstname}
@@ -87,58 +104,38 @@ export default function CustomersPage() {
 
                         {/* Pagination */}
                         <div className="py-4 px-6 border-t flex items-center justify-center">
-                            {/*<div className="flex items-center space-x-2">
-                                <Button variant="outline" size="icon" className="h-8 w-8">
-                                    <span className="sr-only">Previous page</span>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="h-4 w-4"
+                            {totalPages > 1 && (
+                                <div className="flex justify-center gap-2 p-4 border-t">
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                        disabled={currentPage === 1}
                                     >
-                                        <path d="M15 18l-6-6 6-6" />
-                                    </svg>
-                                </Button>
-                                <Button variant="outline" size="sm" className="h-8 w-8 bg-[#06ae6f] text-white border-[#06ae6f]">
-                                    1
-                                </Button>
-                                <Button variant="outline" size="sm" className="h-8 w-8">
-                                    2
-                                </Button>
-                                <Button variant="outline" size="sm" className="h-8 w-8">
-                                    3
-                                </Button>
-                                <Button variant="outline" size="sm" className="h-8 w-8">
-                                    4
-                                </Button>
-                                <span>...</span>
-                                <Button variant="outline" size="sm" className="h-8 w-8">
-                                    40
-                                </Button>
-                                <Button variant="outline" size="icon" className="h-8 w-8">
-                                    <span className="sr-only">Next page</span>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="h-4 w-4"
+                                        Previous
+                                    </Button>
+
+                                    <div className="flex items-center gap-1">
+                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                            <Button
+                                                key={page}
+                                                variant={currentPage === page ? "default" : "outline"}
+                                                onClick={() => setCurrentPage(page)}
+                                                className="w-8"
+                                            >
+                                                {page}
+                                            </Button>
+                                        ))}
+                                    </div>
+
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                        disabled={currentPage === totalPages}
                                     >
-                                        <path d="M9 18l6-6-6-6" />
-                                    </svg>
-                                </Button>
-                            </div>*/}
+                                        Next
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </main>

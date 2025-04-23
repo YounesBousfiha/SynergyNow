@@ -14,12 +14,12 @@ class ContactController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function contacts(Request $request)
+    public function contacts(Request $request, string $clientId)
     {
-        $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+        //$companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
 
         try {
-            $contacts = Contact::where('client_companie_id', $companyId)->get();
+            $contacts = Contact::with('clientCompany')->where('client_companie_id', $clientId)->get();
             return response()->json([
                 'contacts' => $contacts
             ]);
@@ -71,8 +71,10 @@ class ContactController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['client_companie_id'] = AuthHelpers::getMyCompany($request->bearerToken())->id;
+            $data['client_companie_id'] = $request->input('client_companie_id');
             $contact = Contact::create($data);
+
+            $contact = $contact->load('clientCompany');
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()

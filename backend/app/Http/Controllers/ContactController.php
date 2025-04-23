@@ -128,7 +128,7 @@ class ContactController extends Controller
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'error' => 'Unexpected Error'
+                'error' => $e->getMessage()
             ]);
         }
     }

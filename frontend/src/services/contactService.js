@@ -3,9 +3,9 @@ import Cookies from "js-cookie";
 
 
 export const contactService = {
-    create: async (data) => {
+    create: async (data, companyId) => {
         try {
-            return await axios.post('/contact', data, {
+            return await axios.post(`/client/${companyId}/contact`, data, {
                 headers: {
                     'Authorization' : `Bearer ${Cookies.get('jwt')}`
                 }
@@ -14,9 +14,9 @@ export const contactService = {
             throw new Error(e);
         }
     },
-    all: async ()  => {
+    all: async (companyId)  => {
         try {
-            return axios.get('/contacts', {
+            return axios.get(`/client/${companyId}/contacts`, {
                 headers : {
                     'Authorization' : `Bearer ${Cookies.get('jwt')}`
                 }

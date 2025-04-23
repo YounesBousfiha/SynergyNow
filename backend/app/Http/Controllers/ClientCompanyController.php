@@ -24,13 +24,13 @@ class ClientCompanyController extends Controller
     {
         $myCompany = AuthHelpers::getMyCompany($request->bearerToken());
         try {
-            $clientCompanies = ClientCompany::where('my_companie_id', $myCompany->id)->get();
+            $clientCompanies = ClientCompany::with('contacts')->where('my_companie_id', $myCompany->id)->get();
             return response()->json([
                 'clientCompanies' => $clientCompanies
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Unexpected Error'
+                'error' => $e->getMessage()
             ], 400);
         }
     }

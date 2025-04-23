@@ -33,6 +33,11 @@ export default function ViewCompanyDetail({
 
     const [isOpen , setIsOpen] = useState(false);
 
+    const getRandomContacts = (contacts, count) => {
+        const shuffled = [...contacts].sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, count);
+    };
+
     return (
         <>
             <div className="flex items-center gap-2" onClick={() => setIsOpen(true)}>
@@ -100,19 +105,30 @@ export default function ViewCompanyDetail({
                             <div>
                                 <h3 className="text-sm font-medium mb-2">Related Contacts</h3>
                                 <div className="space-y-2">
-                                    {contacts.map((contact) => (
+                                    {getRandomContacts(contacts, 3).map((contact) => (
                                         <div key={contact?.id} className="flex items-center justify-between bg-gray-50 p-2 rounded-md">
                                             <div className="flex items-center gap-2">
                                                 <Avatar className="h-8 w-8">
-                                                    <AvatarImage src={contact?.avatar || "/placeholder.svg"} alt={contact?.name} />
-                                                    <AvatarFallback>{contact?.name.charAt(0)}</AvatarFallback>
+                                                    <AvatarImage
+                                                        src={contact?.image || "/placeholder.svg"}
+                                                        alt={`${contact.firstname} ${contact.lastname}`}
+                                                    />
+                                                    <AvatarFallback>
+                                                        {`${contact.firstname[0]}${contact.lastname[0]}`}
+                                                    </AvatarFallback>
                                                 </Avatar>
                                                 <div>
-                                                    <div className="text-sm font-medium">{contact.name}</div>
-                                                    <div className="text-xs text-gray-500">{contact.role}</div>
+                                                    <div className="text-sm font-medium">
+                                                        {`${contact.firstname} ${contact.lastname}`}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <Button variant="ghost" size="sm" className="h-8">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-8"
+                                                title={`Email: ${contact.email}`}
+                                                onClick={() => window.open(`mailto:${contact.email}`)}>
                                                 <Mail size={16} className="mr-1" />
                                                 Contact
                                             </Button>
@@ -120,99 +136,6 @@ export default function ViewCompanyDetail({
                                     ))}
                                 </div>
                             </div>
-
-                        {/*addContactOpen && (
-                            <div className="space-y-4">
-                                <h3 className="text-sm font-medium mb-2">Add New Contact</h3>
-                                <form className="space-y-2" onSubmit={handleSubmit}>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-medium" htmlFor="firstName">First
-                                                Name</Label>
-                                            <Input
-                                                id="firstName"
-                                                name="firstName"
-                                                className="w-full rounded-md border border-gray-300 p-2 text-sm"
-                                                placeholder="Enter first name"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-medium" htmlFor="lastName">Last Name</Label>
-                                            <Input
-                                                id="lastName"
-                                                name="lastName"
-                                                className="w-full rounded-md border border-gray-300 p-2 text-sm"
-                                                placeholder="Enter last name"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium" htmlFor="email">Email</Label>
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            name="email"
-                                            className="w-full rounded-md border border-gray-300 p-2 text-sm"
-                                            placeholder="email@example.com"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium" htmlFor="phone">Phone</Label>
-                                        <Input
-                                            id="phone"
-                                            name="phone"
-                                            className="w-full rounded-md border border-gray-300 p-2 text-sm"
-                                            placeholder="Enter phone number"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium" htmlFor="jobTitle">Job Title</Label>
-                                        <Input
-                                            id="jobTitle"
-                                            name="jobTitle"
-                                            className="w-full rounded-md border border-gray-300 p-2 text-sm"
-                                            placeholder="Enter job title"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium" htmlFor="address">Address</Label>
-                                        <Textarea
-                                            id="address"
-                                            name="address"
-                                            className="w-full rounded-md border border-gray-300 p-2 text-sm min-h-[80px]"
-                                            placeholder="Enter address"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium" htmlFor="status">Status</Label>
-                                        <Select name="status">
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Select status" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="active">Active</SelectItem>
-                                                <SelectItem value="inactive">Inactive</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-
-                                    <div className="flex justify-end gap-2">
-                                        <Button type="button" variant="outline"
-                                                onClick={() => setAddContactOpen(false)}>
-                                            Cancel
-                                        </Button>
-                                        <Button type="submit" className="bg-[#06ae6f] hover:bg-[#06ae6f]/90">
-                                            Save Contact
-                                        </Button>
-                                    </div>
-                                </form>
-                            </div>
-                        )*/}
                     </div>
 
                     <DialogFooter className="flex justify-between items-center">

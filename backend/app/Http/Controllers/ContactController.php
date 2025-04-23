@@ -8,12 +8,19 @@ use App\Http\Requests\StoreClientRequestValidation;
 use App\Models\Contact;
 use Exception;
 use Illuminate\Http\Request;
-
+use Cloudinary\Cloudinary;
 class ContactController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+    public $cloudinary;
+    public function __construct(Cloudinary $cloudinary)
+    {
+        $this->cloudinary = $cloudinary;
+    }
+
     public function contacts(Request $request, string $clientId)
     {
         //$companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
@@ -72,6 +79,21 @@ class ContactController extends Controller
         try {
             $data = $request->validated();
             $data['client_companie_id'] = $request->input('client_companie_id');
+
+            if($request->hasFile('image')) {
+                $image = $request->file('image');
+
+                $uploadResult = $this->cloudinary->uploadApi()->upload(
+                    $image->getRealPath(),
+                    [
+                        'folder' => 'SynegryNow',
+                        'public_id' => uniqid()
+                    ]
+                );
+
+                $data['image'] = $uploadResult['secure_url'];
+            }
+
             $contact = Contact::create($data);
 
             $contact = $contact->load('clientCompany');

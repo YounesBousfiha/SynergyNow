@@ -6,7 +6,12 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "../../../../components/ui/dropdown-menu";
+import {toast} from "sonner";
+import { useContactStore } from "../../../../store/useContact";
+import {contactService} from "../../../../services/contactService";
 export default function ContactRow({
+                         id,
+                         company_id,
                          firstname,
                          lastname,
                          company,
@@ -16,8 +21,22 @@ export default function ContactRow({
                          status,
                      }) {
 
-    const onView = () => {}
-    const onDelete = () => {}
+    const { removeContact } = useContactStore();
+    const onView = (id) => {
+        console.log("View Contact", id);
+    }
+    const onDelete = async (id, company_id) => {
+        try {
+            const response = await  contactService.delete(id, company_id);
+            if(response.status === 200) {
+                toast.success("Contact Deleted Successfully");
+                removeContact(id);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Error while Deleting contact");
+        }
+    }
     return (
         <tr className="border-b hover:bg-gray-50">
             <td className="py-4 px-6">{firstname}</td>
@@ -39,12 +58,12 @@ export default function ContactRow({
                         <MoreVertical className="h-5 w-5 text-gray-500 hover:text-gray-700"/>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={onView}>
+                        <DropdownMenuItem onClick={() => onView(id, company_id)}>
                             <Eye className="mr-2 h-4 w-4"/>
                             <span>View</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                            onClick={onDelete}
+                            onClick={() => onDelete(id, company_id)}
                             className="text-red-600 focus:text-red-600 focus:bg-red-50"
                         >
                             <Trash2 className="mr-2 h-4 w-4"/>

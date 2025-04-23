@@ -37,9 +37,9 @@ export const contactService = {
             throw new Error(e);
         }
     },
-    delete: async (id) => {
+    delete: async (id, company_id) => {
         try {
-            return axios.delete(`/contact/${id}`, {
+            return axios.delete(`/client/${company_id}/contact/${id}`, {
                 headers : {
                     'Authorization' : `Bearer ${Cookies.get('jwt')}`
                 }

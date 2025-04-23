@@ -20,35 +20,38 @@ export default function CustomersPage() {
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = contacts.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(contacts.length / itemsPerPage);
 
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
 
 
     useEffect(() => {
         async function FetchContacts(companyId) {
             const response = await contactService.all(companyId);
             if(response.status === 200) {
-                console.log(response.data.contacts[0].job_title);
+                console.log(response.data.contacts);
                 setContacts(response.data.contacts);
             }
+
+            contacts.map(contact => {
+                console.log(contact);
+            })
         }
 
         FetchContacts(companyId)
+
+
     }, []);
 
+
+    console.log("Contacts :", contacts);
 
     const filteredContacts = !search.trim()
         ? contacts  :
         contacts.filter(contact =>
         contact.firstname.toLowerCase().includes(search.toLowerCase()) ||
         contact.lastname.toLowerCase().includes(search.toLowerCase()) ||
-        contact.email.toLowerCase().includes(search.toLowerCase())
-    )
+        contact.email.toLowerCase().includes(search.toLowerCase()
+    ))
 
     const paginatedContacts = filteredContacts.slice(
         (currentPage - 1) * itemsPerPage,

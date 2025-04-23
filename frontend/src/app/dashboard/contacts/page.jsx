@@ -91,6 +91,8 @@ export default function CustomersPage() {
                                 {paginatedContacts.map((contact) => (
                                     <ContactRow
                                         key={contact.id}
+                                        id={contact.id}
+                                        company_id={contact.client_companie_id}
                                         firstname={contact.firstname}
                                         lastname={contact.lastname}
                                         company={contact.client_company.name}

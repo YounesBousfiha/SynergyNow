@@ -48,9 +48,9 @@ export const contactService = {
             throw new Error(e);
         }
     },
-    update: async (id, data) => {
+    update: async (id, data, company_id) => {
         try {
-            return axios.put(`/contact/${id}`, data, {
+            return axios.put(`/client/${company_id}/contact/${id}`, data, {
                 headers : {
                     'Authorization' : `Bearer ${Cookies.get('jwt')}`
                 }

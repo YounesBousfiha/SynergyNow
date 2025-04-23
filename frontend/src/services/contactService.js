@@ -7,6 +7,7 @@ export const contactService = {
         try {
             return await axios.post(`/client/${companyId}/contact`, data, {
                 headers: {
+                    'Content-Type': 'multipart/form-data',
                     'Authorization' : `Bearer ${Cookies.get('jwt')}`
                 }
             });

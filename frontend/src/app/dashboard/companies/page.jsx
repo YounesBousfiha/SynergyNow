@@ -207,6 +207,7 @@ function CompanyCard({
                                         website={website}
                                         logoType={logoType}
                                         founded={founded}
+                                        contacts={contacts}
                                         handleView={handleView}
                                     />
                                 </DropdownMenuItem>
@@ -237,15 +238,6 @@ function CompanyCard({
                                 </div>
                             </div>
                         </div>
-                        {/*<div className="p-3">
-                            <p className="text-xs text-gray-500 mb-2 text-center">Agent Resp</p>
-                            <div className="flex justify-center">
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Agent" />
-                                    <AvatarFallback>AR</AvatarFallback>
-                                </Avatar>
-                            </div>
-                        </div>*/}
                     </div>
                 </div>
             </CardContent>

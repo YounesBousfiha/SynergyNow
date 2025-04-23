@@ -1,5 +1,5 @@
 import {Badge} from "../../../../components/ui/badge";
-import { MoreVertical, Eye, Trash2 } from "lucide-react";
+import {MoreVertical, Eye, Trash2, PencilIcon} from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,6 +9,8 @@ import {
 import {toast} from "sonner";
 import { useContactStore } from "../../../../store/useContact";
 import {contactService} from "../../../../services/contactService";
+import { useState } from 'react'
+import {EditContactSheet} from "./EditContactSheet";
 export default function ContactRow({
                          id,
                          company_id,
@@ -22,9 +24,8 @@ export default function ContactRow({
                      }) {
 
     const { removeContact } = useContactStore();
-    const onView = (id) => {
-        console.log("View Contact", id);
-    }
+    const [isEditSheetOpen, setIsEditSheetOpen] = useState(false);
+
     const onDelete = async (id, company_id) => {
         try {
             const response = await  contactService.delete(id, company_id);
@@ -38,6 +39,7 @@ export default function ContactRow({
         }
     }
     return (
+        <>
         <tr className="border-b hover:bg-gray-50">
             <td className="py-4 px-6">{firstname}</td>
             <td className="py-4 px-6">{lastname}</td>
@@ -58,9 +60,9 @@ export default function ContactRow({
                         <MoreVertical className="h-5 w-5 text-gray-500 hover:text-gray-700"/>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => onView(id, company_id)}>
-                            <Eye className="mr-2 h-4 w-4"/>
-                            <span>View</span>
+                        <DropdownMenuItem onClick={() => setIsEditSheetOpen(true)}>
+                            <PencilIcon className="mr-2 h-4 w-4"/>
+                            <span>Edit</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             onClick={() => onDelete(id, company_id)}
@@ -74,5 +76,22 @@ export default function ContactRow({
             </td>
 
         </tr>
+
+    <EditContactSheet
+        isOpen={isEditSheetOpen}
+        onClose={() => setIsEditSheetOpen(false)}
+        contact={{
+            id,
+            company_id,
+            firstname,
+            lastname,
+            company,
+            phone,
+            email,
+            jobtitle,
+            status,
+        }}
+    />
+        </>
     )
 }

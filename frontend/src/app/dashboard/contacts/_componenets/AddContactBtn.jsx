@@ -7,7 +7,7 @@ import {
     SheetTitle, SheetFooter, SheetClose
 } from "../../../../components/ui/sheet";
 import {Button} from "../../../../components/ui/button";
-import {Plus} from "lucide-react";
+import {Plus, Upload} from "lucide-react";
 import {Label} from '../../../../components/ui/label';
 import {Input} from "../../../../components/ui/input";
 import { useState } from 'react';
@@ -22,16 +22,39 @@ export default function AddContactBtn({companyId}) {
     const [email, SetEmail] = useState("");
     const [phone, SetPhone] = useState("");
     const [jobtitle, SetJobtitle] = useState("");
-    const [company, SetCompany] = useState("");
     const [address, SetAddress] = useState("");
+    const [imagePreview, SetImagePreview] = useState(null);
 
     const { addContact } = useContactStore();
 
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                SetImagePreview(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const formData = new FormData(e.target);
         formData.append("client_companie_id", companyId);
+
+        if(imagePreview) {
+            const imageFormat = imagePreview.split(";")[0].split('/')[1];
+            const base64response = await fetch(imagePreview);
+            const blob = await base64response.blob();
+
+            const file = new File([blob], 'contact-image.png', {
+                type: `image/${imageFormat}`
+            })
+
+            formData.append('image', file);
+        }
         const data = Object.fromEntries(formData.entries());
         console.log(data);
         // TODO: Implemenet a validation for the form
@@ -45,7 +68,6 @@ export default function AddContactBtn({companyId}) {
                 SetEmail("");
                 SetPhone("");
                 SetJobtitle("");
-                SetCompany("");
                 SetAddress("");
             }
         } catch (e) {
@@ -120,16 +142,6 @@ export default function AddContactBtn({companyId}) {
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="company" className="text-right">Company</Label>
-                            <Input
-                                id="company"
-                                className="col-span-3"
-                                name="company"
-                                value={company}
-                                onChange={(e) => SetCompany(e.target.value)}
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="address" className="text-right">Address</Label>
                             <Input
                                 id="address"
@@ -139,6 +151,38 @@ export default function AddContactBtn({companyId}) {
                                 onChange={(e) => SetAddress(e.target.value)}
                             />
                         </div>
+                    </div>
+                    <div className="flex justify-center">
+                        <div className="flex items-center gap-4">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="cursor-pointer"
+                                onClick={() => document.getElementById('logo-upload').click()}
+                            >
+                                <Upload size={16} className="mr-2"/>
+                                Upload logo
+                            </Button>
+                            <Input
+                                id="logo-upload"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="hidden"
+                            />
+                        </div>
+                        {imagePreview && (
+                            <div className="mt-4 flex justify-center">
+                                <div
+                                    className="bg-gray-50 p-3 rounded-full w-32 h-32 flex items-center justify-center shadow-sm border border-gray-100">
+                                    <img
+                                        src={imagePreview}
+                                        alt="Logo preview"
+                                        className="max-w-full max-h-full object-cover rounded-full"
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <SheetFooter>
                         <SheetClose asChild>

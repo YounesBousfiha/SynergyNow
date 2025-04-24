@@ -10,8 +10,11 @@ import {userInfoService} from "../../../services/UserInfoService";
 import {authService} from "../../../services/authService";
 export default function AccountSetting() {
 
-    const { user } = useAuth();
+    const { user, setUser  } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
+    const [firstname, setFirstname] = useState("");
+    const [lastname, setLastname] = useState("");
+    const [email, setEmail] = useState("");
 
     useEffect(() => {
         if (user) {
@@ -24,18 +27,34 @@ export default function AccountSetting() {
     const handleUpdateInfo = async (e) => {
         e.preventDefault();
 
-        const formData = new FormData(e.target);
+        const formData = new FormData();
+        if(firstname) {
+            formData.append("firstname", firstname);
+        }
+
+        if(lastname) {
+            formData.append("lastname", lastname);
+        }
+
+        if(email) {
+            formData.append("email", email);
+        }
+
         const data = Object.fromEntries(formData);
+        //const formData = new FormData(e.target);
+        //const data = Object.fromEntries(formData);
 
         console.log(data);
 
-        // TODO: Validation
-        // TODO: Start working on the Update info
-        // TODO: start by changing the controller one method for updateInfo
-        // TODO: make/search for the change password method
+        // TODO: data Validation
+
+        // TODO: update the Data in the store
         try {
             const response = await userInfoService.update(data);
-            console.log(response);
+            if(response.status === 200) {
+                toast.success("User information updated successfully");
+                setUser(response.data.user)
+            }
         } catch (e) {
             console.error(e);
             toast.error("Failed to update user information");
@@ -98,7 +117,10 @@ export default function AccountSetting() {
                                     id="fullName"
                                     name="firstname"
                                     placeholder="Your First Name"
-                                    className="bg-[#f9f9f9] border-0"/>
+                                    value={firstname}
+                                    className="bg-[#f9f9f9] border-0"
+                                    onChange={(e) => {setFirstname(e.target.value)}}
+                                />
                             </div>
                             <div className="space-y-2">
                                 <label htmlFor="lastname" className="block font-medium">
@@ -107,7 +129,9 @@ export default function AccountSetting() {
                                 <Input
                                     id="lastname"
                                     name="lastname"
+                                    value={lastname}
                                     placeholder="Your Last Name"
+                                    onChange={(e) => {setLastname(e.target.value)}}
                                     className="bg-[#f9f9f9] border-0"/>
                             </div>
                             <div className="space-y-2">
@@ -117,7 +141,9 @@ export default function AccountSetting() {
                                 <Input
                                     id="email"
                                     name="email"
+                                    value={email}
                                     placeholder="Your Email"
+                                    onChange={(e) => {setEmail(e.target.value)}}
                                     className="bg-[#f9f9f9] border-0"/>
                             </div>
                         </div>

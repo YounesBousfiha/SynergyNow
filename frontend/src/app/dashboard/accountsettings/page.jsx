@@ -8,6 +8,9 @@ import { useState, useEffect } from "react";
 import {toast} from "sonner";
 import {userInfoService} from "../../../services/UserInfoService";
 import {authService} from "../../../services/authService";
+import {validateForm} from "../../../utils/FormValidation";
+import { UpdateUserInfoSchema} from "../../../schema/UpdateUserInfo";
+
 export default function AccountSetting() {
 
     const { user, setUser  } = useAuth();
@@ -15,6 +18,7 @@ export default function AccountSetting() {
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
     const [email, setEmail] = useState("");
+    const [profileImage, setProfileImage] = useState("");
 
     useEffect(() => {
         if (user) {
@@ -40,24 +44,33 @@ export default function AccountSetting() {
             formData.append("email", email);
         }
 
+        if(profileImage) {
+
+            const base64reponse = await fetch(profileImage);
+            const blob = await base64reponse.blob();
+
+            const file = new File([blob], profileImage.name, { type: profileImage.type });
+
+            formData.append("image", file);
+        }
+
         const data = Object.fromEntries(formData);
-        //const formData = new FormData(e.target);
-        //const data = Object.fromEntries(formData);
 
-        console.log(data);
-
-        // TODO: data Validation
-
-        // TODO: update the Data in the store
-        try {
-            const response = await userInfoService.update(data);
-            if(response.status === 200) {
-                toast.success("User information updated successfully");
-                setUser(response.data.user)
+        //const { success, validData } = validateForm(data, UpdateUserInfoSchema);
+        //console.log(validData);
+        if(true) {
+            try {
+                const response = await userInfoService.update(data);
+                if(response.status === 200) {
+                    toast.success("User information updated successfully");
+                    setUser(response.data.user)
+                }
+            } catch (e) {
+                console.error(e);
+                toast.error("Failed to update user information");
             }
-        } catch (e) {
-            console.error(e);
-            toast.error("Failed to update user information");
+        } else {
+            toast.error("Invalid data");
         }
     }
     const handleUpdatePassword = async (e) => {
@@ -74,6 +87,22 @@ export default function AccountSetting() {
         } catch (error) {
             console.error(error);
             toast.error("Failed to update password");
+        }
+    }
+
+    const handleFileChange = (file) => {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+            if (e.target?.result) {
+                setProfileImage(e.target.result)
+            }
+        }
+        reader.readAsDataURL(file)
+    }
+
+    const handleFileInputChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            handleFileChange(e.target.files[0])
         }
     }
 
@@ -146,13 +175,27 @@ export default function AccountSetting() {
                                     onChange={(e) => {setEmail(e.target.value)}}
                                     className="bg-[#f9f9f9] border-0"/>
                             </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="image" className="block font-medium">
+                                    Upload Profile Image
+                                </label>
+                                <Input
+                                    id="image"
+                                    name="image"
+                                    type="file"
+                                    accept="image/*"
+                                    className="bg-[#f9f9f9] border-0"
+                                    onChange={handleFileInputChange}
+                                />
+                            </div>
                         </div>
                         <div className="flex items-center justify-end mt-6">
                             <Button type="submit" className="bg-[#296c5c] hover:bg-[#296c5c]/90">Update Info</Button>
                         </div>
                     </form>
                     {/* Password Section */}
-                    <div className="mt-10">
+                    <div className="setProfileImagemt-10">
                         <h3 className="text-lg font-semibold mb-4">Change Password</h3>
                         <form onSubmit={handleUpdatePassword}>
                             <div className="space-y-3">

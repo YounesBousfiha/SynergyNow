@@ -48,6 +48,18 @@ export const authService = {
             throw new Error('Error while logout');
         }
     },
+    changePassword: async (data) => {
+        try {
+            return axios.patch('/changepassword', data, {
+                headers: {
+                    'Authorization' : `Bearer ${Cookies.get('jwt')}`
+                }
+            });
+        } catch (error) {
+            console.error("Change Password Error:", error);
+            throw new Error('Error while changing password');
+        }
+    },
     forgetPassword: async (data) => {
         try {
             const res = await axios.post('/forgotpassword', data)

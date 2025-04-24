@@ -8,10 +8,19 @@ use App\Models\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Http\Request;
-use Mockery\Exception;
+use Cloudinary\Cloudinary;
 
 class UserController extends Controller
 {
+
+    public $cloudinary;
+
+
+    public function __construct(Cloudinary $cloudinary)
+    {
+        $this->cloudinary = $cloudinary;
+    }
+
     public function profile(Request $request)
     {
         $token = $request->bearerToken();
@@ -42,6 +51,19 @@ class UserController extends Controller
             if(!$user) {
                 return response()->json(['error' => 'User not found'], 404);
             }
+
+            if($request->hasFile('image')) {
+                $image = $request->file('image');
+
+                $uploadResult = $this->cloudinary->uploadApi()->upload($image->getRealPath(), [
+                    'folder' => 'SynegryNow',
+                    'public_id' => uniqid(),
+                    'overwrite' => true
+                ]);
+
+                $data['image'] = $uploadResult['secure_url'];
+            }
+
             $user->update($data);
 
             return response()->json([

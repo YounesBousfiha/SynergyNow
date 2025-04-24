@@ -5,6 +5,9 @@ import {Input} from "../../../components/ui/input";
 import { Mail } from 'lucide-react';
 import { useAuth } from "../../../store/useAuth";
 import { useState, useEffect } from "react";
+import {toast} from "sonner";
+import {userInfoService} from "../../../services/UserInfoService";
+import {authService} from "../../../services/authService";
 export default function AccountSetting() {
 
     const { user } = useAuth();
@@ -18,21 +21,41 @@ export default function AccountSetting() {
 
     console.log(user);
 
-    const handleUpdateInfo = (e) => {
+    const handleUpdateInfo = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData);
 
         console.log(data);
+
+        // TODO: Validation
+        // TODO: Start working on the Update info
+        // TODO: start by changing the controller one method for updateInfo
+        // TODO: make/search for the change password method
+        try {
+            const response = await userInfoService.update(data);
+            console.log(response);
+        } catch (e) {
+            console.error(e);
+            toast.error("Failed to update user information");
+        }
     }
-    const handleUpdatePassword = (e) => {
+    const handleUpdatePassword = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData);
 
-        console.log(data);
+        try {
+            const response = await authService.changePassword(data);
+            if(response.status === 200) {
+                toast.success("Password updated successfully");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to update password");
+        }
     }
 
     if (isLoading) {
@@ -62,7 +85,6 @@ export default function AccountSetting() {
                                 <p className="text-gray-500">{user?.email}</p>
                             </div>
                         </div>
-                        <Button className="bg-[#296c5c] hover:bg-[#296c5c]/90">Edit</Button>
                     </div>
 
                     {/* Form Fields */}
@@ -99,9 +121,7 @@ export default function AccountSetting() {
                                     className="bg-[#f9f9f9] border-0"/>
                             </div>
                         </div>
-                        <div className="flex items-center justify-between mt-6">                    <div className="flex items-center justify-between mt-6">
-                        <Button className="bg-[#296c5c] hover:bg-[#296c5c]/90">Update Info</Button>
-                    </div>
+                        <div className="flex items-center justify-end mt-6">
                             <Button type="submit" className="bg-[#296c5c] hover:bg-[#296c5c]/90">Update Info</Button>
                         </div>
                     </form>
@@ -109,43 +129,47 @@ export default function AccountSetting() {
                     <div className="mt-10">
                         <h3 className="text-lg font-semibold mb-4">Change Password</h3>
                         <form onSubmit={handleUpdatePassword}>
-                            <div className="space-y-2">
+                            <div className="space-y-3">
+                            <div className="space-y-3">
                                 <label htmlFor="oldpassword" className="block font-medium">
                                     Old Password
                                 </label>
                                 <Input
                                     id="oldpassword"
                                     type="password"
-                                    name="oldpassword"
+                                    name="old_password"
                                     placeholder="Your Old Password"
                                     className="bg-[#f9f9f9] border-0"/>
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                                 <label htmlFor="password" className="block font-medium">
                                     New Password
                                 </label>
                                 <Input
                                     id="password"
                                     type="password"
-                                    name="password"
+                                    name="new_password"
                                     placeholder="Your New Password"
                                     className="bg-[#f9f9f9] border-0"/>
                             </div>
 
-                            <div className="space-y-2 mt-4">
+                            <div className="space-y-3 mt-4">
                                 <label htmlFor="confirmPassword" className="block font-medium">
                                     Confirm Password
                                 </label>
                                 <Input
                                     id="confirmPassword"
                                     type="password"
-                                    name="confirmPassword"
+                                    name="confirm_password"
                                     placeholder="Confirm Your New Password"
                                     className="bg-[#f9f9f9] border-0"/>
                             </div>
-                            <Button type="submit" className="bg-[#296c5c] hover:bg-[#296c5c]/90">Change
-                                Password</Button>
+                            <div className="flex items-center justify-end">
+                                <Button type="submit" className="bg-[#296c5c] hover:bg-[#296c5c]/90">Change
+                                    Password</Button>
+                            </div>
+                            </div>
                         </form>
                     </div>
 

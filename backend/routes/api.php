@@ -29,10 +29,9 @@ Route::post('/invitation/{id}', [AuthController::class, 'registerWithInvitation'
 
 Route::middleware(auth::class)->group(function () {
     Route::get('/profile', [UserController::class, 'profile']);
-    Route::patch('/profile', [UserController::class, 'updateName']);
-    Route::patch('/changeemail', [UserController::class, 'changeEmail']);
     Route::delete('/account/delete', [UserController::class, 'deleteAccount']);
-    Route::put('/changepassword', [AuthController::class, 'changePassword']);
+    Route::post('/profile', [UserController::class, 'update']);
+    Route::patch('/changepassword', [AuthController::class, 'changePassword']);
     Route::get('/logout', [AuthController::class, 'logout']);
 
     Route::post('/setup', [MyCompanyController::class, 'store']);

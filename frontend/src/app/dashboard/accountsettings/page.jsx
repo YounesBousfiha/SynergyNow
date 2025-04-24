@@ -18,6 +18,23 @@ export default function AccountSetting() {
 
     console.log(user);
 
+    const handleUpdateInfo = (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData);
+
+        console.log(data);
+    }
+    const handleUpdatePassword = (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData);
+
+        console.log(data);
+    }
+
     if (isLoading) {
         return (
             <div className="p-8 flex items-center justify-center min-h-screen">
@@ -49,26 +66,87 @@ export default function AccountSetting() {
                     </div>
 
                     {/* Form Fields */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                            <label htmlFor="fullName" className="block font-medium">
-                                Firstname
-                            </label>
-                            <Input id="fullName" placeholder="Your First Name" className="bg-[#f9f9f9] border-0"/>
+                    <form onSubmit={handleUpdateInfo}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label htmlFor="fullName" className="block font-medium">
+                                    Firstname
+                                </label>
+                                <Input
+                                    id="fullName"
+                                    name="firstname"
+                                    placeholder="Your First Name"
+                                    className="bg-[#f9f9f9] border-0"/>
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="lastname" className="block font-medium">
+                                    Lastname
+                                </label>
+                                <Input
+                                    id="lastname"
+                                    name="lastname"
+                                    placeholder="Your Last Name"
+                                    className="bg-[#f9f9f9] border-0"/>
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="email" className="block font-medium">
+                                    Email
+                                </label>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    placeholder="Your Email"
+                                    className="bg-[#f9f9f9] border-0"/>
+                            </div>
                         </div>
-                        <div className="space-y-2">
-                            <label htmlFor="lastname" className="block font-medium">
-                                Lastname
-                            </label>
-                            <Input id="lastname" placeholder="Your Last Name" className="bg-[#f9f9f9] border-0"/>
+                        <div className="flex items-center justify-between mt-6">                    <div className="flex items-center justify-between mt-6">
+                        <Button className="bg-[#296c5c] hover:bg-[#296c5c]/90">Update Info</Button>
+                    </div>
+                            <Button type="submit" className="bg-[#296c5c] hover:bg-[#296c5c]/90">Update Info</Button>
                         </div>
-                        <div className="space-y-2">
-                            <label htmlFor="email" className="block font-medium">
-                                Email
-                            </label>
-                            <Input id="email" placeholder="Your Email" className="bg-[#f9f9f9] border-0"/>
-                        </div>
+                    </form>
+                    {/* Password Section */}
+                    <div className="mt-10">
+                        <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+                        <form onSubmit={handleUpdatePassword}>
+                            <div className="space-y-2">
+                                <label htmlFor="oldpassword" className="block font-medium">
+                                    Old Password
+                                </label>
+                                <Input
+                                    id="oldpassword"
+                                    type="password"
+                                    name="oldpassword"
+                                    placeholder="Your Old Password"
+                                    className="bg-[#f9f9f9] border-0"/>
+                            </div>
 
+                            <div className="space-y-2">
+                                <label htmlFor="password" className="block font-medium">
+                                    New Password
+                                </label>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    name="password"
+                                    placeholder="Your New Password"
+                                    className="bg-[#f9f9f9] border-0"/>
+                            </div>
+
+                            <div className="space-y-2 mt-4">
+                                <label htmlFor="confirmPassword" className="block font-medium">
+                                    Confirm Password
+                                </label>
+                                <Input
+                                    id="confirmPassword"
+                                    type="password"
+                                    name="confirmPassword"
+                                    placeholder="Confirm Your New Password"
+                                    className="bg-[#f9f9f9] border-0"/>
+                            </div>
+                            <Button type="submit" className="bg-[#296c5c] hover:bg-[#296c5c]/90">Change
+                                Password</Button>
+                        </form>
                     </div>
 
                     {/* Email Section */}

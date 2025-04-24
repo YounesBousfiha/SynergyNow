@@ -8,6 +8,7 @@ use App\Models\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Http\Request;
+use Mockery\Exception;
 
 class UserController extends Controller
 {
@@ -29,6 +30,31 @@ class UserController extends Controller
         }
     }
 
+
+
+    public function update(Request $request) {
+        $token = request()->bearerToken();
+
+        $data = $request->all();
+        try {
+            $decoded = JWT::decode($token, new Key(env('JWT_SECRET'), 'HS256'));
+            $user = User::findOrfail($decoded->sub);
+            if(!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+            $user->update($data);
+
+            return response()->json([
+                'user' => $user,
+                'message' => 'User updated successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Unexpected Error',
+                'message' => $e->getMessage()
+            ], 401);
+        }
+    }
     public function updateName(UpdateRequestProfile $request)
     {
         $token = $request->bearerToken();

@@ -16,7 +16,9 @@ export const useAuth = create(
                 isAuthenticated: false,
                 user: null,
             })
-            }
+            },
+
+            setUser: (user) => set({ user }),
         }),
         {
             name: 'auth-storage'

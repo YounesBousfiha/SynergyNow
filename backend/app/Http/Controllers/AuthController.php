@@ -120,7 +120,7 @@ class AuthController extends Controller
         $token = $request->bearerToken();
         try {
             $decoded = JWT::decode($token, new Key(env('JWT_SECRET'), 'HS256'));
-            $user = User::find($decoded->sub);
+            $user = User::findorfail($decoded->sub);
             if (!$user) {
                 return response()->json(['error' => 'User not found'], 404);
             }

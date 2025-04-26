@@ -13,7 +13,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return Task::all();
+        return Task::with('assignedTo')->get();
     }
 
     /**
@@ -26,6 +26,7 @@ class TaskController extends Controller
             $userId = AuthHelpers::getId($request->bearerToken());
             $data = $request->all();
             $data['user_id'] = $userId;
+            $data['company_id'] = AuthHelpers::getMyCompany($request->bearerToken())->id;
             $task = Task::create($data);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);

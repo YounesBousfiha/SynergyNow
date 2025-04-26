@@ -8,6 +8,7 @@ import {taskService} from "../../../../../services/taskService";
 import { useTasksStore } from "../../../../../store/useTasks";
 import {toast} from "sonner";
 
+import DeleteDialog from "./DeleteDialog";
 export default function TaskCard({ id, title, due_date, priority }) {
 
     const { removeTask, updateTask } = useTasksStore();
@@ -53,10 +54,9 @@ export default function TaskCard({ id, title, due_date, priority }) {
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             className="flex items-center gap-2 text-red-500 hover:!text-red-600 hover:!bg-red-100 hover:cursor-pointer"
-                            onClick={() => handleDelete(id)}
+                            onClick={event => event.preventDefault()}
                         >
-                            <Trash2 size={14} color={"red"} />
-                            <span>Delete</span>
+                            <DeleteDialog handleDelete={handleDelete} id={id}  />
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

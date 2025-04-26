@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link"
 import {
     LayoutDashboard,
@@ -8,9 +9,24 @@ import {
     Crown,
     ListTodo,
     Workflow, Settings, Logs, ClipboardPlus, MessageCircle, Mail
-} from "lucide-react"
+} from "lucide-react";
+import { usePathname }  from "next/navigation";
+import {useState, useEffect} from "react";
 
+
+// TODO: continue the active states
 export default function SideBar() {
+
+    const pathname = usePathname();
+    const [currentPath, setCurrentPath] = useState("");
+
+    useEffect(() => {
+        setCurrentPath(pathname)
+    }, [pathname])
+
+    const isActive = (href) => {
+        return pathname === href;
+    }
     const links = [
         { name: 'Dashboard', icon: <LayoutDashboard size={20} />, href: '/dashboard' },
         { name: 'Scrumsboards', icon: <Kanban size={20} />,
@@ -57,14 +73,15 @@ export default function SideBar() {
                             {link.href ? (
                                 <Link
                                     href={link.href}
-                                    className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 transition-colors"
+                                    className={`flex items-center gap-3 px-4 py-2 hover:bg-gray-100 transition-colors ${isActive(link.href) ? 'bg-gray-100 text-[#06ae6f]' : 'hover:bg-gray-100'}`}
                                 >
-                                    <span className="text-gray-500">{link.icon}</span>
+                                    <span
+                                        className={isActive(link.href) ? 'text-[#06ae6f]' : 'text-gray-500'}>{link.icon}</span>
                                     <span>{link.name}</span>
                                 </Link>
                             ) : (
                                 <details className="group">
-                                    <summary className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 transition-colors cursor-pointer list-none">
+                                    <summary className={`flex items-center gap-3 px-4 py-2 hover:bg-gray-100 transition-colors cursor-pointer list-none `}>
                                         <span className="text-gray-500">{link.icon}</span>
                                         <span>{link.name}</span>
                                     </summary>
@@ -73,7 +90,7 @@ export default function SideBar() {
                                             <li key={itemIndex}>
                                                 <Link
                                                     href={item.href}
-                                                    className="flex items-center gap-3 py-2 px-4 hover:bg-gray-100 transition-colors"
+                                                    className={`flex items-center gap-3 py-2 px-4 hover:bg-gray-100 transition-colors `}
                                                 >
                                                     <span className="text-gray-500">{item.icon}</span>
                                                     <span>{item.name}</span>

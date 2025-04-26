@@ -38,7 +38,7 @@ class AuthController extends Controller
                 'iss' => 'synegyNow',
                 'sub' => $user->id,
                 'iat' => time(),
-                'exp' => time() + 60*60
+                'exp' => time() + 60*60*24
             ];
 
             $jwt = JWT::encode($payload, env('JWT_SECRET'), 'HS256');

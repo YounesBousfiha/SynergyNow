@@ -35,18 +35,9 @@ export default function LoginForm() {
                     toast.success('Logged In Succefully');
                     login(res.user);
 
-                    console.log('Before condition:', {
-                        employes_at,
-                        type: typeof employes_at,
-                        truthyTest: !!employes_at,
-                        directComparison: employes_at === 10
-                    });
                     if(employes_at) {
-                        console.log('Condition passed');
                         router.push('/dashboard');
                     } else {
-                        console.log(employes_at);
-                        console.log('Condition failed');
                         router.push('/info-setup');
                     }
                 }

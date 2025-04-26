@@ -12,7 +12,7 @@ export const authService = {
             if(response.data.token) {
                 Cookies.set('jwt', response.data.token, {
                     secure: true,
-                    expires: 1 / 24
+                    expires: 1
                 });
 
                 return response.data

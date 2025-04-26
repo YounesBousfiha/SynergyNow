@@ -6,7 +6,6 @@ use App\Traits\HasAttachments;
 use Illuminate\Database\Eloquent\Model;
 
 
-// TODO:
 class Note extends Model
 {
     use HasAttachments;

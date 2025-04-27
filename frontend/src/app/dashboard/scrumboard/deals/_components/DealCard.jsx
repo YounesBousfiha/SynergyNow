@@ -27,7 +27,7 @@ export default function DealCard({ id, deal}) {
                 <div className="flex items-center justify-between mt-4">
                     <Avatar className="h-6 w-6">
                         <AvatarImage src={deal?.agent?.image} alt={`${deal?.agent?.firstname} ${deal?.agent?.lastname}`}/>
-                        <AvatarFallback className="text-xs">{`${deal?.agent?.firstname[0]} ${deal?.agent?.lastname[0]}`}</AvatarFallback>
+                        <AvatarFallback className="text-xs">{`${deal?.agent?.firstname.charAt(0)} ${deal?.agent?.lastname.charAt(0)}`}</AvatarFallback>
                     </Avatar>
                     <span className="text-sm font-medium">${deal.amount}</span>
                 </div>

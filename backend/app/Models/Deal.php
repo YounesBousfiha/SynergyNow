@@ -17,4 +17,8 @@ class Deal extends Model
         return $this->belongsTo(ClientCompany::class, 'client_company_id');
     }
 
+    public function agent() {
+        return $this->belongsTo(User::class, 'agent_id');
+    }
+
 }

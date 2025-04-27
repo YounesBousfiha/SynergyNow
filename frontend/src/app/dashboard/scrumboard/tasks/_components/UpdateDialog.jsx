@@ -17,13 +17,21 @@ import {FilePen, Trash2} from "lucide-react";
 export default function UpdateDialog({handleUpdate, id, task, open, onOpenChange }) {
     //const [isOpen, setIsOpen] = useState(false);
 
-    const [assignee, setAssignee] = useState(task?.assignee || "");
+    const [assignee, setAssignee] = useState(task?.assigned_to || "");
 
     const [title, setTitle] = useState(task?.title || "");
     const [description, setDescription] = useState(task?.description || "");
     const [priority, setPriority] = useState(task?.priority || "");
     const [status, setStatus] = useState(task?.status || "");
     const [due_date, setDueDate] = useState(task?.due_date || "");
+
+
+
+    const handleUnassign = async () => {
+        await handleUpdate(id, { ...task, assigned_to: null });
+        setAssignee("");
+        setAssignedUser(null);
+    };
 
     // Format the date for the input field if it exists
     useEffect(() => {
@@ -34,7 +42,6 @@ export default function UpdateDialog({handleUpdate, id, task, open, onOpenChange
         }
     }, [task]);
 
-    const handleUnassign = async () => {}
 
     const handleSubmit = async (e) => {
         e.preventDefault();

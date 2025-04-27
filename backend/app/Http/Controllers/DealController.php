@@ -36,6 +36,9 @@ class DealController extends Controller
             $data = $request->all();
             $data['my_companie_id'] = $companyId;
             $deal = Deal::create($data);
+
+            $quoteController = app()->make('App\Http\Controllers\QuoteController');
+            $quoteController->store($deal);
         } catch(Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }

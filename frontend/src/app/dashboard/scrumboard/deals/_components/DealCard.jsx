@@ -1,9 +1,39 @@
 import {Card, CardContent} from "../../../../../components/ui/card";
 import {Button} from "../../../../../components/ui/button";
-import {MoreVertical} from "lucide-react";
+import {Eye, FilePen, MoreVertical} from "lucide-react";
 import {Avatar, AvatarFallback, AvatarImage} from "../../../../../components/ui/avatar";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "../../../../../components/ui/dropdown-menu";
+import DeleteDialog from "../../tasks/_components/DeleteDialog";
+import {useState} from "react";
+import {useDealsStore} from "../../../../../store/useDeals";
+import {toast} from "sonner";
+import {dealsService} from "../../../../../services/dealsService";
 
 export default function DealCard({ id, deal}) {
+    const { removeDeal, updateDeal } = useDealsStore();
+    const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+    const [isViewOpen, setIsViewOpen] = useState(false);
+
+    const handleDelete = async (id) => {
+        try {
+            const response = await dealsService.deleteDeal(id);
+            if(response.status === 200) {
+                toast.success("Deal deleted successfully");
+                removeDeal(id);
+            }
+        } catch (error)  {
+            toast.error("Error deleting deal");
+        }
+    }
+
+    const handleUpdate = async (id, data) => {
+        // Implement update functionality here
+    }
     return (
         <Card className="bg-white shadow-sm">
             <CardContent className="p-4">
@@ -20,9 +50,32 @@ export default function DealCard({ id, deal}) {
                             <div className="text-xs text-gray-500">{deal.title}</div>
                         </div>
                     </div>
-                    <Button variant="ghost" size="icon" className="h-6 w-6 -mr-2">
-                        <MoreVertical size={14} />
-                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 -mr-2">
+                                <MoreVertical size={14}/>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                                className="flex items-center gap-2"
+                                onClick={() => { handleView(id) } }
+                            >
+                                <Eye size={14} />
+                                <span>View</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setIsUpdateOpen(true)}>
+                                <FilePen size={14} />
+                                Update
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                className="flex items-center gap-2 text-red-500 hover:!text-red-600 hover:!bg-red-100 hover:cursor-pointer"
+                                onClick={event => event.preventDefault()}
+                            >
+                                <DeleteDialog handleDelete={handleDelete} id={id}  />
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
                 <div className="flex items-center justify-between mt-4">
                     <Avatar className="h-6 w-6">

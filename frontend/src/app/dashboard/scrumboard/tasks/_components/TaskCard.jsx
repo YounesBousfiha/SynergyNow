@@ -12,10 +12,12 @@ import {toast} from "sonner";
 import { useState, useEffect} from "react";
 import DeleteDialog from "./DeleteDialog";
 import UpdateDialog from "./UpdateDialog";
+import ViewTaskSheet from "./ViewTaskSheet";
 export default function TaskCard({ id, task }) {
 
     const { removeTask, updateTask } = useTasksStore();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+    const [isViewOpen, setIsViewOpen] = useState(false);
 
 
     useEffect(() => {
@@ -49,13 +51,18 @@ export default function TaskCard({ id, task }) {
         }
     }
     const handleView  = async (id) => {
-        console.log("View task with id: ", id)
+        setIsViewOpen(true)
 
     }
 
 
     return (
         <>
+            <ViewTaskSheet
+                task={task}
+                open={isViewOpen}
+                onOpenChange={setIsViewOpen}
+            />
             <UpdateDialog
                 handleUpdate={handleUpdate}
                 id={id}
@@ -107,7 +114,11 @@ export default function TaskCard({ id, task }) {
                         <Badge
                             className="bg-red-100 text-red-600 px-2 py-0.5 h-5 text-xs font-medium flex items-center gap-1">
                             <AlarmClock size={12}/>
-                            {new Date(task.due_date).toLocaleDateString('en-GB')}
+                            {new Date(task.due_date).toLocaleDateString('en-GB', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                            })}
                         </Badge>
                         <Avatar className="h-6 w-6">
                             <AvatarImage src="/placeholder.svg?height=24&width=24" alt="Assignee"/>

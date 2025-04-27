@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\QuoteMail;
+use App\Models\Deal;
 use App\Models\Quote;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -24,14 +25,20 @@ class QuoteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Deal $deal)
     {
         try {
-            $quote = Quote::create($request->all());
+            $quote = Quote::create([
+                'deal_id' => $deal->id,
+                'title' => $deal->title,
+                'description' => $deal->description,
+                'amount' => $deal->amount,
+                'status' => 'draft',
+                'client_companies_id' => $deal->client_company_id,
+            ]);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
-        return response()->json($quote, 201);
     }
 
     /**

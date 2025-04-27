@@ -5,10 +5,12 @@ import DealCard from "./_components/DealCard";
 import { useState, useEffect} from "react";
 import {toast} from "sonner";
 import { dealsService} from "../../../../services/dealsService";
+import {useDealsStore} from "../../../../store/useDeals";
 
 export default function DealsManagerPage() {
 
-    const [deals, setDeals] = useState([]);
+    const { deals, setDeals } = useDealsStore();
+
     const [isLoading, setIsLoading] = useState(true);
 
 
@@ -16,7 +18,7 @@ export default function DealsManagerPage() {
         async function fetchDeals() {
             try {
                 const response = await dealsService.getDeals();
-                console.log("Deals:", response);
+                console.log("Deals:", response.message);
                 setDeals(response.message);
                 setIsLoading(false);
 

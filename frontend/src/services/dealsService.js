@@ -42,8 +42,11 @@ export const dealsService = {
 
     async deleteDeal(dealId) {
         try {
-            const response = await axios.delete(`/deals/${dealId}`);
-            return response.data;
+            return  await axios.delete(`/deal/${dealId}`, {
+                headers: {
+                    'Authorization': `Bearer ${Cookies.get('jwt')}`
+                }
+            });
         } catch (error) {
             console.error("Error deleting deal:", error);
             throw error;

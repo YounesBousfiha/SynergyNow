@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quote extends Model
 {
-    protected $fillable = ['title', 'deal_id', 'service_id', 'status', 'is_paid', 'client_companies_id'];
+    protected $fillable = ['title', 'deal_id', 'description', 'status', 'client_companies_id'];
 
     // TODO: have a many to many relationship with  services
     // TODO: Update the columns to have like total, status, notes, date D'experation

@@ -13,6 +13,7 @@ import {useState} from "react";
 import {useDealsStore} from "../../../../../store/useDeals";
 import {toast} from "sonner";
 import {dealsService} from "../../../../../services/dealsService";
+import ViewDealSheet from "./ViewDealSheet";
 
 export default function DealCard({ id, deal}) {
     const { removeDeal, updateDeal } = useDealsStore();
@@ -34,7 +35,18 @@ export default function DealCard({ id, deal}) {
     const handleUpdate = async (id, data) => {
         // Implement update functionality here
     }
+
+    const handleView  = async (id) => {
+        setIsViewOpen(true)
+
+    }
     return (
+        <>
+            <ViewDealSheet
+                open={isViewOpen}
+                onOpenChange={setIsViewOpen}
+                deal={deal}
+            />
         <Card className="bg-white shadow-sm">
             <CardContent className="p-4">
                 <div className="flex items-start justify-between mb-2">
@@ -86,5 +98,6 @@ export default function DealCard({ id, deal}) {
                 </div>
             </CardContent>
         </Card>
+        </>
     )
 }

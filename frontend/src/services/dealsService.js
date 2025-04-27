@@ -19,8 +19,11 @@ export const dealsService = {
 
     async createDeal(dealData) {
         try {
-            const response = await axios.post('/deals', dealData);
-            return response.data;
+            return await axios.post('/deal', dealData, {
+                headers: {
+                    "Authorization": `Bearer ${Cookies.get('jwt')}`,
+                }
+            });
         } catch (error) {
             console.error("Error creating deal:", error);
             throw error;

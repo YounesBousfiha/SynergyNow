@@ -5,6 +5,7 @@ import { Input } from "../../../../components/ui/input";
 import { toast } from "sonner";
 import { contactService } from "../../../../services/contactService";
 import { useContactStore } from "../../../../store/useContact";
+import {useEffect} from "react";
 
 export function EditContactSheet({
                                      isOpen,
@@ -12,6 +13,15 @@ export function EditContactSheet({
                                      contact
                                  }) {
     const { updateContact } = useContactStore();
+
+    useEffect(() => {
+        if (!isOpen) {
+            document.body.style.pointerEvents = 'auto';
+        }
+        return () => {
+            document.body.style.pointerEvents = 'auto';
+        };
+    }, [isOpen]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();

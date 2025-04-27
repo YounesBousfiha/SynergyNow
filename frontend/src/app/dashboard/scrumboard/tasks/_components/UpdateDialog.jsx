@@ -26,6 +26,14 @@ export default function UpdateDialog({handleUpdate, id, task, open, onOpenChange
     const [status, setStatus] = useState(task?.status || "");
     const [due_date, setDueDate] = useState(task?.due_date || "");
 
+    useEffect(() => {
+        if (!open) {
+            document.body.style.pointerEvents = 'auto';
+        }
+        return () => {
+            document.body.style.pointerEvents = 'auto';
+        };
+    }, [open]);
 
     useEffect(() => {
 

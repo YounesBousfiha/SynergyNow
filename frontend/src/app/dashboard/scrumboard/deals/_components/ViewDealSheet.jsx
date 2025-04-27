@@ -10,8 +10,18 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Building2, DollarSign, Calendar, User, Briefcase, Tag } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
-
+import { useEffect } from "react"
 export default function ViewDealSheet({ deal, open, onOpenChange }) {
+
+    useEffect(() => {
+        if (!open) {
+            document.body.style.pointerEvents = 'auto';
+        }
+        return () => {
+            document.body.style.pointerEvents = 'auto';
+        };
+    }, [open]);
+
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent className="sm:max-w-[500px] p-6 overflow-y-auto">

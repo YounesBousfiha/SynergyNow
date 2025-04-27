@@ -14,6 +14,14 @@ import {useEffect, useState} from "react";
 
 export default function ViewTaskSheet({ task, open, onOpenChange }) {
 
+    useEffect(() => {
+        if (!open) {
+            document.body.style.pointerEvents = 'auto';
+        }
+        return () => {
+            document.body.style.pointerEvents = 'auto';
+        };
+    }, [open]);
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent className="sm:max-w-[500px] overflow-y-auto">

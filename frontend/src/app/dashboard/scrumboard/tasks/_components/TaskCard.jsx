@@ -76,7 +76,8 @@ export default function TaskCard({ id, title, due_date, priority }) {
                             <span>View</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setIsUpdateOpen(true)}>
-                            update
+                            <FilePen size={14} />
+                            Update
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             className="flex items-center gap-2 text-red-500 hover:!text-red-600 hover:!bg-red-100 hover:cursor-pointer"

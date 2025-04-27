@@ -88,35 +88,6 @@ class TaskController extends Controller
         return response()->json(['message' => 'Task deleted successfully!']);
     }
 
-    public function assigneeTo(Request $request, string $taskId)
-    {
-        try {
-            $userId = AuthHelpers::getId($request->bearerToken());
-            $task = Task::where('user_id', $userId)->where('id', $taskId)->first();
-            if (!$task) {
-                return response()->json(['message' => 'Task not found!'], 404);
-            }
-            $task->update(['assigned_to' => $request->assigned_to]);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
-        return response()->json($task);
-    }
-
-    public function unassign(Request $request, string $taskId)
-    {
-        try {
-            $userId = AuthHelpers::getId($request->bearerToken());
-            $task = Task::where('user_id', $userId)->where('id', $taskId)->first();
-            if (!$task) {
-                return response()->json(['message' => 'Task not found!'], 404);
-            }
-            $task->update(['assigned_to' => null]);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
-        return response()->json($task);
-    }
 
     public function myTasks(Request $request)
     {

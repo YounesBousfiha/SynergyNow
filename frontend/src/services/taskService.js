@@ -31,7 +31,7 @@ export const taskService = {
 
     updateTask: async (taskId, taskData) => {
         try {
-            return await axios.put(`/tasks/${taskId}`, taskData, {
+            return await axios.put(`/task/${taskId}`, taskData, {
                 headers : {
                     'Authorization': `Bearer ${Cookies.get('jwt')}`
                 }

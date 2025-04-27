@@ -25,6 +25,10 @@ export default function Tasks() {
         fetchTasks();
     }, []);
 
+    useEffect(() => {
+        console.log("Tasks updated:", tasks);
+    }, [tasks])
+
     const unassignedTasks = tasks.filter(task => task.status === "unassigned");
     const todoTasks = tasks.filter(task => task.status === "todo");
     const inProgressTasks = tasks.filter(task => task.status === "in_progress");

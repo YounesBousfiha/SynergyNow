@@ -5,6 +5,7 @@ import {Button} from "../../../../../components/ui/button";
 import {Plus} from "lucide-react";
 import AddDealSheet from "./AddDealSheet";
 import { useState } from 'react';
+
 export default function DealsColumn({ title, count, children }) {
 
     const [isOpen, setIsOpen] = useState(false);

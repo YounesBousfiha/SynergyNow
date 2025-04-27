@@ -27,6 +27,7 @@ class TaskController extends Controller
             $data = $request->all();
             $data['user_id'] = $userId;
             $data['company_id'] = AuthHelpers::getMyCompany($request->bearerToken())->id;
+            $data['assigned_to'] = $request->input('assigned_to');
             $task = Task::create($data);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);

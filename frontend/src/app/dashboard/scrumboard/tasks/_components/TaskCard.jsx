@@ -12,10 +12,15 @@ import {toast} from "sonner";
 import { useState, useEffect} from "react";
 import DeleteDialog from "./DeleteDialog";
 import UpdateDialog from "./UpdateDialog";
-export default function TaskCard({ id, title, due_date, priority }) {
+export default function TaskCard({ id, task }) {
 
     const { removeTask, updateTask } = useTasksStore();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+
+
+    useEffect(() => {
+        console.log("Task updated:", task);
+    }, [])
 
     const handleDelete = async (id) => {
         try {
@@ -54,13 +59,13 @@ export default function TaskCard({ id, title, due_date, priority }) {
             <UpdateDialog
                 handleUpdate={handleUpdate}
                 id={id}
-                task={{ title, due_date, priority }}
+                task={task}
                 open={isUpdateOpen}
                 onOpenChange={setIsUpdateOpen}
             />
         <Card className="bg-white shadow-sm">
             <CardHeader className="p-3 pb-0 flex flex-row items-start justify-between space-y-0">
-                <h4 className="text-sm font-medium">{title}</h4>
+                <h4 className="text-sm font-medium">{task.title}</h4>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-6 w-6 -mr-2">
@@ -94,15 +99,15 @@ export default function TaskCard({ id, title, due_date, priority }) {
                     <div className="flex items-center gap-1 text-gray-500">
                         {/* Change colors based on status */}
                         <span className={`text-sm  p-1 rounded-sm font-bold
-                        ${priority === 'medium' ? 'text-yellow-600 bg-yellow-300'
-                            : priority === 'high' ? 'text-orange-600 bg-orange-300' : 'text-green-600 bg-green-300'  }`}
-                        >{priority}</span>
+                        ${task.priority === 'medium' ? 'text-yellow-600 bg-yellow-300'
+                            : task.priority === 'high' ? 'text-orange-600 bg-orange-300' : 'text-green-600 bg-green-300'  }`}
+                        >{task.priority}</span>
                     </div>
                     <div className="flex items-center gap-4">
                         <Badge
                             className="bg-red-100 text-red-600 px-2 py-0.5 h-5 text-xs font-medium flex items-center gap-1">
                             <AlarmClock size={12}/>
-                            {new Date(due_date).toLocaleDateString('en-GB')}
+                            {new Date(task.due_date).toLocaleDateString('en-GB')}
                         </Badge>
                         <Avatar className="h-6 w-6">
                             <AvatarImage src="/placeholder.svg?height=24&width=24" alt="Assignee"/>

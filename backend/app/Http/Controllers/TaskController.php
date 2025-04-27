@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\AuthHelpers;
+use App\Mail\TaskNotification;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class TaskController extends Controller
 {
@@ -64,6 +67,16 @@ class TaskController extends Controller
                 return response()->json(['message' => 'Task not found!'], 404);
             }
             $task->update($request->all());
+
+            $oldAssignedTo = "";
+            if ($task->assigned_to && ($oldAssignedTo != $task->assigned_to || $task->wasChanged())) {
+                $assignedUser = User::find($task->assigned_to);
+                if ($assignedUser && $assignedUser->email) {
+                    Mail::to($assignedUser->email)
+                        ->send(new TaskNotification($task));
+                }
+            }
+
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }

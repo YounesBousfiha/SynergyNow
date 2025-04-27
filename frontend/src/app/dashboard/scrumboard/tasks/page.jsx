@@ -57,7 +57,7 @@ export default function Tasks() {
                     <KanbanColumn title="Unassigned" count={unassignedCount}>
                         {unassignedTasks.map((task) => {
                             return (
-                                <TaskCard key={task.id} id={task.id} title={task.title} priority={task.priority} due_date={task.due_date}/>
+                                <TaskCard key={task.id} id={task.id} task={task}/>
                             )
                         })}
                     </KanbanColumn>
@@ -66,7 +66,7 @@ export default function Tasks() {
                     <KanbanColumn title="TODO" count={todoCount}>
                         {todoTasks.map((task) => {
                             return (
-                                <TaskCard key={task.id} id={task.id} title={task.title} priority={task.priority} due_date={task.due_date}/>
+                                <TaskCard key={task.id} id={task.id} task={task}/>
                             )
                         })}
                     </KanbanColumn>
@@ -75,7 +75,7 @@ export default function Tasks() {
                     <KanbanColumn title="InProgress" count={inProgressCount}>
                         {inProgressTasks.map((task) => {
                             return (
-                                <TaskCard key={task.id} id={task.id} title={task.title} priority={task.priority} due_date={task.due_date}/>
+                                <TaskCard key={task.id} id={task.id} task={task}/>
                             )
                         })}
                     </KanbanColumn>
@@ -84,7 +84,7 @@ export default function Tasks() {
                     <KanbanColumn title="InReview" count={inReviewCount}>
                         {inReviewTasks.map((task) => {
                             return (
-                                <TaskCard key={task.id} id={task.id} title={task.title} priority={task.priority} due_date={task.due_date}/>
+                                <TaskCard key={task.id} id={task.id} task={task}/>
                             )
                         })}
                     </KanbanColumn>
@@ -93,7 +93,7 @@ export default function Tasks() {
                     <KanbanColumn title="Done" count={doneCount}>
                         {doneTasks.map((task) => {
                             return (
-                                <TaskCard key={task.id} id={task.id} title={task.title} priority={task.priority} due_date={task.due_date}/>
+                                <TaskCard key={task.id} id={task.id} task={task}/>
                             )
                         })}
                     </KanbanColumn>

@@ -16,7 +16,7 @@ class DealController extends Controller
     {
         $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
         try {
-            $deals = Deal::with(['clientCompany', 'agent'])->where('my_companie_id', $companyId)->get();
+            $deals = Deal::with(['clientCompany', 'agent', 'quotes'])->where('my_companie_id', $companyId)->get();
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }

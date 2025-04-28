@@ -18,7 +18,7 @@ export default function DealsManagerPage() {
         async function fetchDeals() {
             try {
                 const response = await dealsService.getDeals();
-                console.log("Deals:", response.message);
+                console.log("Deals:", response.message.deals);
                 setDeals(response.message);
                 setIsLoading(false);
 

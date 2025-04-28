@@ -8,9 +8,6 @@ use App\Models\Quote;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
-use Mockery\Exception;
-use Stripe\Stripe;
-use Stripe\Webhook;
 
 class QuoteController extends Controller
 {
@@ -122,16 +119,17 @@ class QuoteController extends Controller
     }
 
 
-   public function sendQuote(Request $request, string $quoteId) {
+   public function sendQuote(Request $request, $dealId) {
         try {
-            //Stripe::setApiKey(env('STRIPE_SECRET'));
+            // TODO: Invertigate the quote why it didn't set to sent
+            $quote = Quote::with(['clientCompany', 'deal', 'deal.company'])->where('deal_id', $dealId)->first();
 
-            $quote = Quote::with(['deal', 'service', 'clientCompany'])->find($quoteId);            if (!$quote) {
+            if (!$quote) {
                 return response()->json(['message' => 'Quote not found!'], 404);
             }
 
-            if($quote->is_paid || $quote->status == 'sent') {
-                return response()->json(['message' => 'Quote is already sent or paid'], 400);
+            if($quote->status == 'sent') {
+                return response()->json(['message' => 'Quote is already sent'], 400);
             }
 
             $pdf = PDF::loadView('pdf.quote', ['quote' => $quote]);
@@ -141,35 +139,11 @@ class QuoteController extends Controller
             );
 
             $quote->update(['status' => 'sent']);
-            // Emailing proceess
+
             return response()->json(['message' => 'Quote sent successfully!'], 200);
-            //$session = Stripe\Checkout\
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 
-    /*function webhook(Request $request) {
-        Stripe::setApiKey(env('STRIPE_SECRET'));
-
-        $payload = $request->getContent();
-        $sig_header = $request->header('Stripe-Signature');
-        $endpoint_secret = env('STRIPE_WEBHOOK_SECRET');
-
-        try {
-            $event = Webhook::constructEvent($payload, $sig_header, $endpoint_secret);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Invalid Webhook'], 400);
-        }
-
-        if ($event->type === 'checkout.session.completed') {
-            $session = $event->data->object;
-            $quote = Quote::where('id', $session->metadata->quote_id)->first();
-            if ($quote) {
-                $quote->update(['status' => 'paid']);
-            }
-        }
-
-        return response()->json(['message' => 'Webhook received']);
-    }*/
 }

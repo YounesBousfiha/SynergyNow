@@ -103,13 +103,13 @@ export default function DealCard({ id, deal}) {
                                 <FilePen size={14} />
                                 Update
                             </DropdownMenuItem>
-                            <DropdownMenuItem
+                            { deal?.quotes[0].status === 'draft' && <DropdownMenuItem
                                 className="flex items-center gap-2"
                                 onClick={() => handleQuoteSent(id)}
                             >
                                     <SendHorizontal size={14}/>
                                     Sent Quote
-                            </DropdownMenuItem>
+                            </DropdownMenuItem>}
                             <DropdownMenuItem
                                 className="flex items-center gap-2 text-red-500 hover:!text-red-600 hover:!bg-red-100 hover:cursor-pointer"
                                 onClick={event => event.preventDefault()}

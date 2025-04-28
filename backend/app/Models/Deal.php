@@ -10,7 +10,7 @@ class Deal extends Model
 
     public function company()
     {
-        return $this->belongsTo(MyCompany::class);
+        return $this->belongsTo(MyCompany::class, 'my_companie_id');
     }
 
     public function clientCompany() {
@@ -19,6 +19,10 @@ class Deal extends Model
 
     public function agent() {
         return $this->belongsTo(User::class, 'agent_id');
+    }
+
+    public function quotes() {
+        return $this->hasMany(Quote::class);
     }
 
 }

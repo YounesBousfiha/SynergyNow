@@ -1,6 +1,6 @@
 import {Card, CardContent} from "../../../../../components/ui/card";
 import {Button} from "../../../../../components/ui/button";
-import {Eye, FilePen, MoreVertical} from "lucide-react";
+import {Eye, FilePen, MoreVertical, SendHorizontal} from "lucide-react";
 import {Avatar, AvatarFallback, AvatarImage} from "../../../../../components/ui/avatar";
 import {
     DropdownMenu,
@@ -9,16 +9,26 @@ import {
     DropdownMenuTrigger
 } from "../../../../../components/ui/dropdown-menu";
 import DeleteDialog from "../../tasks/_components/DeleteDialog";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useDealsStore} from "../../../../../store/useDeals";
 import {toast} from "sonner";
 import {dealsService} from "../../../../../services/dealsService";
 import ViewDealSheet from "./ViewDealSheet";
+import {quoteService} from "../../../../../services/quoteService";
 
 export default function DealCard({ id, deal}) {
     const { removeDeal, updateDeal } = useDealsStore();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [isViewOpen, setIsViewOpen] = useState(false);
+
+    useEffect(() => {
+        if (!open) {
+            document.body.style.pointerEvents = 'auto';
+        }
+        return () => {
+            document.body.style.pointerEvents = 'auto';
+        };
+    }, [open]);
 
     const handleDelete = async (id) => {
         try {
@@ -34,6 +44,19 @@ export default function DealCard({ id, deal}) {
 
     const handleUpdate = async (id, data) => {
         // Implement update functionality here
+    }
+
+    const handleQuoteSent = async (id) => {
+        try {
+            const response = await quoteService.sendQuote(id);
+            if(response.status === 200) {
+                toast.success("Quote sent successfully");
+                updateDeal(deal.id, { ...deal, status: "quote_sent" });
+            }
+        } catch (error) {
+            console.error("Error sending quote:", error);
+            toast.error("Error sending quote");
+        }
     }
 
     const handleView  = async (id) => {
@@ -79,6 +102,13 @@ export default function DealCard({ id, deal}) {
                             <DropdownMenuItem onClick={() => setIsUpdateOpen(true)}>
                                 <FilePen size={14} />
                                 Update
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                className="flex items-center gap-2"
+                                onClick={() => handleQuoteSent(id)}
+                            >
+                                    <SendHorizontal size={14}/>
+                                    Sent Quote
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 className="flex items-center gap-2 text-red-500 hover:!text-red-600 hover:!bg-red-100 hover:cursor-pointer"

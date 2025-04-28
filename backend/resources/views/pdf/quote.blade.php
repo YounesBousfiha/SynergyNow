@@ -1,81 +1,85 @@
-{{-- resources/views/quotes/show.blade.php --}}
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quote #{{ $quote->id }}</title>
-    {{--@vite('resources/css/app.css') --}}
 </head>
-<body class="bg-gray-50">
-<div class="container mx-auto px-4 py-8 max-w-4xl">
-    <!-- Quote Card -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <!-- Header -->
-        <div class="flex justify-between items-center border-b pb-4">
-            <h1 class="text-2xl font-bold text-gray-800">Quote #{{ $quote->id }}</h1>
-            <button onclick="window.print()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Print / Download
-            </button>
+<body style="background-color: #f9fafb; margin: 0; padding: 0; font-family: Arial, sans-serif;">
+<div style="max-width: 800px; margin: 20px auto; background-color: white; padding: 40px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <!-- Header Section -->
+    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #e5e7eb; padding-bottom: 20px; margin-bottom: 20px;">
+        <div>
+            @if(isset($quote->clientCompany) && $quote->clientCompany && $quote->clientCompany->image)
+                <img src="{{ $quote->clientCompany->image }}" alt="Company Logo" style="max-height: 60px; margin-bottom: 10px;">
+            @endif
+            <h1 style="color: #1f2937; margin: 0;">Quote #{{ $quote->id }}</h1>
         </div>
-
-        <!-- Client Info -->
-        <div class="mt-6 grid grid-cols-2 gap-4">
-            <div>
-                <h2 class="font-semibold text-gray-700">Client Information</h2>
-                <p class="text-gray-600">{{$quote->clientCompany->name}}</p>
-                <p class="text-gray-600">{{$quote->clientCompany->email}}</p>
-            </div>
-            <div class="text-right">
-                <p class="text-gray-600">Date: </p>
-                <p class="text-gray-600">Due Date: </p>
-            </div>
+        <div style="text-align: right;">
+            <p style="color: #4b5563; margin: 0;">Date: {{ $quote->created_at->format('M d, Y') }}</p>
         </div>
-
-        <!-- Items Table -->
-        <div class="mt-6">
-            <table class="w-full">
-                <thead>
-                <tr class="border-b">
-                    <th class="text-left py-2">Description</th>
-                    <th class="text-right py-2">Qty</th>
-                    <th class="text-right py-2">Price</th>
-                    <th class="text-right py-2">Total</th>
-                </tr>
-                </thead>
-                <tbody>
-               {{-- @foreach($quote->items as $item) --}}
-                    <tr class="border-b">
-                        <td class="py-2">Description</td>
-                        <td class="text-right py-2">Price</td>
-                    </tr>
-               {{-- @endforeach --}}
-                </tbody>
-                <tfoot>
-                <tr class="border-b">
-                    <td colspan="3" class="text-right py-2 font-semibold">Subtotal:</td>
-                    <td class="text-right py-2">subTotal</td>
-                </tr>
-                <tr class="border-b">
-                    <td colspan="3" class="text-right py-2 font-semibold">Tax Rate : xx%</td>
-                    <td class="text-right py-2"> Price with tax</td>
-                </tr>
-                <tr>
-                    <td colspan="3" class="text-right py-2 font-bold">Total:</td>
-                    <td class="text-right py-2 font-bold">Total</td>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
-
-        <!-- Notes -->
-        {{--@if($quote->notes)--}}
-            <div class="mt-6">
-                <h2 class="font-semibold text-gray-700">Notes</h2>
-                <p class="text-gray-600 mt-1"> Quote Note</p>
-            </div>
-        {{--@endif --}}
     </div>
+
+    <!-- Client and Company Information -->
+    <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
+        <div style="flex: 1;">
+            <h2 style="color: #374151; font-size: 18px; margin-bottom: 10px;">From</h2>
+            <p style="color: #4b5563; margin: 5px 0;">{{ $quote->deal->company->name }}</p>
+        </div>
+        <div style="flex: 1;">
+            <h2 style="color: #374151; font-size: 18px; margin-bottom: 10px;">To</h2>
+            @if($quote->clientCompany)
+                <p style="color: #4b5563; margin: 5px 0;">{{ $quote->clientCompany->name }}</p>
+                <p style="color: #4b5563; margin: 5px 0;">{{ $quote->clientCompany->address }}</p>
+                <p style="color: #4b5563; margin: 5px 0;">{{ $quote->clientCompany->email }}</p>
+                <p style="color: #4b5563; margin: 5px 0;">{{ $quote->clientCompany->phone }}</p>
+            @endif
+        </div>
+    </div>
+
+    <!-- Quote Details -->
+    <div style="margin-bottom: 30px;">
+        <h2 style="color: #374151; font-size: 18px; margin-bottom: 10px;">Quote Details</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <thead>
+            <tr style="background-color: #f3f4f6;">
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">Description</th>
+                <th style="padding: 12px; text-align: right; border-bottom: 1px solid #e5e7eb;">Quantity</th>
+                <th style="padding: 12px; text-align: right; border-bottom: 1px solid #e5e7eb;">Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">{{ $quote->title }}</td>
+                <td style="padding: 12px; text-align: right; border-bottom: 1px solid #e5e7eb;">1</td>
+                <td style="padding: 12px; text-align: right; border-bottom: 1px solid #e5e7eb;">{{ $quote->amount }}</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold;">Subtotal:</td>
+                <td style="padding: 12px; text-align: right;">${{ $quote->amount }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold;">Tax (20%):</td>
+                <td style="padding: 12px; text-align: right;">${{ $quote->amount * 0.20 }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold;">Total:</td>
+                <td style="padding: 12px; text-align: right; font-weight: bold;">${{ $quote->amount + ($quote->amount * 0.20) }}</td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- Description -->
+    @if($quote->description)
+        <div style="margin-bottom: 30px;">
+            <h2 style="color: #374151; font-size: 18px; margin-bottom: 10px;">Description</h2>
+            <p style="color: #4b5563; margin: 0; padding: 15px; background-color: #f9fafb; border-radius: 4px;">
+                {{ $quote->description }}
+            </p>
+        </div>
+    @endif
 </div>
 </body>
 </html>

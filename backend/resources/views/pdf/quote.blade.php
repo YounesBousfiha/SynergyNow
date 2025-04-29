@@ -23,7 +23,7 @@
     <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
         <div style="flex: 1;">
             <h2 style="color: #374151; font-size: 18px; margin-bottom: 10px;">From</h2>
-            <p style="color: #4b5563; margin: 5px 0;">{{ $quote->deal->company->name }}</p>
+            <p style="color: #4b5563; margin: 5px 0;">{{ $quote->clientCompany->name }}</p>
         </div>
         <div style="flex: 1;">
             <h2 style="color: #374151; font-size: 18px; margin-bottom: 10px;">To</h2>
@@ -57,15 +57,15 @@
             <tfoot>
             <tr>
                 <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold;">Subtotal:</td>
-                <td style="padding: 12px; text-align: right;">${{ $quote->amount }}</td>
+                <td style="padding: 12px; text-align: right;">${{ $quote->deal->amount }}</td>
             </tr>
             <tr>
                 <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold;">Tax (20%):</td>
-                <td style="padding: 12px; text-align: right;">${{ $quote->amount * 0.20 }}</td>
+                <td style="padding: 12px; text-align: right;">${{ $quote->deal->amount * 0.20 }}</td>
             </tr>
             <tr>
                 <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold;">Total:</td>
-                <td style="padding: 12px; text-align: right; font-weight: bold;">${{ $quote->amount + ($quote->amount * 0.20) }}</td>
+                <td style="padding: 12px; text-align: right; font-weight: bold;">${{ $quote->deal->amount + ($quote->deal->amount * 0.20) }}</td>
             </tr>
             </tfoot>
         </table>

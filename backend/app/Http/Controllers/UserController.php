@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\AuthHelpers;
 use App\Http\Requests\UpdateRequestEmail;
 use App\Http\Requests\UpdateRequestProfile;
+use App\Models\ClientCompany;
+use App\Models\Contact;
+use App\Models\Deal;
 use App\Models\User;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Http\Request;
 use Cloudinary\Cloudinary;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -19,6 +24,28 @@ class UserController extends Controller
     public function __construct(Cloudinary $cloudinary)
     {
         $this->cloudinary = $cloudinary;
+    }
+
+
+    public function getCounts(Request $request)
+    {
+        $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+        try {
+            $clients = ClientCompany::where('my_companie_id', $companyId)->count();
+            $contacts = DB::table('contacts')
+                ->join('client_companies', 'contacts.client_companie_id', '=', 'client_companies.id')
+                ->where('client_companies.my_companie_id', $companyId)
+                ->count();
+            $deals = Deal::where('my_companie_id', $companyId)->count();
+
+            return response()->json([
+                'clientsCount' => $clients,
+                'contactsCount' => $contacts,
+                'dealsCount' => $deals,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 
     public function profile(Request $request)

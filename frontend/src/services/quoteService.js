@@ -40,5 +40,18 @@ export const quoteService = {
             console.error("Error deleting quote:", error);
             throw error;
         }
+    },
+    exportPDF : async (id) => {
+        try {
+            return await axios.get(`/quote/${id}/export`, {
+                responseType: 'blob',
+                headers: {
+                    'Authorization': `Bearer ${Cookies.get('jwt')}`
+                }
+            });
+        } catch (error) {
+            console.error("Error exporting PDF:", error);
+            throw error;
+        }
     }
 }

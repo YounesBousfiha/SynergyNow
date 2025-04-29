@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\AuthHelpers;
 use App\Mail\QuoteMail;
 use App\Models\Deal;
 use App\Models\Quote;
@@ -14,9 +15,23 @@ class QuoteController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Quote::all();
+        try {
+            $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+            $quotes = Quote::with(['deal', 'clientCompany'])
+                ->whereHas('deal', function($query) use($companyId) {
+                    $query->where('my_companie_id', $companyId);
+                })
+                ->get();
+            //$quotes = Quote::with(['deal', 'clientCompany'])->get();
+            if ($quotes->isEmpty()) {
+                return response()->json(['message' => 'No quotes found!'], 404);
+            }
+            return response()->json($quotes);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
     /**

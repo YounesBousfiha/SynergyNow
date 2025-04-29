@@ -5,7 +5,6 @@ import {
     AlertDialogTrigger
 } from "../../../../../components/ui/alert-dialog";
 import {Trash2} from "lucide-react";
-import {useEffect} from "react";
 
 export default function DeleteDialog({ handleDelete, id}) {
 

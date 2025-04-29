@@ -43,7 +43,7 @@ export const quoteService = {
     },
     exportPDF : async (id) => {
         try {
-            return await axios.get(`/quote/${id}/export`, {
+            return await axios.get(`/quote/${id}/pdf`, {
                 responseType: 'blob',
                 headers: {
                     'Authorization': `Bearer ${Cookies.get('jwt')}`

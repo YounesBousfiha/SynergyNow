@@ -13,7 +13,6 @@ export default function DeleteDialog({ handleDelete, id}) {
             <AlertDialogTrigger asChild>
                 <div className="flex gap-2 text-red-500">
                     <Trash2 color={"red"} size={18} />
-                    Delete
                 </div>
             </AlertDialogTrigger>
             <AlertDialogContent>

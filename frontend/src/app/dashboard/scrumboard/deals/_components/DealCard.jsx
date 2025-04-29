@@ -15,6 +15,7 @@ import {toast} from "sonner";
 import {dealsService} from "../../../../../services/dealsService";
 import ViewDealSheet from "./ViewDealSheet";
 import {quoteService} from "../../../../../services/quoteService";
+import UpdateDialog from "./UpdateDialog";
 
 export default function DealCard({ id, deal}) {
     const { removeDeal, updateDeal } = useDealsStore();
@@ -42,10 +43,6 @@ export default function DealCard({ id, deal}) {
         }
     }
 
-    const handleUpdate = async (id, data) => {
-        // Implement update functionality here
-    }
-
     const handleQuoteSent = async (id) => {
         try {
             const response = await quoteService.sendQuote(id);
@@ -63,12 +60,37 @@ export default function DealCard({ id, deal}) {
         setIsViewOpen(true)
 
     }
+
+    const handleUpdateDialog = () => {
+        setIsUpdateOpen(true)
+    }
+
+    const handleUpdate  = async (id, data) => {
+        console.log("Deal ID: ", id)
+        console.log("Data: ", data)
+        try {
+            const response = await dealsService.updateDeal(id, data);
+            console.log(response.data);
+            setIsUpdateOpen(true)
+        } catch (error) {
+            console.error("Error updating deal: ", error);
+            toast.error("Error updating deal");
+        }
+    }
     return (
         <>
             <ViewDealSheet
                 open={isViewOpen}
                 onOpenChange={setIsViewOpen}
                 deal={deal}
+            />
+
+            <UpdateDialog
+                handleUpdate={handleUpdate}
+                deal={deal}
+                id={id}
+                open={isUpdateOpen}
+                onOpenChange={setIsUpdateOpen}
             />
         <Card className="bg-white shadow-sm">
             <CardContent className="p-4">
@@ -99,7 +121,7 @@ export default function DealCard({ id, deal}) {
                                 <Eye size={14} />
                                 <span>View</span>
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setIsUpdateOpen(true)}>
+                            <DropdownMenuItem onClick={() => handleUpdateDialog()}>
                                 <FilePen size={14} />
                                 Update
                             </DropdownMenuItem>

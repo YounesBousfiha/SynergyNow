@@ -28,5 +28,17 @@ export const quoteService = {
             console.error("Error fetching all quotes:", error);
             throw error;
         }
+    },
+    deleteQuote: async (id) => {
+        try  {
+            return await axios.delete(`/quote/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${Cookies.get('jwt')}`
+            }
+        })
+        } catch (error) {
+            console.error("Error deleting quote:", error);
+            throw error;
+        }
     }
 }

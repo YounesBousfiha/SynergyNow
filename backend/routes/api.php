@@ -34,6 +34,8 @@ Route::middleware(auth::class)->group(function () {
     Route::patch('/changepassword', [AuthController::class, 'changePassword']);
     Route::get('/logout', [AuthController::class, 'logout']);
 
+    Route::get('/counts', [UserController::class, 'getCounts']);
+
     Route::post('/setup', [MyCompanyController::class, 'store']);
     Route::get('/mycompany', [MyCompanyController::class, 'index']);
     Route::post('/mycompany', [MyCompanyController::class, 'update']);

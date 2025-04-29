@@ -28,7 +28,7 @@ export default function DealsManagerPage() {
         }
 
         fetchDeals()
-    }, [])
+    }, [setDeals])
 
 
     const newDeals = deals.filter(deal => deal.status === "new");

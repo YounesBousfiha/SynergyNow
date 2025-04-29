@@ -5,6 +5,8 @@ import {Button} from "../../../../components/ui/button";
 import { FileDown } from 'lucide-react';
 import {DialogHeader, Dialog, DialogContent, DialogDescription, DialogTitle} from "../../../../components/ui/dialog";
 import {Separator} from "../../../../components/ui/separator";
+import {quoteService} from "../../../../services/quoteService";
+import {toast} from "sonner";
 export default function ViewQuoteDetails({ isOpen, setIsOpen, quote }) {
 
 
@@ -25,8 +27,27 @@ export default function ViewQuoteDetails({ isOpen, setIsOpen, quote }) {
         });
     };
 
-    const handleExportPDF = () => {
-        console.log("Export to PDF");
+    const handleExportPDF = async (id) => {
+        try {
+            const response = await quoteService.exportPDF(id);
+
+            const blob = new Blob([response.data], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `quote-${id}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+
+            toast.success("PDF exported successfully");
+        } catch (error) {
+            console.error("Error exporting PDF:", error);
+            toast.error("Failed to export PDF");
+        }
     };
 
     return (
@@ -103,7 +124,7 @@ export default function ViewQuoteDetails({ isOpen, setIsOpen, quote }) {
 
                 <div className="flex justify-between items-center pt-4">
                     <Button
-                        onClick={handleExportPDF}
+                        onClick={() => handleExportPDF(quote.id)}
                         className="flex items-center gap-2"
                     >
                         <FileDown size={16} />

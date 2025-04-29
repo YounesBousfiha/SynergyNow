@@ -1,19 +1,12 @@
 "use client"
-import Link from "next/link"
 import {
-    Plus,
     Search,
-    Eye,
-    PenSquare,
-    Trash2,
     ChevronLeft,
     ChevronRight,
 } from "lucide-react"
 
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
 import { Button } from "../../../components/ui/button"
 import { Input } from "../../../components/ui/input"
-import { Badge } from "../../../components/ui/badge"
 import {
     Select,
     SelectContent,
@@ -23,10 +16,12 @@ import {
 } from "../../../components/ui/select"
 import {useState, useEffect} from "react"
 import {toast} from "sonner"
-import {quoteService as quotesService} from "../../../services/quoteService"
+import {quoteService} from "../../../services/quoteService"
+import QuoteRow from "./_componenets/QuoteRow"
+import { useQuoteStore} from "../../../store/useQuote";
 
 export default function QuotesPage() {
-    const [quotes, setQuotes] = useState([])
+    const { quotes, setQuotes} = useQuoteStore();
     const [searchTerm, setSearchTerm] = useState("")
     const [currentPage, setCurrentPage] = useState(1)
     const [sortOrder, setSortOrder] = useState("newest")
@@ -35,7 +30,7 @@ export default function QuotesPage() {
     useEffect(() => {
         const FetchQuotes = async () => {
             try {
-                const response = await quotesService.getAllQuotes();
+                const response = await quoteService.getAllQuotes();
                 console.log(response.data)
                 setQuotes(response.data)
             } catch (error) {
@@ -128,6 +123,7 @@ export default function QuotesPage() {
                             <tbody>
                             {currentQuotes.map((quote) => (
                                 <QuoteRow
+                                    quote={quote}
                                     key={quote.id}
                                     title={quote.title}
                                     company={quote.client_company.name}
@@ -171,45 +167,3 @@ export default function QuotesPage() {
     )
 }
 
-// Quote Row Component
-function QuoteRow({
-                      title,
-                      company,
-                      amount,
-                      stage,
-                      date,
-                  }) {
-    const getStageBadge = (stage) => {
-        switch (stage) {
-            case "sent":
-                return <Badge className="bg-[#a8e6cf] text-[#296c5c] font-medium">{stage}</Badge>
-            case "draft":
-                return <Badge className="bg-blue-100 text-blue-800 font-medium border border-blue-200">{stage}</Badge>
-            default:
-                return <Badge>{stage}</Badge>
-        }
-    }
-
-    return (
-        <tr className="border-b hover:bg-gray-50">
-            <td className="py-4 px-6">{title}</td>
-            <td className="py-4 px-6">{company}</td>
-            <td className="py-4 px-6">{amount}</td>
-            <td className="py-4 px-6">{getStageBadge(stage)}</td>
-            <td className="py-4 px-6">{date}</td>
-            <td className="py-4 px-6">
-                <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500">
-                        <Eye size={18} />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500">
-                        <PenSquare size={18} />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500">
-                        <Trash2 size={18} />
-                    </Button>
-                </div>
-            </td>
-        </tr>
-    )
-}

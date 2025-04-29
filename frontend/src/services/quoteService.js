@@ -16,5 +16,17 @@ export const quoteService = {
         console.error("Error sending quote:", error);
         throw error;
     }
-}
+    },
+    getAllQuotes: async () => {
+        try {
+            return await axios.get('/quotes', {
+                headers: {
+                    'Authorization': `Bearer ${Cookies.get('jwt')}`
+                }
+            });
+        } catch (error) {
+            console.error("Error fetching all quotes:", error);
+            throw error;
+        }
+    }
 }

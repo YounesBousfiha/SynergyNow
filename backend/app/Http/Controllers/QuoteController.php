@@ -116,7 +116,7 @@ class QuoteController extends Controller
 
     public function exportPdf(Request $request, string $quoteId) {
         try {
-            $quote = Quote::with(['deal', 'service', 'clientCompany'])->find($quoteId);
+            $quote = Quote::with(['deal', 'clientCompany'])->find($quoteId);
             if(!$quote) {
                 return response()->json(['message' => 'Quote not found!'], 404);
             }

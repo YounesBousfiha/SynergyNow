@@ -1,3 +1,4 @@
+"use client"
 import {Badge} from "../../../../components/ui/badge";
 import {Button} from "../../../../components/ui/button";
 import {Eye, Trash2} from "lucide-react";
@@ -5,6 +6,8 @@ import DeleteDialog from "./DeleteDialog";
 import {quoteService} from "../../../../services/quoteService";
 import {toast} from "sonner";
 import { useQuoteStore } from "../../../../store/useQuote";
+import ViewQuoteDetails from "./ViewQuoteDetails";
+import { useState } from "react";
 export default function QuoteRow({
                       quote,
                       title,
@@ -15,6 +18,8 @@ export default function QuoteRow({
                   }) {
 
     const { removeQuote } = useQuoteStore();
+
+    const [isOpen , setIsOpen] = useState(false);
     const getStageBadge = (stage) => {
         switch (stage) {
             case "sent":
@@ -44,6 +49,11 @@ export default function QuoteRow({
 
     return (
         <>
+            <ViewQuoteDetails
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                quote={quote}
+            />
             <tr className="border-b hover:bg-gray-50">
                 <td className="py-4 px-6">{title}</td>
                 <td className="py-4 px-6">{company}</td>
@@ -56,7 +66,7 @@ export default function QuoteRow({
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8 text-gray-500"
-                            onClick={() => setIsDialogOpen(true)}
+                            onClick={() => setIsOpen(true)}
                         >
                             <Eye size={18} />
                         </Button>

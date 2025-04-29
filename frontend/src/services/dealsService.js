@@ -32,8 +32,11 @@ export const dealsService = {
 
     async updateDeal(dealId, dealData) {
         try {
-            const response = await axios.put(`/deals/${dealId}`, dealData);
-            return response.data;
+            return  await axios.put(`/deal/${dealId}`, dealData, {
+                headers : {
+                    'Authorization' : `Bearer ${Cookies.get('jwt')}`
+                }
+            });
         } catch (error) {
             console.error("Error updating deal:", error);
             throw error;

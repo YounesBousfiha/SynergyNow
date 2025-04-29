@@ -125,7 +125,7 @@ export default function DealCard({ id, deal}) {
                                 <FilePen size={14} />
                                 Update
                             </DropdownMenuItem>
-                            { deal?.quotes[0].status === 'draft' && <DropdownMenuItem
+                            { deal?.quotes[0]?.status === 'draft' && <DropdownMenuItem
                                 className="flex items-center gap-2"
                                 onClick={() => handleQuoteSent(id)}
                             >

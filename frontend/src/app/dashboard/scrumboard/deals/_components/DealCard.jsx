@@ -17,6 +17,7 @@ import ViewDealSheet from "./ViewDealSheet";
 import {quoteService} from "../../../../../services/quoteService";
 import UpdateDialog from "./UpdateDialog";
 
+
 export default function DealCard({ id, deal}) {
     const { removeDeal, updateDeal } = useDealsStore();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);

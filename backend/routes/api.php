@@ -8,18 +8,20 @@ use App\Http\Controllers\DealController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\MyCompanyController;
-use App\Http\Controllers\NoteController;
 use App\Http\Controllers\QuoteController;
-use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\SupportMessageController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\auth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Stripe\Stripe;
-use Stripe\Webhook;
 
-//Route::post('/stripe/webhook', [QuoteController::class, 'webhook']);
+
+
+// TODO: Take the Data from the Contact Us Form
+// TODO: proress the Message & it type
+// TODO: Create a Good Prompt for AI
+// TODO:  Get response from the AI
+// TODO:  Send the response to the user via email
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -62,16 +64,6 @@ Route::middleware(auth::class)->group(function () {
     Route::put('/client/{clientId}/contact/{contactId}', [ContactController::class, 'updateContact']);
     Route::delete('/client/{clientId}/contact/{contactId}', [ContactController::class, 'destroyContact']);
 
-    Route::get('/contact/{contactId}/notes', [NoteController::class, 'ContactNotes']);
-    Route::post('/contact/{contactId}/notes', [NoteController::class, 'store']);
-    Route::put('/contact/{contactId}/notes/{noteId}', [NoteController::class, 'update']);
-    Route::delete('/contact/{contactId}/notes/{noteId}', [NoteController::class, 'destroy']);
-
-    Route::get('/services', [ServiceController::class, 'index']);
-    Route::get('/service/{id}', [ServiceController::class, 'show']);
-    Route::post('/service', [ServiceController::class, 'store']);
-    Route::put('/service/{id}', [ServiceController::class, 'update']);
-    Route::delete('/service/{id}', [ServiceController::class, 'destroy']);
 
     Route::get('/deals', [DealController::class, 'index']);
     Route::get('/deal/{id}', [DealController::class, 'show']);
@@ -107,86 +99,9 @@ Route::middleware(auth::class)->group(function () {
     Route::delete('/quote/{id}', [QuoteController::class, 'destroy']);
     Route::post('/quote/{id}/send', [QuoteController::class, 'sendQuote']);
     Route::get('/quote/{id}/pdf', [QuoteController::class, 'exportPdf']);
+
+
 });
 
-Route::get('/test-gmail', function () {
-    $client = new Google_Client();
-    $client->setAuthConfig(storage_path('app/google/client_secret.json'));
-    $client->setRedirectUri(route('google.callback'));
-    $client->addScope(Google_Service_Gmail::GMAIL_READONLY);
-    $client->setAccessType('offline');
-    $client->setPrompt('consent');
+Route::post('/support/message', [SupportMessageController::class, 'store']);
 
-    if (!request()->has('code')) {
-        return redirect($client->createAuthUrl());
-    }
-
-    $token = $client->fetchAccessTokenWithAuthCode(request('code'));
-    $client->setAccessToken($token);
-
-    $service = new Google_Service_Gmail($client);
-
-    // Get list of messages
-    $optParams = [
-        'maxResults' => 10, // Limit to 10 messages for testing
-        'q' => 'in:inbox' // Only get inbox messages
-    ];
-
-    $messages = $service->users_messages->listUsersMessages('me', $optParams);
-    $emailList = [];
-
-    foreach ($messages->getMessages() as $message) {
-        // Get the full message details
-        $msg = $service->users_messages->get('me', $message->getId(), ['format' => 'full']);
-
-        // Extract headers
-        $headers = $msg->getPayload()->getHeaders();
-        $subject = '';
-        $from = '';
-        $date = '';
-
-        foreach ($headers as $header) {
-            if ($header->getName() == 'Subject') {
-                $subject = $header->getValue();
-            }
-            if ($header->getName() == 'From') {
-                $from = $header->getValue();
-            }
-            if ($header->getName() == 'Date') {
-                $date = $header->getValue();
-            }
-        }
-
-        // Get message body
-        $parts = $msg->getPayload()->getParts();
-        $body = '';
-
-        if ($parts) {
-            foreach ($parts as $part) {
-                if ($part->getMimeType() === 'text/plain') {
-                    $body = base64_decode(str_replace(['-', '_'], ['+', '/'], $part->getBody()->getData()));
-                    break;
-                }
-            }
-        } else {
-            // Handle messages without parts
-            $body = base64_decode(str_replace(['-', '_'], ['+', '/'], $msg->getPayload()->getBody()->getData()));
-        }
-
-        $emailList[] = [
-            'id' => $message->getId(),
-            'threadId' => $message->getThreadId(),
-            'subject' => $subject,
-            'from' => $from,
-            'date' => $date,
-            'body' => $body,
-            'snippet' => $msg->getSnippet()
-        ];
-    }
-
-    return response()->json([
-        'messages' => $emailList,
-        'nextPageToken' => $messages->getNextPageToken(),
-        'resultSizeEstimate' => $messages->getResultSizeEstimate()
-    ]);
-})->name('google.callback');

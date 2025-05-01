@@ -81,7 +81,7 @@ export default function UpdateDialog({handleUpdate, id, task, open, onOpenChange
             priority,
             due_date,
             status,
-            assigned_to: assignedTo
+            assigned_to: assignedTo.id
         };
 
         await handleUpdate(id, data);

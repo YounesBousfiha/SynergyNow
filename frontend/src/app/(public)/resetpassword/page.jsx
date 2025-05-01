@@ -1,10 +1,12 @@
+"use client"
 import {Card, CardContent} from "../../../components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import ResetPasswordForm from "../resetpassword/_componenets/ResetPasswordForm";
-
+import { Suspense } from 'react'
 export default function ForgetPasswordPage() {
     return (
+        <Suspense fallback={(<div>Loading...</div>)}>
         <main className="flex-grow bg-[#f3f3f6] py-16">
             <div className="container mx-auto px-4">
                 <Card className="max-w-5xl mx-auto overflow-hidden">
@@ -79,5 +81,6 @@ export default function ForgetPasswordPage() {
                 </Card>
             </div>
         </main>
+        </Suspense>
     );
 }

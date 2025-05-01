@@ -1,7 +1,7 @@
 "use client"
 
 import {  useSearchParams } from  'next/navigation';
-import {useState} from "react";
+import { Suspense } from 'react'
 import RegisterByInvitation from './_componenets/RegisterByInvitation'
 
 
@@ -12,9 +12,10 @@ export default function RegisterByInvitationPage() {
     const base64data = seachParam.get('invitation_token');
 
     const [companyName, invitation_token] = atob(base64data).split(':');
-
+    // TODO: Move the useSearchParam inside the RegisterBy Invitation componenet  & wrap that component with Suspense
     return (
         <>
+            <Suspense fallback={(<div>...</div>)}>
             <main className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg mx-4 my-8">
                     <div className="text-center">
@@ -24,6 +25,7 @@ export default function RegisterByInvitationPage() {
                     <RegisterByInvitation token={invitation_token} />
                 </div>
             </main>
+            </Suspense>
         </>
     );
 }

@@ -1,3 +1,5 @@
+"use client";
+
 import { Textarea } from "../../../components/ui/textarea";
 import { Card, CardContent } from "../../../components/ui/card";
 import {Input } from "../../../components/ui/input";
@@ -6,9 +8,33 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../components/ui/accordion";
 import { Button } from "../../../components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useState } from 'react';
+import { Suspense} from "react";
 
 export default function ContactPage() {
+
+    const [firstname, setFirstname] = useState("");
+    const [lastname, setLastname] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [type, setType] = useState("");
+    const [message, setMessage] = useState("");
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const formData = {
+            firstname,
+            lastname,
+            email,
+            phone,
+            type,
+            message
+        };
+
+        console.log(formData);
+    }
     return (
+        <Suspense fallback={(<div>Loading...</div>)}>
         <main className="flex-grow bg-[#f3f3f6]">
             <div className="container mx-auto px-4 py-12">
                 {/* Contact Form Section */}
@@ -30,40 +56,71 @@ export default function ContactPage() {
 
                     <Card>
                         <CardContent className="p-6">
-                            <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="firstName">First Name</Label>
-                                    <Input id="firstName"/>
+                                    <Input
+                                        id="firstName"
+                                        name="firstname"
+                                        value={firstname}
+                                        onChange={(e) => setFirstname(e.target.value)}
+                                    />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="lastName">Last Name</Label>
-                                    <Input id="lastName"/>
+                                    <Input
+                                        id="lastName"
+                                        name="lastname"
+                                        value={lastname}
+                                        onChange={(e) => setLastname(e.target.value)}
+                                    />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="email">Email</Label>
-                                    <Input id="email" type="email"/>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        name="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="phone">Phone number</Label>
-                                    <Input id="phone" type="tel"/>
+                                    <Input
+                                        id="phone"
+                                        type="tel"
+                                        name="phone"
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                    />
                                 </div>
                                 <div className="space-y-2 md:col-span-2">
                                     <Label htmlFor="topic">Choose topic</Label>
-                                    <Select>
+                                    <Select
+                                        name="type"
+                                    onValueChange={(value) => setType(value)}
+                                        defaultValue="general"
+                                        value={type}
+                                        >
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select one ..."/>
+                                            <SelectValue  placeholder="Select one ..."/>
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="general">General Inquiry</SelectItem>
                                             <SelectItem value="support">Technical Support</SelectItem>
-                                            <SelectItem value="sales">Sales</SelectItem>
-                                            <SelectItem value="partnership">Partnership</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="space-y-2 md:col-span-2">
                                     <Label htmlFor="message">How we can help you ?</Label>
-                                    <Textarea id="message" placeholder="Type your message..." className="resize-none"
+                                    <Textarea
+                                        id="message"
+                                        name="message"
+                                        placeholder="Type your message..."
+                                        className="resize-none"
+                                        value={message}
+                                        onChange={(e) => setMessage(e.target.value)}
                                               rows={5}/>
                                 </div>
                                 <div className="md:col-span-2">
@@ -152,5 +209,6 @@ export default function ContactPage() {
                 </div>
             </div>
         </main>
+        </Suspense>
     );
 }

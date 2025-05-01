@@ -37,6 +37,7 @@ class AuthController extends Controller
             $payload = [
                 'iss' => 'synegyNow',
                 'sub' => $user->id,
+                'role' => $user->role_id,
                 'iat' => time(),
                 'exp' => time() + 60*60*24
             ];

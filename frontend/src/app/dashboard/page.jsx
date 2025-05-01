@@ -1,6 +1,5 @@
 "use client"
-import Link from "next/link"
-import Image from "next/image"
+
 import {
     Users,
     Building2,
@@ -15,8 +14,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import DealsCountChart from "./_components/DealsCountChart";
 import RevenueChart from "./_components/RevenueChart";
 import TasksProgressChart from "./_components/TasksProgressChart";
+import { useEffect, useState } from "react"
+import {getStatistiques} from "../../services/statistiqueService";
 export default function DashboardPage() {
 
+    const [statsData, setStatsData] = useState({});
+    const [dealchart, setDealChart] = useState({});
+    const [revenueChart, setRevenueChart] = useState([]);
+    const [tasksProgress, setTasksProgress] = useState([]);
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await getStatistiques();
+                setStatsData(response.data);
+                setDealChart(response.data.stats.dealsChart);
+                setRevenueChart(response.data.stats.revenueChart);
+                setTasksProgress(response.data.stats.tasksChart);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+        fetchData();
+    }, []);
 
     return (
             <div className="flex-1">
@@ -30,7 +49,7 @@ export default function DashboardPage() {
                                     <Building2 size={20}/>
                                     <span>Number of Companies</span>
                                 </div>
-                                <div className="text-4xl font-bold">32</div>
+                                <div className="text-4xl font-bold">{statsData.clientsCount}</div>
                             </CardContent>
                         </Card>
 
@@ -40,7 +59,7 @@ export default function DashboardPage() {
                                     <Users size={20}/>
                                     <span>Number of Contacts</span>
                                 </div>
-                                <div className="text-4xl font-bold">108</div>
+                                <div className="text-4xl font-bold">{statsData.contactsCount}</div>
                             </CardContent>
                         </Card>
 
@@ -50,7 +69,7 @@ export default function DashboardPage() {
                                     <LineChart size={20}/>
                                     <span>Total Deals in pipeline</span>
                                 </div>
-                                <div className="text-4xl font-bold">293</div>
+                                <div className="text-4xl font-bold">{statsData.dealsCount}</div>
                             </CardContent>
                         </Card>
                     </div>
@@ -63,11 +82,7 @@ export default function DashboardPage() {
                                     <PieChart size={20}/>
                                     <span>Total revenues (yearly)</span>
                                 </div>
-                                <RevenueChart/>
-                                <div className="flex justify-between text-sm px-6 pb-6">
-                                    <div>expected 45,905$</div>
-                                    <div>total 38,765$</div>
-                                </div>
+                                <RevenueChart data={revenueChart}/>
                             </CardContent>
                         </Card>
 
@@ -84,15 +99,14 @@ export default function DashboardPage() {
                                     </Button>
                                 </div>
                                 <div className="flex justify-center">
-                                    {/* Recharts integration */}
-                                    <DealsCountChart/>
+                                    <DealsCountChart data={dealchart}/>
                                 </div>
                             </CardContent>
                         </Card>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <TasksProgressChart/>
+                        <TasksProgressChart data={tasksProgress}/>
                     </div>
                 </main>
             </div>

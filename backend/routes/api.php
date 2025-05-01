@@ -13,6 +13,7 @@ use App\Http\Controllers\SupportMessageController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\auth;
+use App\Http\Middleware\InjectoRoleIntoRequest;
 use Illuminate\Support\Facades\Route;
 
 
@@ -29,14 +30,14 @@ Route::post('/forgotpassword', [AuthController::class, 'forgotPassword']);
 Route::post('/resetpassword', [AuthController::class, 'resetPassword']);
 Route::post('/invitation/{id}', [AuthController::class, 'registerWithInvitation']);
 
-Route::middleware(auth::class)->group(function () {
+Route::middleware([auth::class, InjectoRoleIntoRequest::class])->group(function () {
     Route::get('/profile', [UserController::class, 'profile']);
     Route::delete('/account/delete', [UserController::class, 'deleteAccount']);
     Route::post('/profile', [UserController::class, 'update']);
     Route::patch('/changepassword', [AuthController::class, 'changePassword']);
     Route::get('/logout', [AuthController::class, 'logout']);
 
-    Route::get('/counts', [UserController::class, 'getCounts']);
+    Route::get('/dashboard/info', [UserController::class, 'getStats']);
 
     Route::post('/setup', [MyCompanyController::class, 'store']);
     Route::get('/mycompany', [MyCompanyController::class, 'index']);

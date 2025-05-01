@@ -1,3 +1,5 @@
+"use client"
+
 import axios from '../lib/axios';
 import Cookies from "js-cookie";
 

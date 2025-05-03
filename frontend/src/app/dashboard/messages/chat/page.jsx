@@ -50,7 +50,7 @@ export default function ChatPage() {
 
 
 
-    const currentContact = chats.find((contact) => contact.id === activeContact)
+    const currentContact = chats.find((contact) => contact.chatId === activeContact)
 
     useEffect(() => {
         const pusherInstance = new Pusher('e8490ac1efda2ccd410e', {
@@ -85,7 +85,7 @@ export default function ChatPage() {
 
     const handleSelectedChat = async (contact) => {
         try {
-            console.log(contact.chatId);
+            console.log("ChatId", contact.chatId);
             const messages = await chatService.showChat(contact.chatId);
             console.log(messages.data.messages);
             let userId = JSON.parse(localStorage.getItem('auth-storage')).state.user.id;
@@ -100,7 +100,7 @@ export default function ChatPage() {
         } catch (error) {
             toast.error("Error fetching chat messages:",);
         }
-        setActiveContact(contact.id);
+        setActiveContact(contact.chatId);
     }
 
     const formatTime = (dateString) => {
@@ -161,9 +161,9 @@ export default function ChatPage() {
                                 <div className="space-y-1">
                                     {chats.map((contact) => (
                                         <button
-                                            key={contact.id}
+                                            key={contact.chatId}
                                             className={`w-full flex items-start gap-3 p-3 hover:bg-gray-50 ${
-                                                activeContact === contact.id ? "bg-gray-100" : ""
+                                                activeContact === contact.chatId ? "bg-gray-100" : ""
                                             }`}
                                             onClick={() => handleSelectedChat(contact)}
                                         >

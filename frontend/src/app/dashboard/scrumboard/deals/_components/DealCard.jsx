@@ -16,10 +16,12 @@ import {dealsService} from "../../../../../services/dealsService";
 import ViewDealSheet from "./ViewDealSheet";
 import {quoteService} from "../../../../../services/quoteService";
 import UpdateDialog from "./UpdateDialog";
+import {useAuth} from "../../../../../store/useAuth";
 
 
 export default function DealCard({ id, deal}) {
     const { removeDeal, updateDeal } = useDealsStore();
+    const roleId = useAuth((state) => state.user?.role_id);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [isViewOpen, setIsViewOpen] = useState(false);
 
@@ -122,23 +124,29 @@ export default function DealCard({ id, deal}) {
                                 <Eye size={14} />
                                 <span>View</span>
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleUpdateDialog()}>
-                                <FilePen size={14} />
-                                Update
-                            </DropdownMenuItem>
-                            { deal?.quotes[0]?.status === 'draft' && <DropdownMenuItem
-                                className="flex items-center gap-2"
-                                onClick={() => handleQuoteSent(id)}
-                            >
-                                    <SendHorizontal size={14}/>
-                                    Sent Quote
-                            </DropdownMenuItem>}
-                            <DropdownMenuItem
-                                className="flex items-center gap-2 text-red-500 hover:!text-red-600 hover:!bg-red-100 hover:cursor-pointer"
-                                onClick={event => event.preventDefault()}
-                            >
-                                <DeleteDialog handleDelete={handleDelete} id={id}  />
-                            </DropdownMenuItem>
+                            {roleId !== 3 && (
+                                <>
+                                    <DropdownMenuItem onClick={() => handleUpdateDialog()}>
+                                        <FilePen size={14} />
+                                        Update
+                                    </DropdownMenuItem>
+                                    {deal?.quotes[0]?.status === 'draft' && (
+                                        <DropdownMenuItem
+                                            className="flex items-center gap-2"
+                                            onClick={() => handleQuoteSent(id)}
+                                        >
+                                            <SendHorizontal size={14}/>
+                                            Sent Quote
+                                        </DropdownMenuItem>
+                                    )}
+                                    <DropdownMenuItem
+                                        className="flex items-center gap-2 text-red-500 hover:!text-red-600 hover:!bg-red-100 hover:cursor-pointer"
+                                        onClick={event => event.preventDefault()}
+                                    >
+                                        <DeleteDialog handleDelete={handleDelete} id={id}  />
+                                    </DropdownMenuItem>
+                                </>
+                            )}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

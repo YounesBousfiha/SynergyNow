@@ -45,7 +45,7 @@ export default function ViewCompanyDetail({
                 View
             </div>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent className="sm:max-w-[600px]">
+                <DialogContent className="w-[300px] sm:w-[500px]">
                     <DialogHeader>
                         <div className="flex items-center gap-4">
                             <div
@@ -138,7 +138,7 @@ export default function ViewCompanyDetail({
                             </div>
                     </div>
 
-                    <DialogFooter className="flex justify-between items-center">
+                    <DialogFooter className="flex flex-row-reverse justify-between items-center">
                         <div className="flex gap-2">
                             <Button variant="outline" className="gap-2" asChild>
                                 <Link href={`/dashboard/contacts?company=${id}`}>

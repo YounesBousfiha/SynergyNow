@@ -14,7 +14,7 @@ class DealController extends Controller
      */
     public function index(Request $request)
     {
-        $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+        $companyId = AuthHelpers::getCompanyEmployesAt($request->bearerToken());
         try {
             $deals = Deal::with(['clientCompany', 'agent', 'quotes'])->where('my_companie_id', $companyId)->get();
         } catch (\Exception $e) {

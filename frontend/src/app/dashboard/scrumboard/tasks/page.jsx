@@ -53,7 +53,7 @@ export default function Tasks() {
         <>
             <main className="p-6 overflow-x-auto">
                 <h1 className="text-2xl font-bold mb-6">Task Manager</h1>
-
+                <div className="flex justify-center">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 min-w-max">
                     {/* Unassigned Column */}
                     <KanbanColumn title="Unassigned" count={unassignedCount}>
@@ -99,6 +99,7 @@ export default function Tasks() {
                             )
                         })}
                     </KanbanColumn>
+                </div>
                 </div>
             </main>
         </>

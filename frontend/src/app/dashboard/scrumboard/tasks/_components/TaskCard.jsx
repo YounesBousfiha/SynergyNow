@@ -13,9 +13,11 @@ import { useState, useEffect} from "react";
 import DeleteDialog from "./DeleteDialog";
 import UpdateDialog from "./UpdateDialog";
 import ViewTaskSheet from "./ViewTaskSheet";
+import {useAuth} from "../../../../../store/useAuth";
 export default function TaskCard({ id, task }) {
 
     const { removeTask, updateTask } = useTasksStore();
+    const roleId = useAuth((state) => state.user?.role_id);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [isViewOpen, setIsViewOpen] = useState(false);
 
@@ -87,7 +89,9 @@ export default function TaskCard({ id, task }) {
                             <Eye size={14} />
                             <span>View</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setIsUpdateOpen(true)}>
+                        { roleId !== 3 &&
+                            <>
+                            <DropdownMenuItem onClick={() => setIsUpdateOpen(true)}>
                             <FilePen size={14} />
                             Update
                         </DropdownMenuItem>
@@ -97,6 +101,8 @@ export default function TaskCard({ id, task }) {
                         >
                             <DeleteDialog handleDelete={handleDelete} id={id}  />
                         </DropdownMenuItem>
+                            </>
+                        }
                     </DropdownMenuContent>
                 </DropdownMenu>
 

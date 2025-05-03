@@ -58,7 +58,7 @@ export default function DealsManagerPage() {
                 {/* Content */}
                 <main className="p-6 overflow-x-auto">
                     <h1 className="text-2xl font-bold mb-6">Deals Manager</h1>
-
+                    <div className="flex justify-center">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 min-w-max">
 
                         {/* New Column */}
@@ -103,6 +103,7 @@ export default function DealsManagerPage() {
                                 )
                             })}
                         </DealsColumn>
+                    </div>
                     </div>
                 </main>
             </div>

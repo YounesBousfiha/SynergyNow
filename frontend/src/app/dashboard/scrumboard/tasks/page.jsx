@@ -52,7 +52,9 @@ export default function Tasks() {
     return (
         <>
             <main className="p-6 overflow-x-auto">
-                <div className="flex gap-4 min-w-max pb-4">
+                <h1 className="text-2xl font-bold mb-6">Task Manager</h1>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 min-w-max">
                     {/* Unassigned Column */}
                     <KanbanColumn title="Unassigned" count={unassignedCount}>
                         {unassignedTasks.map((task) => {

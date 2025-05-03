@@ -3,7 +3,7 @@ import {persist} from "zustand/middleware";
 
 export const useAuth = create(
     persist(
-        (set) => ({
+        (set, get) => ({
             isAuthenticated: false,
             user: null,
 
@@ -19,6 +19,7 @@ export const useAuth = create(
             },
 
             setUser: (user) => set({ user }),
+            getUser: () => get().user,
         }),
         {
             name: 'auth-storage'

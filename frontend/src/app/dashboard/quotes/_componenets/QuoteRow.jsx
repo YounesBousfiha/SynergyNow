@@ -8,6 +8,7 @@ import {toast} from "sonner";
 import { useQuoteStore } from "../../../../store/useQuote";
 import ViewQuoteDetails from "./ViewQuoteDetails";
 import { useState } from "react";
+import {useAuth} from "../../../../store/useAuth";
 export default function QuoteRow({
                       quote,
                       title,
@@ -18,6 +19,8 @@ export default function QuoteRow({
                   }) {
 
     const { removeQuote } = useQuoteStore();
+    const roleId = useAuth((state) => state.user?.role_id);
+
 
     const [isOpen , setIsOpen] = useState(false);
     const getStageBadge = (stage) => {
@@ -70,7 +73,9 @@ export default function QuoteRow({
                         >
                             <Eye size={18} />
                         </Button>
-                        <DeleteDialog id={quote.id} handleDelete={handleDelete} />
+                        { roleId !== 3 &&
+                            <DeleteDialog id={quote.id} handleDelete={handleDelete}/>
+                        }
                     </div>
                 </td>
             </tr>

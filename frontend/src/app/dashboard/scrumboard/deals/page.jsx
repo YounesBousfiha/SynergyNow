@@ -6,6 +6,7 @@ import { useState, useEffect} from "react";
 import {toast} from "sonner";
 import { dealsService} from "../../../../services/dealsService";
 import {useDealsStore} from "../../../../store/useDeals";
+import {useAuth} from "../../../../store/useAuth";
 
 export default function DealsManagerPage() {
 

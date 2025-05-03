@@ -12,17 +12,22 @@ import {
 } from "lucide-react";
 import { usePathname }  from "next/navigation";
 import {useState, useEffect} from "react";
+import { useAuth } from "../../../store/useAuth";
 
-
-// TODO: continue the active states
 export default function SideBar() {
-
+    const [mounted, setMounted] = useState(false);
+    const roleId = useAuth((state) => state.user?.role_id);
     const pathname = usePathname();
     const [currentPath, setCurrentPath] = useState("");
 
     useEffect(() => {
-        setCurrentPath(pathname)
-    }, [pathname])
+        setMounted(true);
+        setCurrentPath(pathname);
+    }, [pathname]);
+
+    if (!mounted) {
+        return null; // or a loading skeleton
+    }
 
     const isActive = (href) => {
         return pathname === href;
@@ -42,19 +47,18 @@ export default function SideBar() {
                 { name: 'chat', icon: <MessageCircle  size={20}/>, href: '/dashboard/messages/chat' },
                 { name: 'Email', icon: <Mail size={20}/>, href: '/dashboard/messages/email'}
             ]},
-        {
-            name: 'Administration',
-            icon: <Crown size={20}/>,
-            items: [
-                { name: 'Settings', icon: <Settings size={20} />  ,href: '/dashboard/administration/settings' },
-                { name: 'Audit Logs', icon:<Logs  size={20}/>  ,href: '/dashboard/administration/logs' },
-
-            ]
-        }
+            ...(roleId === 1 ? [{
+                name: 'Administration',
+                icon: <Crown size={20}/>,
+                items: [
+                    { name: 'Settings', icon: <Settings size={20} />  ,href: '/dashboard/administration/settings' },
+                    { name: 'Audit Logs', icon:<Logs  size={20}/>  ,href: '/dashboard/administration/logs' },
+                ]
+            }] : [])
     ]
 
     return (
-        <aside className="w-[220px] h-screen bg-[#f9f9f9] border-r border-gray-200 flex flex-col">
+        <aside className="w-[220px] h-screen bg-[#f9f9f9] border-r border-gray-200 flex flex-col" suppressHydrationWarning>
             <div className="p-4">
                 <Link href="/dashboard" className="flex items-center gap-2">
                     <div className="bg-[#06ae6f] rounded-full p-2">
@@ -67,9 +71,9 @@ export default function SideBar() {
             </div>
 
             <nav className="flex-1 py-8">
-                <ul className="space-y-1">
+                <ul suppressHydrationWarning className="space-y-1">
                     {links.map((link, index) => (
-                        <li key={index}>
+                        <li key={index} suppressHydrationWarning>
                             {link.href ? (
                                 <Link
                                     href={link.href}

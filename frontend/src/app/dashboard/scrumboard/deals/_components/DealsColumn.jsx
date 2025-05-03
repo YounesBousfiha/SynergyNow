@@ -17,7 +17,7 @@ export default function DealsColumn({ title, count, children }) {
     }
     return (
         <>
-        <div className="w-[230px] flex-shrink-0">
+        <div className="w-[280px] flex-shrink-0">
             <div className="bg-white rounded-md shadow-sm mb-4 px-4 py-2 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <span className="font-medium">{title}</span>

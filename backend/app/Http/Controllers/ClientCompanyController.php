@@ -22,9 +22,9 @@ class ClientCompanyController extends Controller
 
     public function index(Request $request)
     {
-        $myCompany = AuthHelpers::getMyCompany($request->bearerToken());
+        $myCompany = AuthHelpers::getCompanyEmployesAt($request->bearerToken());
         try {
-            $clientCompanies = ClientCompany::with('contacts')->where('my_companie_id', $myCompany->id)->get();
+            $clientCompanies = ClientCompany::with('contacts')->where('my_companie_id', $myCompany)->get();
             return response()->json([
                 'clientCompanies' => $clientCompanies
             ]);

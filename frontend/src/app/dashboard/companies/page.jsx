@@ -49,7 +49,7 @@ export default function CompaniesPage() {
                         <AddCompanyBtn />
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                            <Input className="pl-10 w-[300px]"
+                            <Input className="pl-10 w-[200px] sm:w-[300px]"
                                    placeholder="Search..."
                                    value={search}
                                    onChange={(e) => setSearch(e.target.value)}
@@ -180,7 +180,7 @@ function CompanyCard({
     }
 
     return (
-        <Card className="bg-white overflow-hidden">
+        <Card className="bg-white overflow-hidden w-[400px]  shadow-sm hover:shadow-md transition-shadow duration-200 ease-in-out">
             <CardContent className="p-0">
                 <div className="p-4 flex justify-between items-start">
                     <div className={`${getLogoBg(logoType)} w-12 h-12 rounded-full flex items-center justify-center`}>

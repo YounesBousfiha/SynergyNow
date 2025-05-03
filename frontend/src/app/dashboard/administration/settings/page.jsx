@@ -328,9 +328,9 @@ export default function Settings() {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {invites.map((invite) => {
+                                        {invites.map((invite, index) => {
                                             return <InvitesUserRown
-                                                key={invite.id}
+                                                key={index}
                                                 id={invite.id}
                                                 email={invite.email}
                                                 role={invite.role_id === "1" ? 'Superadmin' :
@@ -379,9 +379,9 @@ export default function Settings() {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {users.map((user) => {
+                                        {users.map((user, index) => {
                                             return <UserRow
-                                                key={user.id}
+                                                key={index}
                                                 id={user.id}
                                                 img={user.image}
                                                 name={user.firstname + ' ' + user.lastname || "Account still not Active"}

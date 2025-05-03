@@ -3,7 +3,7 @@ import { Toaster } from "sonner";
 import DashBar from './_components/DashBoardBar';
 export default function Layout({ children }) {
     return (
-        <div className="flex min-h-screen bg-[#f3f3f6]">
+        <div className="flex min-h-screen bg-[#f3f3f6]" >
             <Toaster richColors={true} />
             <SideBar />
             <div className="flex flex-col flex-1">

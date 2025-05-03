@@ -18,7 +18,7 @@ class QuoteController extends Controller
     public function index(Request $request)
     {
         try {
-            $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+            $companyId = AuthHelpers::getCompanyEmployesAt($request->bearerToken());
             $quotes = Quote::with(['deal', 'clientCompany'])
                 ->whereHas('deal', function($query) use($companyId) {
                     $query->where('my_companie_id', $companyId);

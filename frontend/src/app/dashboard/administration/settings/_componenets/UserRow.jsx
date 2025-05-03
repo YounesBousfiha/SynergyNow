@@ -25,7 +25,7 @@ export default function UserRow({
     const { user } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
 
-    const getRoleBuseradge = (role) => {
+    const getRoleBadge = (role) => {
         switch (role) {
             case "Superadmin":
                 return <Badge className="bg-purple-100 text-purple-800 font-medium">{role}</Badge>
@@ -56,7 +56,7 @@ export default function UserRow({
         <tr className="border-b hover:bg-gray-50">
             <td className="py-4 px-6">{name}</td>
             <td className="py-4 px-6">{email}</td>
-            {/*<td className="py-4 px-6">{getRoleBadge(role)}</td>*/}
+            <td className="py-4 px-6">{getRoleBadge(role)}</td>
             <td className="py-4 px-6">{last_login_at}</td>
             <td className="py-4 px-6">
                 <div className="flex items-center gap-2">

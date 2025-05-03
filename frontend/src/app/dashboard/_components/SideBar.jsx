@@ -40,7 +40,6 @@ export default function SideBar() {
                 { name: 'Pipeline', icon: <Workflow size={20}/>, href: '/dashboard/scrumboard/deals'}
             ]
         },
-        { name: 'Contacts', icon: <Users size={20} />, href: '/dashboard/contacts' },
         {name: 'Companies', icon: <Building2 size={20}/>, href: '/dashboard/companies'},
         {name: 'Quotes', icon: <ClipboardPlus size={20} />, href: '/dashboard/quotes'},
         {name: 'Messages', icon: <MessageSquare size={20}/>,             items: [

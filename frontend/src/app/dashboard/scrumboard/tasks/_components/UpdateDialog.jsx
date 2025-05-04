@@ -12,7 +12,6 @@ import { Input } from "../../../../../components/ui/input";
 import { Button } from "../../../../../components/ui/button";
 import {useEffect, useState} from "react";
 import {Select, SelectTrigger, SelectItem, SelectContent, SelectValue} from "../../../../../components/ui/select";
-import {FilePen, Trash2} from "lucide-react";
 import {userService} from "../../../../../services/UserService";
 
 export default function UpdateDialog({handleUpdate, id, task, open, onOpenChange }) {
@@ -81,7 +80,7 @@ export default function UpdateDialog({handleUpdate, id, task, open, onOpenChange
             priority,
             due_date,
             status,
-            assigned_to: assignedTo.id
+            assigned_to: assignedTo
         };
 
         await handleUpdate(id, data);

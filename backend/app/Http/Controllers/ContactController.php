@@ -78,7 +78,6 @@ class ContactController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['client_companie_id'] = $request->input('client_companie_id');
 
             if($request->hasFile('image')) {
                 $image = $request->file('image');

@@ -103,6 +103,8 @@ Route::middleware([auth::class, InjectoRoleIntoRequest::class])->group(function 
     //TODO not used Route : Route::get('/quote/{id}', [QuoteController::class, 'show'])->middleware(verifyRole::class . ':agent');
     //TODO not used Route : Route::put('/quote/{id}', [QuoteController::class, 'update'])->middleware(verifyRole::class . ':admin');
 
+    Route::get('/support/message', [SupportMessageController::class, 'index']);
+
 
 
 });

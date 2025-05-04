@@ -30,6 +30,7 @@ class ContactStoreValidation extends FormRequest
             "address" =>  ['required', 'string', 'max:255'],
             "phone" => ['required', 'string', 'max:255'],
             "image" => ['sometimes', 'mimes:png,jpg,jpeg', 'max:2048'],
+            "client_companie_id" => ['required', 'numeric']
         ];
     }
 

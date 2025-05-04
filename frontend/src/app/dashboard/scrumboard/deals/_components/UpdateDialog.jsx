@@ -17,10 +17,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../../../../../components/ui/select"
+import {useAuth} from "../../../../../store/useAuth";
+import { useDealsStore} from "../../../../../store/useDeals";
 
 export default function UpdateDialog({ handleUpdate, id, deal, open, onOpenChange }) {
+    const { updateDeal } = useDealsStore();
     const [users, setUsers] = useState([])
     const [assignedUser, setAssignedUser] = useState(null)
+    const roleId = useAuth((state) => state.user?.role_id);
+
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -45,7 +50,7 @@ export default function UpdateDialog({ handleUpdate, id, deal, open, onOpenChang
                 title: deal.title || "",
                 description: deal.description || "",
                 amount: deal.amount?.toString() || "",
-                assignedTo: deal.assigned_to?.toString() || "",
+                assignedTo: deal.agent_id?.toString() || "",
                 status: deal.status || ""
             })
 
@@ -55,15 +60,17 @@ export default function UpdateDialog({ handleUpdate, id, deal, open, onOpenChang
                 setAssignedUser(assigned)
             }
         }
-    }, [open])
+    }, [open, deal, users])
 
-    // Fetch users
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await userService.getAllUsers()
-                if (response.status === 200) {
-                    setUsers(response.data.message)
+                if(roleId !== 3) {
+                    const response = await userService.getAllUsers()
+                    if (response.status === 200) {
+                        setUsers(response.data.message)
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching users: ", error)
@@ -92,8 +99,12 @@ export default function UpdateDialog({ handleUpdate, id, deal, open, onOpenChang
             status: formData.status,
             agent_id: formData.assignedTo ? parseInt(formData.assignedTo) : null
         }
-
-        await handleUpdate(id, updateData)
+        try {
+             await handleUpdate(id, updateData)
+             onOpenChange(false);
+        } catch (error) {
+            toast.error("Error while updating deal")
+        }
     }
 
     return (

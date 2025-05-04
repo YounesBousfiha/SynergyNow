@@ -100,16 +100,4 @@ class TaskController extends Controller
 
         return response()->json(['message' => 'Task deleted successfully!']);
     }
-
-
-    public function myTasks(Request $request)
-    {
-        try {
-            $userId = AuthHelpers::getId($request->bearerToken());
-            $tasks = Task::where('assigned_to', $userId)->get();
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
-        return response()->json($tasks);
-    }
 }

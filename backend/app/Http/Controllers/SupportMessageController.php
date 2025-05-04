@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\AuthHelpers;
 use App\Mail\AIResponseMail;
+use App\Models\MyCompany;
 use App\Models\SupportMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -12,92 +14,53 @@ class SupportMessageController extends Controller
 {
     protected $geminiEndpoint;
     protected $apiKey;
-    protected $contexts;
 
     public function __construct()
     {
         $this->geminiEndpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
         $this->apiKey = env('AI_GEMENI_KEY');
-
-        $this->contexts = [
-            'GENERAL_ENQUIRY' => $this->getGeneralContext(),
-            'TECHNICAL_SUPPORT' => $this->getTechnicalContext()
-        ];
     }
 
-    private function getGeneralContext(): string
-    {
-        return <<<EOT
-    You are a specialized CRM assistant for our platform. Our platform features include:
+    public function index(Request $request) {
+        try {
+            $companyId = AuthHelpers::getMyCompany($request->bearerToken())->id;
+            $data = SupportMessage::where('my_company_id', $companyId)->get();
 
-    1. Business & Contact Management:
-    - Manage client companies and their information
-    - Track and update contact details
-
-    2. Sales Tools:
-    - Deal pipeline tracking
-    - Automated quote sending
-
-    3. Team Features:
-    - Team member management
-    - Real-time messaging
-    - Task assignment
-    - Deal distribution
-
-    Future Features:
-    - Gmail, Calendar, Drive integrations
-    - AI email assistance
-
-    Guidelines:
-    - Provide business-focused solutions
-    - Reference platform features
-    - Keep responses practical and under 200 words
-    EOT;
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
-    private function getTechnicalContext(): string
+    private function buildPrompt(string $userMessage, ?string $companyDescription = null): string
     {
-        return <<<EOT
-    You are a technical support assistant for our CRM platform. Help with:
+        $prompt = $userMessage;
 
-    1. Account Access:
-    - Password reset process
-    - Login issues
+        if ($companyDescription) {
+            $prompt = "Company Description: {$companyDescription}\n\nUser Query: {$userMessage}";
+        }
 
-    2. Common Technical Solutions:
-    - Browser compatibility (Chrome, Firefox, Safari supported)
-    - Cookie settings
-
-    3. Platform Requirements:
-    - Minimum browser versions
-    - Required permissions
-    - File upload limits
-    - Supported file formats
-    - backoffice mobile is not supported
-
-    Guidelines:
-    - Provide step-by-step solutions
-    - Include specific technical steps
-    - Mention support contact for escalation
-    - Keep responses clear and concise
-    EOT;
-    }
-
-    private function buildPrompt(string $userMessage, string $type = 'GENERAL_ENQUIRY'): string
-    {
-        $context = $this->contexts[$type] ?? $this->contexts['GENERAL_ENQUIRY'];
-        return "{$context}\n\nUser Query: {$userMessage}";
+        return $prompt;
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
 
-        $messageType = $request->input('type', 'GENERAL_ENQUIRY');
+        $company = null;
+        $companyDescription = null;
+        if ($request->has('company_name')) {
+            $company = MyCompany::whereRaw('LOWER(name) = ?', [strtolower($request->input('company_name'))])->first();
+            if ($company) {
+                $companyDescription = $company->description;
+            }
+        }
 
         $prompt = $this->buildPrompt(
             $request->input('message'),
-            $messageType
+            $companyDescription
         );
 
         try {
@@ -123,19 +86,19 @@ class SupportMessageController extends Controller
                 'email' => $request->input('email'),
                 'subject' => $request->input('subject'),
                 'message' => $request->input('message'),
+                'my_company_id' => $company->id,
                 'AIResponse' => $reply,
             ]);
 
             Mail::to($request->input('email'))
                 ->send(new AIResponseMail(
-                    aiResponse :  $supportMessage['AIResponse'],
-                    userEmail:  $supportMessage['email'],
-                    emailSubject :  $supportMessage['subject']
+                    aiResponse: $supportMessage['AIResponse'],
+                    userEmail: $supportMessage['email'],
+                    emailSubject: $supportMessage['subject']
                 ));
 
             return response()->json([
                 'status' => 'success',
-                'type' => $messageType,
                 'user_message' => $request->input('message'),
                 'gemini_reply' => $reply,
             ]);

@@ -8,12 +8,6 @@ import {Button} from "../../../../components/ui/button";
 import {Eye, Mail, Phone, Globe, MapPin, ExternalLink, UserPlus, X} from "lucide-react";
 import Link from 'next/link';
 import Image from "next/image";
-import { Label } from "../../../../components/ui/label";
-import {Input} from "../../../../components/ui/input";
-import { Textarea} from "../../../../components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select"
-import {toast} from "sonner";
-import {contactService} from "../../../../services/contactService";
 
 export default function ViewCompanyDetail({
                                             id,

@@ -32,8 +32,8 @@ Route::post('/resetpassword', [AuthController::class, 'resetPassword']);
 Route::post('/invitation/{id}', [AuthController::class, 'registerWithInvitation']);
 
 Route::middleware([auth::class, InjectoRoleIntoRequest::class])->group(function () {
-    Route::get('/profile', [UserController::class, 'profile']); // TODO: not used
-    Route::delete('/account/delete', [UserController::class, 'deleteAccount']);
+    // TODO: not Used : Route::get('/profile', [UserController::class, 'profile'])->middleware(verifyRole::class . ':agent');
+    // TODO: not Used : Route::delete('/account/delete', [UserController::class, 'deleteAccount']);
     Route::post('/profile', [UserController::class, 'update'])->middleware(verifyRole::class . ':agent');
     Route::patch('/changepassword', [AuthController::class, 'changePassword'])->middleware(verifyRole::class . ':agent');
     Route::get('/logout', [AuthController::class, 'logout'])->middleware(verifyRole::class . ':agent');
@@ -48,8 +48,7 @@ Route::middleware([auth::class, InjectoRoleIntoRequest::class])->group(function 
     Route::post('/invite', [InviteController::class, 'store'])->middleware(verifyRole::class . ':superadmin');
     Route::delete('/invite/revoke/{id}', [InviteController::class, 'destroy'])->middleware(verifyRole::class . ':superadmin');
 
-    Route::get('/users', [MyCompanyController::class, 'users'])->middleware(verifyRole::class . ':superadmin');
-    Route::get('/user/{id}', [MyCompanyController::class, 'getUser'])->middleware(verifyRole::class . ':superadmin');
+    Route::get('/users', [MyCompanyController::class, 'users'])->middleware(verifyRole::class . ':agent');
     Route::patch('/user/{id}', [MyCompanyController::class, 'updateUserRole'])->middleware(verifyRole::class . ':superadmin');
     Route::delete('/user/{id}', [MyCompanyController::class, 'deleteUser'])->middleware(verifyRole::class . ':superadmin');
 
@@ -71,20 +70,21 @@ Route::middleware([auth::class, InjectoRoleIntoRequest::class])->group(function 
     Route::get('/deal/{id}', [DealController::class, 'show'])->middleware(verifyRole::class . ':agent');
     Route::post('/deal', [DealController::class, 'store'])->middleware(verifyRole::class . ':admin');
     Route::put('/deal/{id}', [DealController::class, 'update'])->middleware(verifyRole::class . ':admin');
-    Route::patch('/deal/{id}', [DealController::class, 'updateStatus'])->middleware(verifyRole::class . ':admin');
-    Route::patch('/deal/{id}/assign', [DealController::class, 'assign'])->middleware(verifyRole::class . ':admin');
-    Route::patch('/deal/{id}/unassign', [DealController::class, 'unassign'])->middleware(verifyRole::class . ':admin');
     Route::delete('/deal/{id}', [DealController::class, 'destroy'])->middleware(verifyRole::class . ':admin');
+
+    // TODO: not used : Route::patch('/deal/{id}', [DealController::class, 'updateStatus'])->middleware(verifyRole::class . ':admin');
+    // TODO: not used : Route::patch('/deal/{id}/assign', [DealController::class, 'assign'])->middleware(verifyRole::class . ':admin');
+    // TODO: not used : Route::patch('/deal/{id}/unassign', [DealController::class, 'unassign'])->middleware(verifyRole::class . ':admin');
 
 
     Route::get('tasks', [TaskController::class, 'index'])->middleware(verifyRole::class . ':agent');
-    Route::get('mytasks', [TaskController::class, 'myTasks'])->middleware(verifyRole::class . ':agent');
-    Route::get('task/{id}', [TaskController::class, 'show'])->middleware(verifyRole::class . ':agent');
     Route::post('task', [TaskController::class, 'store'])->middleware(verifyRole::class . ':admin');
     Route::put('task/{id}', [TaskController::class, 'update'])->middleware(verifyRole::class . ':admin');
     Route::delete('task/{id}', [TaskController::class, 'destroy'])->middleware(verifyRole::class . ':admin');
-    Route::patch('task/{id}/assign', [TaskController::class, 'assigneeTo'])->middleware(verifyRole::class . ':admin');
-    Route::patch('task/{id}/unassign', [TaskController::class, 'unassign'])->middleware(verifyRole::class . ':admin');
+
+    // TODO: not used : Route::get('task/{id}', [TaskController::class, 'show'])->middleware(verifyRole::class . ':agent');
+    // TODO: not used :Route::patch('task/{id}/assign', [TaskController::class, 'assigneeTo'])->middleware(verifyRole::class . ':admin');
+    // TODO: not used :Route::patch('task/{id}/unassign', [TaskController::class, 'unassign'])->middleware(verifyRole::class . ':admin');
 
 
     Route::get('/chats', [ChatController::class, 'index'])->middleware(verifyRole::class . ':agent');
@@ -95,12 +95,14 @@ Route::middleware([auth::class, InjectoRoleIntoRequest::class])->group(function 
     Route::post('/messages/{chatid}', [MessageController::class, 'sendMessage'])->middleware(verifyRole::class . ':agent');
 
     Route::get('/quotes', [QuoteController::class, 'index'])->middleware(verifyRole::class . ':agent');
-    Route::get('/quote/{id}', [QuoteController::class, 'show'])->middleware(verifyRole::class . ':agent');;
-    Route::post('/quote', [QuoteController::class, 'store'])->middleware(verifyRole::class . ':admin');;
-    Route::put('/quote/{id}', [QuoteController::class, 'update'])->middleware(verifyRole::class . ':admin');;
-    Route::delete('/quote/{id}', [QuoteController::class, 'destroy'])->middleware(verifyRole::class . ':admin');;
-    Route::post('/quote/{id}/send', [QuoteController::class, 'sendQuote'])->middleware(verifyRole::class . ':agent');;
-    Route::get('/quote/{id}/pdf', [QuoteController::class, 'exportPdf'])->middleware(verifyRole::class . ':agent');;
+    Route::post('/quote/{id}/send', [QuoteController::class, 'sendQuote'])->middleware(verifyRole::class . ':agent');
+    Route::get('/quote/{id}/pdf', [QuoteController::class, 'exportPdf'])->middleware(verifyRole::class . ':agent');
+    Route::delete('/quote/{id}', [QuoteController::class, 'destroy'])->middleware(verifyRole::class . ':admin');
+    Route::post('/quote', [QuoteController::class, 'store'])->middleware(verifyRole::class . ':admin');
+
+    //TODO not used Route : Route::get('/quote/{id}', [QuoteController::class, 'show'])->middleware(verifyRole::class . ':agent');
+    //TODO not used Route : Route::put('/quote/{id}', [QuoteController::class, 'update'])->middleware(verifyRole::class . ':admin');
+
 
 
 });

@@ -74,7 +74,8 @@ export default function DealCard({ id, deal}) {
         try {
             const response = await dealsService.updateDeal(id, data);
             console.log(response.data);
-            setIsUpdateOpen(true)
+            updateDeal(id, data) // TODO: invetigate the issue of deal updating
+            toast.success("Deal update success")
         } catch (error) {
             console.error("Error updating deal: ", error);
             toast.error("Error updating deal");
@@ -124,21 +125,21 @@ export default function DealCard({ id, deal}) {
                                 <Eye size={14} />
                                 <span>View</span>
                             </DropdownMenuItem>
+                            {deal?.quotes && deal.quotes.length > 0 && deal.quotes[0].status === 'draft' && (
+                                <DropdownMenuItem
+                                    className="flex items-center gap-2"
+                                    onClick={() => handleQuoteSent(id)}
+                                >
+                                    <SendHorizontal size={14}/>
+                                    Sent Quote
+                                </DropdownMenuItem>
+                            )}
                             {roleId !== 3 && (
                                 <>
                                     <DropdownMenuItem onClick={() => handleUpdateDialog()}>
                                         <FilePen size={14} />
                                         Update
                                     </DropdownMenuItem>
-                                    {deal?.quotes[0]?.status === 'draft' && (
-                                        <DropdownMenuItem
-                                            className="flex items-center gap-2"
-                                            onClick={() => handleQuoteSent(id)}
-                                        >
-                                            <SendHorizontal size={14}/>
-                                            Sent Quote
-                                        </DropdownMenuItem>
-                                    )}
                                     <DropdownMenuItem
                                         className="flex items-center gap-2 text-red-500 hover:!text-red-600 hover:!bg-red-100 hover:cursor-pointer"
                                         onClick={event => event.preventDefault()}

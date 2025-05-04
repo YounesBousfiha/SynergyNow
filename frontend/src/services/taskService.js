@@ -32,8 +32,13 @@ export const taskService = {
     },
 
     updateTask: async (taskId, taskData) => {
+        const newTaskData = { ...taskData}
+
+        if(newTaskData.assigned_to) {
+            newTaskData.assigned_to = newTaskData.assigned_to.id;
+        }
         try {
-            return await axios.put(`/task/${taskId}`, taskData, {
+            return await axios.put(`/task/${taskId}`, newTaskData, {
                 headers : {
                     'Authorization': `Bearer ${Cookies.get('jwt')}`
                 }

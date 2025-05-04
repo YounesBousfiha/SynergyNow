@@ -10,6 +10,8 @@ import { Button } from "../../../components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useState } from 'react';
 import { Suspense} from "react";
+import {toast} from "sonner";
+import { getintouchService} from "../../../services/getintouchService";
 
 export default function ContactPage() {
 
@@ -17,7 +19,8 @@ export default function ContactPage() {
     const [lastname, setLastname] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [type, setType] = useState("");
+    const [companyName, setCompanyName] = useState("");
+    const [subject, setSubject] = useState("");
     const [message, setMessage] = useState("");
 
     const handleSubmit = (e) => {
@@ -26,11 +29,21 @@ export default function ContactPage() {
             firstname,
             lastname,
             email,
+            subject,
             phone,
-            type,
+            companyName,
             message
         };
 
+        try {
+            const response = getintouchService.send(formData);
+            if(response.status === 200) {
+                toast.success("Message has sent successfully , Check your Mail")
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Error while sending the message")
+        }
         console.log(formData);
     }
     return (
@@ -96,21 +109,22 @@ export default function ContactPage() {
                                     />
                                 </div>
                                 <div className="space-y-2 md:col-span-2">
-                                    <Label htmlFor="topic">Choose topic</Label>
-                                    <Select
-                                        name="type"
-                                    onValueChange={(value) => setType(value)}
-                                        defaultValue="general"
-                                        value={type}
-                                        >
-                                        <SelectTrigger>
-                                            <SelectValue  placeholder="Select one ..."/>
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="general">General Inquiry</SelectItem>
-                                            <SelectItem value="support">Technical Support</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <Label htmlFor="subject">Subject</Label>
+                                    <Input
+                                        id="subject"
+                                        name="subject"
+                                        placeholder="Enter the subject"
+                                        onChange={(e) => setSubject(e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2 md:col-span-2">
+                                    <Label htmlFor="company_name">Enter the Company name</Label>
+                                    <Input
+                                        id="company_name"
+                                        name="company_name"
+                                        placeholder="Please enter the company name that you want to ask"
+                                        onChange={(e) => setCompanyName(e.target.value)}
+                                    />
                                 </div>
                                 <div className="space-y-2 md:col-span-2">
                                     <Label htmlFor="message">How we can help you ?</Label>

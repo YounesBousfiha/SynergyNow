@@ -7,7 +7,11 @@ import Cookies from "js-cookie";
 export const contactService = {
     create: async (data, companyId) => {
         try {
-            return await axios.post(`/client/${companyId}/contact`, data, {
+            const newData = {
+                ...data,
+                client_companie_id: companyId
+            }
+            return await axios.post(`/client/${companyId}/contact`, newData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization' : `Bearer ${Cookies.get('jwt')}`
@@ -28,17 +32,17 @@ export const contactService = {
             throw new Error(e);
         }
     },
-    show: async (id) => {
-        try {
-            return axios.get(`/contact/${id}`, {
-                headers : {
-                    'Authorization' : `Bearer ${Cookies.get('jwt')}`
-                }
-            })
-        } catch (e) {
-            throw new Error(e);
-        }
-    },
+    // show: async (id) => {
+    //     try {
+    //         return axios.get(`/contact/${id}`, {
+    //             headers : {
+    //                 'Authorization' : `Bearer ${Cookies.get('jwt')}`
+    //             }
+    //         })
+    //     } catch (e) {
+    //         throw new Error(e);
+    //     }
+    // },
     delete: async (id, company_id) => {
         try {
             return axios.delete(`/client/${company_id}/contact/${id}`, {

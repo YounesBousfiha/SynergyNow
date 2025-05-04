@@ -33,7 +33,7 @@ export default function DealsManagerPage() {
 
 
     const newDeals = deals.filter(deal => deal.status === "new");
-    const followUpsDeals = deals.filter(deal => deal.status === "follow_up");
+    const followUpsDeals = deals.filter(deal => deal.status === "followups");
     const underReviewDeals = deals.filter(deal => deal.status === "under_review");
     const wonDeals = deals.filter(deal => deal.status === "closed_won");
     const lostDeals = deals.filter(deal => deal.status === "closed_not_won");

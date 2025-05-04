@@ -24,7 +24,7 @@ class SetupRequestValidation extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:1000'],
             'image' => ['required', 'mimes:png,jpg,jpeg', 'max:2048']
         ];
     }

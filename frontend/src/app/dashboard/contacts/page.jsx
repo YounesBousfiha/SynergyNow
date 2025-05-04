@@ -48,9 +48,9 @@ export default function CustomersPage() {
     const filteredContacts = !search.trim()
         ? contacts  :
         contacts.filter(contact =>
-        contact.firstname.toLowerCase().includes(search.toLowerCase()) ||
-        contact.lastname.toLowerCase().includes(search.toLowerCase()) ||
-        contact.email.toLowerCase().includes(search.toLowerCase()
+        contact?.firstname.toLowerCase().includes(search.toLowerCase()) ||
+        contact?.lastname.toLowerCase().includes(search.toLowerCase()) ||
+        contact?.email.toLowerCase().includes(search.toLowerCase()
     ))
 
     const paginatedContacts = filteredContacts.slice(
